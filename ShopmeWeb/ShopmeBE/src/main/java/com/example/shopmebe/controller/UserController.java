@@ -8,19 +8,14 @@ import com.example.shopmebe.service.RoleService;
 import com.example.shopmebe.service.UserService;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.dto.RoleDTO;
+import com.shopme.common.dto.UserDTO;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -30,12 +25,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Controller
-@AllArgsConstructor
-@NoArgsConstructor
+@RequestMapping
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class UserController {
 
-    private UserService userService;
-    private RoleService roleService;
+    private final UserService userService;
+    private final RoleService roleService;
+
+    public UserController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping("/users")
     public String listFirstPage(Model model) {
@@ -75,9 +76,9 @@ public class UserController {
 
     @GetMapping("/users/new")
     public String newUser(Model model) {
-        List<RoleDTO> roles = roleService.listRoles();
-        User user = new User();
-        user.setEnabled(true);
+        List<Role> roles = roleService.listRoles();
+        User user = User.builder()
+                        .enabled(true).build();
 
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
@@ -113,7 +114,7 @@ public class UserController {
     public String editUser(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             User user = userService.get(id);
-            List<RoleDTO> roles = roleService.listRoles();
+            List<Role> roles = roleService.listRoles();
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
@@ -130,7 +131,7 @@ public class UserController {
         try {
             userService.delete(id);
             redirectAttributes.addFlashAttribute("message",
-                    String.format("Ther user ID %d has been deleted successfully", id));
+                    String.format("The user ID %d has been deleted successfully", id));
         } catch (UserNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
         }

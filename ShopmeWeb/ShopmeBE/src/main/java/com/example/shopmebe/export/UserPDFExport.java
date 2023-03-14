@@ -3,6 +3,7 @@ package com.example.shopmebe.export;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.*;
+import com.shopme.common.dto.UserDTO;
 import com.shopme.common.entity.User;
 
 import javax.servlet.http.HttpServletResponse;

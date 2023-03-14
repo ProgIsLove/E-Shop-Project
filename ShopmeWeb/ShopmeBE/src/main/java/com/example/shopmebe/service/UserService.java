@@ -3,7 +3,6 @@ package com.example.shopmebe.service;
 import com.example.shopmebe.exception.UserNotFoundException;
 import com.example.shopmebe.repository.UserRepository;
 import com.shopme.common.entity.User;
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,18 +15,21 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 @Transactional
 public class UserService {
 
     public static final int USER_PER_PAGE = 4;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<User> listAll() {
-
         return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());
     }
 
@@ -44,8 +46,7 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-
-
+    @Transactional
     public User save(User user) {
         boolean isUpdatingUser = (user.getId() != null);
 
@@ -93,12 +94,10 @@ public class UserService {
         if (countById == null || countById == 0) {
             throw new UserNotFoundException(String.format("Could not find any user with ID %d", id));
         }
-
         userRepository.deleteById(id);
     }
 
     public void updateUserEnabledStatus(Integer id, boolean enabled) {
         userRepository.updateEnabledStatus(id, enabled);
-
     }
 }

@@ -1,6 +1,7 @@
 package shopme.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
+import com.example.shopmebe.exception.UserNotFoundException;
 import com.example.shopmebe.repository.RoleRepository;
 import com.example.shopmebe.repository.UserRepository;
 import com.example.shopmebe.service.UserService;
@@ -154,22 +155,23 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testGetUserById() {
+    void testGetUserById() throws UserNotFoundException {
         when(userRepositoryMock.findById(ID)).thenReturn(Optional.of(userAnna));
-        Optional<User> userById = userRepositoryMock.findById(ID);
+        User userById = userService.get(ID);
+//        Optional<User> userById = userRepositoryMock.findById(ID);
         ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(userRepositoryMock).findById(idCaptor.capture());
 
         Integer idValue = idCaptor.getValue();
 
-        assertTrue(userById.isPresent());
-
-        User user = userById.get();
+//        assertTrue(userById.isPresent());
+//
+//        User user = userById.get();
 
         assertEquals(ID, idValue);
-        assertEquals("Anna", user.getFirstName());
-        assertEquals("Croft", user.getLastName());
-        assertEquals(1, user.getRoles().size());
+        assertEquals("Anna", userById.getFirstName());
+        assertEquals("Croft", userById.getLastName());
+        assertEquals(1, userById.getRoles().size());
     }
 
     @Test

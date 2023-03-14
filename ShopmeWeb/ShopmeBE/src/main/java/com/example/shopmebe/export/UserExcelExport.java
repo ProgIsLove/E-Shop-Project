@@ -1,5 +1,6 @@
 package com.example.shopmebe.export;
 
+import com.shopme.common.dto.UserDTO;
 import com.shopme.common.entity.User;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.*;

@@ -2,7 +2,6 @@ package com.example.shopmebe.service;
 
 import com.example.shopmebe.mapper.RoleMapper;
 import com.example.shopmebe.repository.RoleRepository;
-import com.shopme.common.dto.RoleDTO;
 import com.shopme.common.entity.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,13 +23,11 @@ public class RoleService {
 //        this.roleMapper = roleMapper;
 //    }
 
-    public List<RoleDTO> listRoles() {
+    public List<Role> listRoles() {
 
         List<Role> roles = new ArrayList<>();
         roleRepository.findAll().forEach(roles::add);
 
-        return roles.stream()
-                    .map(roleMapper::roleEntityToRoleDTO)
-                    .toList();
+        return roles;
     }
 }
