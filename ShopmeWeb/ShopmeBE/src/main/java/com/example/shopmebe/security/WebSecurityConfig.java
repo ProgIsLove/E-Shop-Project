@@ -49,11 +49,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .usernameParameter("email")
                 .permitAll()
-            .and().logout().permitAll();
+            .and()
+            .logout()
+            .permitAll();
     }
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
+        web.ignoring().antMatchers("/images/**", "/static/js/**", "/webjars/**");
     }
 }
