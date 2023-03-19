@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta http-equiv="Content-Type" charset="UTF-8" content="text/html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
+    <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+    <script src="https://kit.fontawesome.com/a0661b4ae5.js" crossorigin="anonymous"></script>
 
     <title>Home - Shopme Admin</title>
 </head>
 <body>
 <div class="container-fluid">
     <div>
+        <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+            <input type="submit" />
+        </form>
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
             <a class="navbar-brand" th:href="@{/}">
                 <img th:src="@{/images/ShopmeAdminSmall.png}" />
@@ -58,6 +64,15 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/settings}">Settings</a>
                     </li>
+                    <li class="nav-item">
+                        <span class="fas fa-user fa-2x icon-silver"></span>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" sec:authentication="principal.fullname"></a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" id="logoutLink" href="">Logout</a>
+                        </div>
+                    </li>
                 </ul>
                 </ul>
             </div>
@@ -72,5 +87,14 @@
     </div>
 
 </div>
+<script type="text/javascript">
+    $(document).ready(() => {
+        $('#logoutLink').on("click", e=>  {
+            e.preventDefault();
+            document.logoutForm.submit();
+        })
+    });
+
+</script>
 </body>
 </html>
