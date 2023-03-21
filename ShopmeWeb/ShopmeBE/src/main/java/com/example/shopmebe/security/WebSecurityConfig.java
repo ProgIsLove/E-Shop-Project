@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
+    @Override
     public UserDetailsService userDetailsService() {
         return new ShopmeUserDetailsService();
     }
@@ -51,7 +52,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
             .and()
             .logout()
-            .permitAll();
+            .permitAll()
+            .and()
+            .rememberMe();
     }
 
     @Override
