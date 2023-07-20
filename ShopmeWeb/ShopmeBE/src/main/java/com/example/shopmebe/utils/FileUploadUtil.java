@@ -30,7 +30,7 @@ public class FileUploadUtil {
         }
     }
 
-    public static void cleanDirectory(String dir) throws IOException {
+    public static void cleanDirectory(String dir) {
         Path dirPath = Paths.get(dir);
 
         try(Stream<Path> pathList = Files.list(dirPath)) {
@@ -44,7 +44,7 @@ public class FileUploadUtil {
                 }
             });
         } catch (IOException ex) {
-            throw new IOException("Could not list directory: " + dirPath);
+            System.out.println("Could not list directory: " + dirPath);
         }
     }
 }
