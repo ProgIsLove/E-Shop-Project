@@ -3,10 +3,10 @@ package com.example.shopmebe.service;
 import com.example.shopmebe.mapper.RoleMapper;
 import com.example.shopmebe.repository.RoleRepository;
 import com.shopme.common.entity.Role;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
