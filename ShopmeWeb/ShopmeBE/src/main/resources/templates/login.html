@@ -15,7 +15,7 @@
         <img th:src="@{/images/ShopmeAdminBig.png}"/>
     </div>
 
-    <form th:action="@{/login}" method="post" style="max-width: 35vh; margin: 0 auto">
+    <form th:action="@{/login}" method="post" style="max-width: 25rem; margin: 0 auto; min-width: 10rem">
         <div th:if="${param.error}">
             <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
         </div>

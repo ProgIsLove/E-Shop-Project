@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Your Profile')">
+</head>
+<body>
+
+<style>
+    .nav {
+        --bs-nav-link-color: rgba(255, 255, 255, .55);
+        --bs-nav-link-hover-color: rgba(255, 255, 255, 0.75);
+    }
+
+    /*article.active {*/
+    /*    display: block;*/
+    /*}*/
+
+    /*article {*/
+    /*    display: none;*/
+    /*}*/
+</style>
+
+<div class="modal" tabindex="-1" id="modalDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="modalCross"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalBody">Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid px-0">
+    <div th:replace="navigation :: menu"></div>
+
+    <div class="text-right">
+        <h2>Security</h2>
+    </div>
+
+    <div th:if="${message != null}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+
+    <div class="border border-secondary rounded" style="max-width: 43.75rem; margin: 0 auto; min-height: 40rem; max-height: 30rem">
+        <div style="float: left; max-height: inherit; min-height: inherit">
+            <nav class="bg-dark" style="max-height: inherit; min-height: inherit;border-radius: 0.3rem">
+                <ul class="nav flex-column" id="tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/profile-settings}">Your Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/security-settings}">Security</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <section>
+        <form th:action="@{/account/password-update}" method="post" enctype="multipart/form-data" th:object="${user}">
+            <input type="hidden" th:field="*{id}" />
+            <article data-article="security" class="active" style="min-height: inherit; max-height: inherit">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Current Password</label>
+                    <div class="col-sm-8">
+                        <input th:if="${user.id != null}" type="password" id="password" class="form-control" th:field="*{password}"
+                               minlength="8" maxlength="20" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">New Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" id="newPassword" class="form-control" th:field="*{newPassword}"
+                               minlength="8" maxlength="20" required/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Confirm Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" id="confirmPassword" class="form-control" th:field="*{matchingPassword}"
+                               minlength="8" maxlength="20" required/>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <input type="submit" value="Save" class="btn btn-primary m-3" />
+                    <input id="btnCancel" type="button" value="Cancel" class="btn btn-secondary" />
+                </div>
+                </article>
+        </form>
+        </section>
+    </div>
+
+    <div th:replace="fragments :: footer"></div>
+
+    <script>
+        document.querySelectorAll('#tabs>li').forEach((el, index) =>
+            el.addEventListener('click', () => {
+                const activeArticle = document.querySelector('article.active');
+                if (activeArticle) {
+                    activeArticle.classList.remove('active');
+                }
+
+                const targetArticle = document.querySelector(`section>form>article:nth-child(${index + 1})`);
+                if (targetArticle) {
+                    targetArticle.classList.add('active');
+                }
+            })
+        );
+    </script>
+</div>
+</body>
+</html>

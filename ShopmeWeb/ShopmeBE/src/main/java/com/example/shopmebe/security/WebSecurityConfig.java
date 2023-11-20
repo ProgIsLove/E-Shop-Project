@@ -1,5 +1,6 @@
 package com.example.shopmebe.security;
 
+import com.example.shopmebe.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
 
     @Bean
     public UserDetailsService userDetailsService() {
