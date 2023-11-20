@@ -157,7 +157,7 @@ class UserRepositoryTest {
     @Test
     void testGetUserById() throws UserNotFoundException {
         when(userRepositoryMock.findById(ID)).thenReturn(Optional.of(userAnna));
-        User userById = userService.get(ID);
+        User userById = userService.getUserById(ID);
 //        Optional<User> userById = userRepositoryMock.findById(ID);
         ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(userRepositoryMock).findById(idCaptor.capture());
@@ -239,7 +239,7 @@ class UserRepositoryTest {
     @Test
     void testGetUserByEmail() {
 
-        when(userRepositoryMock.getUserByEmail(anyString())).thenReturn(userAnna);
+        when(userRepositoryMock.getUserByEmail(anyString())).thenReturn(Optional.ofNullable(userAnna));
         userRepositoryMock.getUserByEmail(userAnna.getEmail());
         ArgumentCaptor<String> mail = ArgumentCaptor.forClass(String.class);
         verify(userRepositoryMock).getUserByEmail(mail.capture());

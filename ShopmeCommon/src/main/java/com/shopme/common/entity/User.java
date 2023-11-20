@@ -1,6 +1,7 @@
 package com.shopme.common.entity;
 
 
+import com.shopme.common.annotations.PasswordMatching;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@PasswordMatching
 public class User {
 
     @Id
@@ -25,6 +27,12 @@ public class User {
 
     @Column(length = 64, nullable = false)
     private String password;
+
+    @Transient
+    private String newPassword;
+
+    @Transient
+    private String matchingPassword;
 
     @Column(name = "first_name", length = 45, nullable = false)
     private String firstName;

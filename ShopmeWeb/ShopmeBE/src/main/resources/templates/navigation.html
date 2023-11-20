@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
+
+<style>
+    .account-profile {
+        cursor: pointer;
+    }
+</style>
+
 <div th:fragment="menu">
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-xl bg-dark navbar-dark">
         <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
             <input type="submit" />
         </form>
@@ -55,9 +61,10 @@
                 <li class="nav-item">
                     <span class="fas fa-user fa-2x icon-silver"></span>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown account-profile">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" th:text="${#authentication.principal.fullname}"></a>
                     <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/profile-settings}">Account settings</a>
                         <a class="dropdown-item" id="logoutLink" href="">Logout</a>
                     </div>
                 </li>

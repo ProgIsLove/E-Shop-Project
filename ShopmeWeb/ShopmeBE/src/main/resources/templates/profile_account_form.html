@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Your Profile')">
+</head>
+<body>
+
+<style>
+    .nav {
+        --bs-nav-link-color: rgba(255, 255, 255, .55);
+        --bs-nav-link-hover-color: rgba(255, 255, 255, 0.75);
+    }
+
+    button.open {
+        position: relative;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    button.open span {
+        position: absolute;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.65);
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        font-size: 28px;
+        line-height: 1;
+        font-weight: bold;
+        padding-top: 4px;
+        transition: all 300ms;
+    }
+
+    button.open:hover span {
+        height: 200px;
+        line-height: 6;
+    }
+
+    #thumbnail {
+        border-radius: 50%;
+    }
+
+    button.plain {
+        color: #c00;
+        transition: color 300ms;
+        border: none;
+        background-color: transparent;
+        padding: 0;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 22px;
+        cursor: pointer;
+        float: right;
+    }
+
+    button.plain:hover {
+        color: #3E0000FF;
+    }
+
+    button.plain.close {
+        display: none;
+    }
+
+    .fieldProfilePhoto.open {
+        display: block;
+        width: calc(50% - 3rem);
+        margin: 1rem auto 0.5rem;
+    }
+
+    .fieldProfilePhoto.close {
+        margin: 1rem auto 0.5rem
+    }
+
+    .area.close {
+        display: none;
+    }
+
+    .area.open {
+        width: calc(50%);
+        border: 2px dashed rgba(1, 30, 57, 0.4);
+        border-radius: 8px;
+        height: 182px;
+        padding: 32px;
+        text-align: center;
+        transition: all 300ms;
+        color: rgba(1, 30, 57, 0.6);
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #fileImage {
+        text-align: center;
+        height: 48px;
+        border-radius: 16px;
+        outline: none;
+        font-weight: bold;
+        background-color: #fff;
+        color: black;
+        border: 1px solid black;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #fileImage:hover {
+        background: black;
+        color: #fff;
+        border: 1px solid #fff;
+    }
+
+    #personal {
+        max-width: 43.75rem;
+        margin: auto;
+    }
+
+
+</style>
+
+<div class="modal" tabindex="-1" id="modalDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
+                        id="modalCross"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalBody">Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid px-0">
+    <div th:replace="navigation :: menu"></div>
+    <section id="personal">
+    <div class="text-right">
+        <h2>Profile</h2>
+    </div>
+
+        <div th:if="${message != null}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+
+    <div class="border border-secondary rounded" style="max-width: inherit; margin: 0 auto; min-height: 40rem; max-height: 30rem">
+        <div style="float: left; max-height: inherit; min-height: inherit">
+            <nav class="bg-dark" style="max-height: inherit; min-height: inherit;border-radius: 0.3rem">
+                <ul class="nav flex-column" id="tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/profile-settings}">Your Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/security-settings}">Security</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <section>
+            <form th:action="@{/account/profile-info-update}" method="post" enctype="multipart/form-data" th:object="${user}">
+                <input type="hidden" th:field="*{id}"/>
+                <article data-article="profile" class="active" style="min-height: inherit; max-height: inherit">
+                    <div class="form-group row">
+                        <div class="fieldProfilePhoto open" data-field="portrait">
+                            <button type="button" class="plain open" id="btnOpenArea">
+                                <img id="thumbnail" alt="Photos preview"
+                                     th:src="@{${user.photosImagePath}}" width="200" height="200"/>
+                                <span>Change</span>
+                            </button>
+                            <button type="button" class="plain close" id="btnCloseArea">Close</button>
+                        </div>
+                    </div>
+                    <div class="area close" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <input type="hidden" th:field="*{photos}"/>
+                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2">Choose a file for uploading</input>
+                    </div>
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">E-mail</label>
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control-plaintext" id="staticEmail" th:field="*{email}"
+                                   readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">First Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" th:field="*{firstName}" required minlength="2"
+                                   maxlength="45"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Last Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" th:field="*{lastName}" required minlength="2"
+                                   maxlength="45"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Roles</label>
+                        <div class="col-sm-8">
+                            <th:block th:each="role : ${roles}">
+                                <input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}"
+                                       class="m-2"/>
+                                <br/>
+                            </th:block>
+                        </div>
+                    </div>
+<!--                    <div class="form-group row">-->
+<!--                        <label class="col-sm-4 col-form-label">Photos</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <input type="hidden" th:field="*{photos}"/>-->
+<!--                            <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2"/>-->
+<!--                            <img id="thumbnail" class="img-fluid" alt="Photos preview" th:src="@{${user.photosImagePath}}" style="height: 150px;"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </article>
+                <div class="text-center">
+                    <input type="submit" value="Save" class="btn btn-primary m-3" />
+                    <input id="btnCancel" type="button" value="Cancel" class="btn btn-secondary" />
+                </div>
+            </form>
+        </section>
+    </div>
+    </section>
+
+    <div th:replace="fragments :: footer"></div>
+
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#btnCancel').on("click", function () {
+            window.location = "[[@{/users}]]";
+        });
+
+        $('#fileImage').change(function () {
+            let fileSize = this.files[0].size;
+            const MEGABYTE = 1048576
+
+            if (fileSize > MEGABYTE) {
+                this.setCustomValidity("You must choose an image less than 1MB!");
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("");
+                showImageThumbnail(this);
+            }
+        });
+    });
+
+    function showImageThumbnail(fileInput) {
+        let file = fileInput.files[0];
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            $('#thumbnail').attr("src", e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    document.querySelectorAll('#tabs>li').forEach((el, index) =>
+        el.addEventListener('click', () => {
+            console.log(index)
+            const activeArticle = document.querySelector('article.active');
+            if (activeArticle) {
+                activeArticle.classList.remove('active');
+            }
+
+            const targetArticle = document.querySelector(`section>form>article:nth-child(${index + 1})`);
+            if (targetArticle) {
+                targetArticle.classList.add('active');
+            }
+        })
+    );
+
+    const changePhoto = document.querySelector('button.plain.open');
+    const areaOpen = document.querySelector('div.area');
+    const btnClose = document.querySelector('button.plain.close');
+    const fieldProfilePhoto = document.querySelector('div.fieldProfilePhoto.open');
+
+    const toggleClasses = (element, addClass, removeClass) => {
+        element.classList.remove(removeClass);
+        element.classList.add(addClass);
+    };
+
+    $('#btnOpenArea').on("click", () => {
+        if (changePhoto) {
+            toggleClasses(changePhoto, 'close', 'open');
+            toggleClasses(areaOpen, 'open', 'close');
+            toggleClasses(fieldProfilePhoto, 'close', 'open');
+            btnClose.classList.remove('close');
+        }
+    });
+
+    $('#btnCloseArea').on("click", () => {
+        toggleClasses(changePhoto, 'open', 'close');
+        toggleClasses(areaOpen, 'close', 'open');
+        toggleClasses(fieldProfilePhoto, 'open', 'close');
+        btnClose.classList.add('close');
+    });
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+</script>
+</body>
+</html>

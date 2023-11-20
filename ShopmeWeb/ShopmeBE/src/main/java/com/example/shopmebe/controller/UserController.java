@@ -105,13 +105,13 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("message", "The user has been saved successfully");
 
-        return getRedirectURLtoAffectedUser(user);
+        return redirectURLtoAffectedUser(user);
     }
 
     @GetMapping("/users/edit/{id}")
     public String editUser(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            User user = userService.get(id);
+            User user = userService.getUserById(id);
             List<Role> roles = roleService.listRoles();
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
@@ -177,7 +177,7 @@ public class UserController {
         exporter.export(users, response);
     }
 
-    private String getRedirectURLtoAffectedUser(User user) {
+    private String redirectURLtoAffectedUser(User user) {
         String firstPartOfEmail = user.getEmail().split("@")[0];
         return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }

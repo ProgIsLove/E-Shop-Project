@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Optional;
+
 public class ShopmeUserDetailsService implements UserDetailsService {
 
     @Autowired
@@ -14,9 +16,10 @@ public class ShopmeUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.getUserByEmail(email);
-        if (user != null) {
-            return new ShopmeUserDetails(user);
+        Optional<User> user = userRepository.getUserByEmail(email);
+
+        if (user.isPresent()) {
+            return new ShopmeUserDetails(user.get());
         }
 
         throw new UsernameNotFoundException(String.format("Could not find user with email: %s", email));
