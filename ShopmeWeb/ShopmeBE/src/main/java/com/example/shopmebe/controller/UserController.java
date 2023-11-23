@@ -24,8 +24,6 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping
-//@AllArgsConstructor
-//@NoArgsConstructor
 public class UserController {
 
     private final UserService userService;
@@ -69,7 +67,7 @@ public class UserController {
         model.addAttribute("reverseSortDir", reverseSortDir);
         model.addAttribute("keyword", keyword);
 
-        return "users";
+        return "users/users";
     }
 
     @GetMapping("/users/new")
@@ -82,7 +80,7 @@ public class UserController {
         model.addAttribute("roles", roles);
         model.addAttribute("pageTitle", "Create New User");
 
-        return "user_form";
+        return "users/user_form";
     }
 
     @PostMapping("/users/save")
@@ -116,7 +114,7 @@ public class UserController {
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
-            return "user_form";
+            return "users/user_form";
         } catch (UserNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
             return "redirect:/users";

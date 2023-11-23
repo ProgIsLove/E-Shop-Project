@@ -117,23 +117,6 @@
 
 </style>
 
-<div class="modal" tabindex="-1" id="modalDialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
-                        id="modalCross"></button>
-            </div>
-            <div class="modal-body">
-                <p id="modalBody">Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="container-fluid px-0">
     <div th:replace="navigation :: menu"></div>
     <section id="personal">
@@ -230,34 +213,7 @@
 
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#btnCancel').on("click", function () {
-            window.location = "[[@{/users}]]";
-        });
-
-        $('#fileImage').change(function () {
-            let fileSize = this.files[0].size;
-            const MEGABYTE = 1048576
-
-            if (fileSize > MEGABYTE) {
-                this.setCustomValidity("You must choose an image less than 1MB!");
-                this.reportValidity();
-            } else {
-                this.setCustomValidity("");
-                showImageThumbnail(this);
-            }
-        });
-    });
-
-    function showImageThumbnail(fileInput) {
-        let file = fileInput.files[0];
-        let reader = new FileReader();
-        reader.onload = function (e) {
-            $('#thumbnail').attr("src", e.target.result);
-        };
-
-        reader.readAsDataURL(file);
-    }
+    moduleURL = "[[@{/}]]";
 
     document.querySelectorAll('#tabs>li').forEach((el, index) =>
         el.addEventListener('click', () => {
@@ -314,5 +270,6 @@
         ev.target.appendChild(document.getElementById(data));
     }
 </script>
+<script th:src="@{/js/image-upload.js}"></script>
 </body>
 </html>
