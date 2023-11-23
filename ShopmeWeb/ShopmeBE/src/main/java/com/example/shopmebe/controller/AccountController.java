@@ -10,7 +10,6 @@ import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,9 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +46,7 @@ public class AccountController {
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
 
-        return "profile_account_form";
+        return "users/profile_account_form";
     }
 
     @PostMapping("account/profile-info-update")
@@ -86,7 +82,7 @@ public class AccountController {
         User user = userService.getUserByEmail(loggedUser.getUsername());
         model.addAttribute("user", user);
 
-        return "security_account_form";
+        return "users/security_account_form";
     }
 
     @PostMapping("account/password-update")
