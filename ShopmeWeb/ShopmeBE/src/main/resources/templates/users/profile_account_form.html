@@ -25,7 +25,7 @@
         width: 100%;
         height: 50px;
         text-align: center;
-        font-size: 28px;
+        font-size: 1.75rem;
         line-height: 1;
         font-weight: bold;
         padding-top: 4px;
@@ -48,8 +48,8 @@
         background-color: transparent;
         padding: 0;
         font-weight: bold;
-        font-size: 14px;
-        line-height: 22px;
+        font-size: 0.85rem;
+        line-height: 1.37rem;
         cursor: pointer;
         float: right;
     }
@@ -63,8 +63,8 @@
     }
 
     .fieldProfilePhoto.open {
-        display: block;
-        width: calc(50% - 3rem);
+        display: grid;
+        justify-content: center;
         margin: 1rem auto 0.5rem;
     }
 
@@ -78,22 +78,24 @@
 
     .area.open {
         width: calc(50%);
-        border: 2px dashed rgba(1, 30, 57, 0.4);
+        /*border: 2px dashed rgba(1, 30, 57, 0.4);*/
         border-radius: 8px;
-        height: 182px;
+        height: 11.25rem;
         padding: 32px;
         text-align: center;
         transition: all 300ms;
         color: rgba(1, 30, 57, 0.6);
-        display: flex;
+        display: grid;
+        justify-content: center;
         margin-left: auto;
         margin-right: auto;
     }
 
-    #fileImage {
+    #fileImageBtn {
         text-align: center;
-        height: 48px;
+        height: 3rem;
         border-radius: 16px;
+        width: 15rem;
         outline: none;
         font-weight: bold;
         background-color: #fff;
@@ -103,7 +105,7 @@
         margin-right: auto;
     }
 
-    #fileImage:hover {
+    #fileImageBtn:hover {
         background: black;
         color: #fff;
         border: 1px solid #fff;
@@ -114,7 +116,24 @@
         margin: auto;
     }
 
+    #fileImage {
+        display: none;
+    }
 
+    @media screen and (min-width: 300px) and (max-width: 600px) {
+        /* media screen */
+        #fileImageBtn {
+            width: 10rem;
+        }
+    }
+
+    .dragImageActive {
+        border: 0.2em dashed #4ff126;
+    }
+
+    .dragImageNoActive {
+        border: 2px dashed rgba(1, 30, 57, 0.4);
+    }
 </style>
 
 <div class="container-fluid px-0">
@@ -156,9 +175,11 @@
                             <button type="button" class="plain close" id="btnCloseArea">Close</button>
                         </div>
                     </div>
-                    <div class="area close" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="area close dragImageNoActive">
                         <input type="hidden" th:field="*{photos}"/>
-                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2">Choose a file for uploading</input>
+                        <button type="button" id="fileImageBtn" style="cursor:pointer" onclick="$('#fileImage').click()">Change photo</button>
+                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2"/>
+                        <p class="error"></p>
                     </div>
                     <div class="form-group row">
                         <label for="staticEmail" class="col-sm-4 col-form-label">E-mail</label>
@@ -181,16 +202,16 @@
                                    maxlength="45"/>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Roles</label>
-                        <div class="col-sm-8">
-                            <th:block th:each="role : ${roles}">
-                                <input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}"
-                                       class="m-2"/>
-                                <br/>
-                            </th:block>
-                        </div>
-                    </div>
+<!--                    <div class="form-group row">-->
+<!--                        <label class="col-sm-4 col-form-label">Roles</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <th:block th:each="role : ${roles}">-->
+<!--                                <input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}"-->
+<!--                                       class="m-2"/>-->
+<!--                                <br/>-->
+<!--                            </th:block>-->
+<!--                        </div>-->
+<!--                    </div>-->
 <!--                    <div class="form-group row">-->
 <!--                        <label class="col-sm-4 col-form-label">Photos</label>-->
 <!--                        <div class="col-sm-8">-->
@@ -214,10 +235,8 @@
 </div>
 <script type="text/javascript">
     moduleURL = "[[@{/}]]";
-
     document.querySelectorAll('#tabs>li').forEach((el, index) =>
         el.addEventListener('click', () => {
-            console.log(index)
             const activeArticle = document.querySelector('article.active');
             if (activeArticle) {
                 activeArticle.classList.remove('active');
@@ -256,20 +275,196 @@
         btnClose.classList.add('close');
     });
 
-    function allowDrop(ev) {
-        ev.preventDefault();
+    $(document).ready(function () {
+        $('#btnCancel').on("click", function () {
+            window.location = moduleURL;
+        });
+
+        $('#fileImage').change(function () {
+            console.log(this.files[0]);
+            let fileSize = this.files[0].size;
+            const MEGABYTE = 1048576
+
+            if (fileSize > MEGABYTE) {
+                this.setCustomValidity("You must choose an image less than 1MB!");
+                this.reportValidity();
+            } else {
+                error.innerText = "";
+                showImageThumbnail(this);
+                toggleClasses(changePhoto, 'open', 'close');
+                toggleClasses(areaOpen, 'close', 'open');
+                toggleClasses(fieldProfilePhoto, 'open', 'close');
+                btnClose.classList.add('close');
+            }
+        });
+    });
+
+
+
+    let container = document.querySelector(".area.close");
+    let error = document.querySelector(".error");
+
+    // const fileHandler = (fileInput) => {
+    //     // if (type.split("/")[0] !== "image") {
+    //     //     //File Type Error
+    //     //     error.innerText = "Please upload an image file";
+    //     //     return false;
+    //     // }
+    //     error.innerText = "";
+    //     //image and file name
+    //     showImageThumbnail(fileInput);
+    //     toggleClasses(changePhoto, 'open', 'close');
+    //     toggleClasses(areaOpen, 'close', 'open');
+    //     toggleClasses(fieldProfilePhoto, 'open', 'close');
+    //     btnClose.classList.add('close');
+    // };
+
+    container.addEventListener(
+        "dragenter",
+        (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            container.classList.add("dragImageActive");
+            container.classList.remove("dragImageNoActive");
+        },
+        false
+    );
+
+    container.addEventListener(
+        "dragleave",
+        (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            container.classList.remove("dragImageActive");
+            container.classList.add("dragImageNoActive");
+        },
+        false
+    );
+
+    container.addEventListener(
+        "dragover",
+        (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            container.classList.add("dragImageActive");
+            container.classList.remove("dragImageNoActive");
+        },
+        false
+    );
+
+    container.addEventListener(
+        "drop",
+        (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            container.classList.remove("dragImageActive");
+            container.classList.add("dragImageNoActive");
+            draggedData = e.dataTransfer;
+            $('#fileImage').change(function () {
+                let size = draggedData.files[0].size;
+                console.log(size);
+            })
+            // fileHandler(draggedData);
+            // showImageThumbnail(draggedData);
+            // toggleClasses(changePhoto, 'open', 'close');
+            // toggleClasses(areaOpen, 'close', 'open');
+            // toggleClasses(fieldProfilePhoto, 'open', 'close');
+            // btnClose.classList.add('close');
+
+        },
+        false
+    );
+
+    let draggedData;
+
+    function handleDropEvent(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        container.classList.remove("dragImageActive");
+        container.classList.add("dragImageNoActive");
+        draggedData = e.dataTransfer;
+
+        // Call other functions or perform additional actions if needed
+        // fileHandler(draggedData);
+        showImageThumbnail(draggedData);
+        // toggleClasses(changePhoto, 'open', 'close');
+        // toggleClasses(areaOpen, 'close', 'open');
+        // toggleClasses(fieldProfilePhoto, 'open', 'close');
+        // btnClose.classList.add('close');
     }
 
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
+    container.addEventListener("drop", handleDropEvent, false);
+
+    function getDraggedData() {
+        return draggedData;
+    }
+    // document.getElementById('#fileImage')
+    document.getElementById("fileImage").addEventListener("drop", handleDropEvent, false)
+
+    //     let data = getDraggedData();
+    //     showImageThumbnail(data);
+    //     toggleClasses(changePhoto, 'open', 'close');
+    //     toggleClasses(areaOpen, 'close', 'open');
+    //     toggleClasses(fieldProfilePhoto, 'open', 'close');
+    //     btnClose.classList.add('close');
+    // });
+
+    // $('#fileImage').change(function () {
+    //     // let fileSize = this.files[0].size;
+    //     // const MEGABYTE = 1048576;
+    //     //
+    //     // if (fileSize > MEGABYTE) {
+    //     //     this.setCustomValidity("You must choose an image less than 1MB!");
+    //     //     this.reportValidity();
+    //     // } else {
+    //     //     error.innerText = "";
+    //     //     showImageThumbnail(this);
+    //     //     toggleClasses(changePhoto, 'open', 'close');
+    //     //     toggleClasses(areaOpen, 'close', 'open');
+    //     //     toggleClasses(fieldProfilePhoto, 'open', 'close');
+    //     //     btnClose.classList.add('close');
+    //     // }
+    //
+    //     let data = getDraggedData();
+    //     showImageThumbnail(data);
+    //     toggleClasses(changePhoto, 'open', 'close');
+    //     toggleClasses(areaOpen, 'close', 'open');
+    //     toggleClasses(fieldProfilePhoto, 'open', 'close');
+    //     btnClose.classList.add('close');
+    // });
+
+    function handleChange(event) {
+        let fileSize = event.files[0].size;
+        const MEGABYTE = 1048576;
+
+        if (fileSize > MEGABYTE) {
+            event.setCustomValidity("You must choose an image less than 1MB!");
+            event.reportValidity();
+        } else {
+            error.innerText = "";
+            showImageThumbnail(event);
+            toggleClasses(changePhoto, 'open', 'close');
+            toggleClasses(areaOpen, 'close', 'open');
+            toggleClasses(fieldProfilePhoto, 'open', 'close');
+            btnClose.classList.add('close');
+        }
     }
 
-    function drop(ev) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
+
+    function showImageThumbnail(fileInput) {
+        let file = fileInput.files[0];
+        // if (file.type.split("/")[0] !== "image") {
+        //     error.innerText = "Please upload an image file";
+        //     return false;
+        // }
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            $('#thumbnail').attr("src", e.target.result);
+        };
+
+        reader.readAsDataURL(file);
     }
 </script>
-<script th:src="@{/js/image-upload.js}"></script>
+<!--<script th:src="@{/js/image-upload.js}"></script>-->
 </body>
 </html>
