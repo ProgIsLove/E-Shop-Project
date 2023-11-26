@@ -49,7 +49,7 @@ public class AccountController {
         return "users/profile_account_form";
     }
 
-    @PostMapping("account/profile-info-update")
+    @PostMapping("/account/profile-info-update")
     @PreAuthorize("#loggedUser.username == authentication.principal.username")
     public String saveDetails(User user,
                               @AuthenticationPrincipal ShopmeUserDetails loggedUser,

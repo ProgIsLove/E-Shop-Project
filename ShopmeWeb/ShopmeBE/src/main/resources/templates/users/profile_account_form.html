@@ -175,7 +175,7 @@
                             <button type="button" class="plain close" id="btnCloseArea">Close</button>
                         </div>
                     </div>
-                    <div class="area close dragImageNoActive">
+                    <div class="area close dragImageNoActive" id="drop-area">
                         <input type="hidden" th:field="*{photos}"/>
                         <button type="button" id="fileImageBtn" style="cursor:pointer" onclick="$('#fileImage').click()">Change photo</button>
                         <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2"/>
@@ -275,196 +275,191 @@
         btnClose.classList.add('close');
     });
 
+    // $(document).ready(function () {
+    //     $('#btnCancel').on("click", function () {
+    //         window.location = moduleURL;
+    //     });
+    //
+    //     $('#fileImage').change(function () {
+    //         let fileSize = this.files[0].size;
+    //         const MEGABYTE = 1048576
+    //
+    //         if (fileSize > MEGABYTE) {
+    //             this.setCustomValidity("You must choose an image less than 1MB!");
+    //             this.reportValidity();
+    //         } else {
+    //             this.setCustomValidity("");
+    //             showImageThumbnail(this);
+    //             toggleClasses(changePhoto, 'open', 'close');
+    //             toggleClasses(areaOpen, 'close', 'open');
+    //             toggleClasses(fieldProfilePhoto, 'open', 'close');
+    //             btnClose.classList.add('close');
+    //         }
+    //     });
+    //
+    //     let dropArea = $('.area.close');
+    //
+    //     // dropArea.on('dragenter', function (e) {
+    //     //     e.preventDefault();
+    //     //     e.stopPropagation();
+    //     //     dropArea[0].classList.add("dragImageActive")
+    //     //     dropArea[0].classList.remove("dragImageNoActive")
+    //     //     console.log('dragenter')
+    //     // });
+    //     //
+    //     // dropArea.on('dragOver', function (e) {
+    //     //     e.preventDefault();
+    //     //     e.stopPropagation();
+    //     //     dropArea[0].classList.add("dragImageActive")
+    //     //     dropArea[0].classList.remove("dragImageNoActive")
+    //     //     console.log('dragOver')
+    //     // });
+    //     //
+    //     // dropArea.on('dragLeave', function (e) {
+    //     //     dropArea[0].classList.add("dragImageNoActive")
+    //     //     dropArea[0].classList.remove("dragImageActive")
+    //     //     console.log('dragLeave');
+    //     // });
+    //
+    //     dropArea.on('drop', function (e) {
+    //         e.preventDefault();
+    //         console.log('drop')
+    //         $('#fileImage')[0].files = e.dataTransfer.files;
+    //
+    //         // console.log(e.dataTransfer.files)
+    //
+    //         showImageThumbnail(e.dataTransfer);
+    //         dropArea[0].classList.add("dragImageNoActive");
+    //         dropArea[0].classList.remove("dragImageActive");
+    //         toggleClasses(changePhoto, 'open', 'close');
+    //         toggleClasses(areaOpen, 'close', 'open');
+    //         toggleClasses(fieldProfilePhoto, 'open', 'close');
+    //         btnClose.classList.add('close');
+    //     });
+    //
+    //
+    //
+    //     $("#fileImage").on("change", function () {
+    //         var formData = new FormData();
+    //         formData.append('file', this.files[0]);
+    //
+    //         // url = "[[@{/account/profile-info-update}]]";
+    //         let csrfValue = $("input[name='_csrf']").val();
+    //         let uri = "[[@{/account/profile-info-update}]]";
+    //
+    //         formData.append('_csrf', csrfValue);
+    //
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: uri, // Assuming your Spring endpoint is mapped to "/upload"
+    //             data: formData,
+    //             contentType: false,
+    //             processData: false,
+    //             success: function (response) {
+    //                 console.log('Upload successful:', response);
+    //                 // Handle the response from the server as needed
+    //             },
+    //             error: function (error) {
+    //                 console.error('Error uploading file:', error);
+    //                 // Handle the error as needed
+    //             }
+    //         });
+    //     });
+    // });
+    //
+    // function showImageThumbnail(fileInput) {
+    //     let file = fileInput.files[0];
+    //     let reader = new FileReader();
+    //     reader.onload = function (e) {
+    //         $('#thumbnail').attr("src", e.target.result);
+    //     };
+    //
+    //     reader.readAsDataURL(file);
+    // }
+
     $(document).ready(function () {
-        $('#btnCancel').on("click", function () {
-            window.location = moduleURL;
+        // File input change event
+        $("#fileImage").change(function () {
+            previewImage(this);
         });
 
-        $('#fileImage').change(function () {
-            console.log(this.files[0]);
-            let fileSize = this.files[0].size;
-            const MEGABYTE = 1048576
+        // Drag and drop events
+        var dropArea = $("#drop-area");
 
-            if (fileSize > MEGABYTE) {
-                this.setCustomValidity("You must choose an image less than 1MB!");
-                this.reportValidity();
-            } else {
-                error.innerText = "";
-                showImageThumbnail(this);
-                toggleClasses(changePhoto, 'open', 'close');
-                toggleClasses(areaOpen, 'close', 'open');
-                toggleClasses(fieldProfilePhoto, 'open', 'close');
-                btnClose.classList.add('close');
+        dropArea.on('dragenter', function (e) {
+            e.preventDefault();
+            dropArea.addClass('dragover');  // Add class for visual indication
+        });
+
+        dropArea.on('dragover', function (e) {
+            e.preventDefault();
+            dropArea.addClass('dragover');  // Add class for visual indication
+        });
+
+        dropArea.on('dragleave', function () {
+            dropArea.removeClass('dragover');  // Remove class
+        });
+
+        dropArea.on('drop', function (e) {
+            e.preventDefault();
+            dropArea.removeClass('dragover');  // Remove class
+            console.log("drop");
+            var files = e.originalEvent.dataTransfer.files;
+            $("#fileImage")[0].files = files;
+
+            previewImage($("#fileImage")[0]);
+            toggleClasses(changePhoto, 'open', 'close');
+            toggleClasses(areaOpen, 'close', 'open');
+            toggleClasses(fieldProfilePhoto, 'open', 'close');
+            btnClose.classList.add('close');
+        });
+
+        // Function to preview the selected image
+        function previewImage(input) {
+            var file = input.files[0];
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#thumbnail').attr("src", e.target.result);
+                };
+
+                reader.readAsDataURL(file);
             }
+        }
+
+        // AJAX upload
+        $("#fileImage").on("change", function () {
+            var formData = new FormData();
+            formData.append('file', this.files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/account/profile-info-update',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log('Upload successful:', response);
+                    // Handle the response from the server as needed
+                },
+                error: function (error) {
+                    console.error('Error uploading file:', error);
+                    // Handle the error as needed
+                }
+            });
         });
     });
 
 
 
-    let container = document.querySelector(".area.close");
-    let error = document.querySelector(".error");
-
-    // const fileHandler = (fileInput) => {
-    //     // if (type.split("/")[0] !== "image") {
-    //     //     //File Type Error
-    //     //     error.innerText = "Please upload an image file";
-    //     //     return false;
-    //     // }
-    //     error.innerText = "";
-    //     //image and file name
-    //     showImageThumbnail(fileInput);
-    //     toggleClasses(changePhoto, 'open', 'close');
-    //     toggleClasses(areaOpen, 'close', 'open');
-    //     toggleClasses(fieldProfilePhoto, 'open', 'close');
-    //     btnClose.classList.add('close');
-    // };
-
-    container.addEventListener(
-        "dragenter",
-        (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            container.classList.add("dragImageActive");
-            container.classList.remove("dragImageNoActive");
-        },
-        false
-    );
-
-    container.addEventListener(
-        "dragleave",
-        (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            container.classList.remove("dragImageActive");
-            container.classList.add("dragImageNoActive");
-        },
-        false
-    );
-
-    container.addEventListener(
-        "dragover",
-        (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            container.classList.add("dragImageActive");
-            container.classList.remove("dragImageNoActive");
-        },
-        false
-    );
-
-    container.addEventListener(
-        "drop",
-        (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            container.classList.remove("dragImageActive");
-            container.classList.add("dragImageNoActive");
-            draggedData = e.dataTransfer;
-            $('#fileImage').change(function () {
-                let size = draggedData.files[0].size;
-                console.log(size);
-            })
-            // fileHandler(draggedData);
-            // showImageThumbnail(draggedData);
-            // toggleClasses(changePhoto, 'open', 'close');
-            // toggleClasses(areaOpen, 'close', 'open');
-            // toggleClasses(fieldProfilePhoto, 'open', 'close');
-            // btnClose.classList.add('close');
-
-        },
-        false
-    );
-
-    let draggedData;
-
-    function handleDropEvent(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        container.classList.remove("dragImageActive");
-        container.classList.add("dragImageNoActive");
-        draggedData = e.dataTransfer;
-
-        // Call other functions or perform additional actions if needed
-        // fileHandler(draggedData);
-        showImageThumbnail(draggedData);
-        // toggleClasses(changePhoto, 'open', 'close');
-        // toggleClasses(areaOpen, 'close', 'open');
-        // toggleClasses(fieldProfilePhoto, 'open', 'close');
-        // btnClose.classList.add('close');
-    }
-
-    container.addEventListener("drop", handleDropEvent, false);
-
-    function getDraggedData() {
-        return draggedData;
-    }
-    // document.getElementById('#fileImage')
-    document.getElementById("fileImage").addEventListener("drop", handleDropEvent, false)
-
-    //     let data = getDraggedData();
-    //     showImageThumbnail(data);
-    //     toggleClasses(changePhoto, 'open', 'close');
-    //     toggleClasses(areaOpen, 'close', 'open');
-    //     toggleClasses(fieldProfilePhoto, 'open', 'close');
-    //     btnClose.classList.add('close');
-    // });
-
-    // $('#fileImage').change(function () {
-    //     // let fileSize = this.files[0].size;
-    //     // const MEGABYTE = 1048576;
-    //     //
-    //     // if (fileSize > MEGABYTE) {
-    //     //     this.setCustomValidity("You must choose an image less than 1MB!");
-    //     //     this.reportValidity();
-    //     // } else {
-    //     //     error.innerText = "";
-    //     //     showImageThumbnail(this);
-    //     //     toggleClasses(changePhoto, 'open', 'close');
-    //     //     toggleClasses(areaOpen, 'close', 'open');
-    //     //     toggleClasses(fieldProfilePhoto, 'open', 'close');
-    //     //     btnClose.classList.add('close');
-    //     // }
-    //
-    //     let data = getDraggedData();
-    //     showImageThumbnail(data);
-    //     toggleClasses(changePhoto, 'open', 'close');
-    //     toggleClasses(areaOpen, 'close', 'open');
-    //     toggleClasses(fieldProfilePhoto, 'open', 'close');
-    //     btnClose.classList.add('close');
-    // });
-
-    function handleChange(event) {
-        let fileSize = event.files[0].size;
-        const MEGABYTE = 1048576;
-
-        if (fileSize > MEGABYTE) {
-            event.setCustomValidity("You must choose an image less than 1MB!");
-            event.reportValidity();
-        } else {
-            error.innerText = "";
-            showImageThumbnail(event);
-            toggleClasses(changePhoto, 'open', 'close');
-            toggleClasses(areaOpen, 'close', 'open');
-            toggleClasses(fieldProfilePhoto, 'open', 'close');
-            btnClose.classList.add('close');
-        }
-    }
 
 
-    function showImageThumbnail(fileInput) {
-        let file = fileInput.files[0];
-        // if (file.type.split("/")[0] !== "image") {
-        //     error.innerText = "Please upload an image file";
-        //     return false;
-        // }
-        let reader = new FileReader();
-        reader.onload = function (e) {
-            $('#thumbnail').attr("src", e.target.result);
-        };
 
-        reader.readAsDataURL(file);
-    }
+
+
 </script>
+
 <!--<script th:src="@{/js/image-upload.js}"></script>-->
 </body>
 </html>
