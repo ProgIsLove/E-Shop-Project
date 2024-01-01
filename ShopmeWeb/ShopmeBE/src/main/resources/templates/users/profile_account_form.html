@@ -25,7 +25,7 @@
         width: 100%;
         height: 50px;
         text-align: center;
-        font-size: 28px;
+        font-size: 1.75rem;
         line-height: 1;
         font-weight: bold;
         padding-top: 4px;
@@ -48,8 +48,8 @@
         background-color: transparent;
         padding: 0;
         font-weight: bold;
-        font-size: 14px;
-        line-height: 22px;
+        font-size: 0.85rem;
+        line-height: 1.37rem;
         cursor: pointer;
         float: right;
     }
@@ -63,8 +63,8 @@
     }
 
     .fieldProfilePhoto.open {
-        display: block;
-        width: calc(50% - 3rem);
+        display: grid;
+        justify-content: center;
         margin: 1rem auto 0.5rem;
     }
 
@@ -78,22 +78,24 @@
 
     .area.open {
         width: calc(50%);
-        border: 2px dashed rgba(1, 30, 57, 0.4);
+        /*border: 2px dashed rgba(1, 30, 57, 0.4);*/
         border-radius: 8px;
-        height: 182px;
+        height: 11.25rem;
         padding: 32px;
         text-align: center;
         transition: all 300ms;
         color: rgba(1, 30, 57, 0.6);
-        display: flex;
+        display: grid;
+        justify-content: center;
         margin-left: auto;
         margin-right: auto;
     }
 
-    #fileImage {
+    #fileImageBtn {
         text-align: center;
-        height: 48px;
+        height: 3rem;
         border-radius: 16px;
+        width: 15rem;
         outline: none;
         font-weight: bold;
         background-color: #fff;
@@ -103,7 +105,7 @@
         margin-right: auto;
     }
 
-    #fileImage:hover {
+    #fileImageBtn:hover {
         background: black;
         color: #fff;
         border: 1px solid #fff;
@@ -114,7 +116,24 @@
         margin: auto;
     }
 
+    #fileImage {
+        display: none;
+    }
 
+    @media screen and (min-width: 300px) and (max-width: 600px) {
+        /* media screen */
+        #fileImageBtn {
+            width: 10rem;
+        }
+    }
+
+    .dragImageActive {
+        border: 0.2em dashed #4ff126;
+    }
+
+    .dragImageNoActive {
+        border: 0.2em dashed rgba(1, 30, 57, 0.4);
+    }
 </style>
 
 <div class="container-fluid px-0">
@@ -143,7 +162,8 @@
         </div>
 
         <section>
-            <form th:action="@{/account/profile-info-update}" method="post" enctype="multipart/form-data" th:object="${user}">
+            <form th:action="@{/account/profile-info-update}" method="post" enctype="multipart/form-data"
+                  th:object="${user}" onsubmit="return changePhoto(this)">
                 <input type="hidden" th:field="*{id}"/>
                 <article data-article="profile" class="active" style="min-height: inherit; max-height: inherit">
                     <div class="form-group row">
@@ -156,9 +176,11 @@
                             <button type="button" class="plain close" id="btnCloseArea">Close</button>
                         </div>
                     </div>
-                    <div class="area close" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="area close dragImageNoActive" id="drop-area">
                         <input type="hidden" th:field="*{photos}"/>
-                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2">Choose a file for uploading</input>
+                        <button type="button" id="fileImageBtn" style="cursor:pointer" onclick="$('#fileImage').click()">Change photo</button>
+                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2" onchange="previewImage(event)"/>
+                        <p class="error"></p>
                     </div>
                     <div class="form-group row">
                         <label for="staticEmail" class="col-sm-4 col-form-label">E-mail</label>
@@ -181,16 +203,16 @@
                                    maxlength="45"/>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Roles</label>
-                        <div class="col-sm-8">
-                            <th:block th:each="role : ${roles}">
-                                <input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}"
-                                       class="m-2"/>
-                                <br/>
-                            </th:block>
-                        </div>
-                    </div>
+<!--                    <div class="form-group row">-->
+<!--                        <label class="col-sm-4 col-form-label">Roles</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <th:block th:each="role : ${roles}">-->
+<!--                                <input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}"-->
+<!--                                       class="m-2"/>-->
+<!--                                <br/>-->
+<!--                            </th:block>-->
+<!--                        </div>-->
+<!--                    </div>-->
 <!--                    <div class="form-group row">-->
 <!--                        <label class="col-sm-4 col-form-label">Photos</label>-->
 <!--                        <div class="col-sm-8">-->
@@ -214,10 +236,8 @@
 </div>
 <script type="text/javascript">
     moduleURL = "[[@{/}]]";
-
     document.querySelectorAll('#tabs>li').forEach((el, index) =>
         el.addEventListener('click', () => {
-            console.log(index)
             const activeArticle = document.querySelector('article.active');
             if (activeArticle) {
                 activeArticle.classList.remove('active');
@@ -230,7 +250,7 @@
         })
     );
 
-    const changePhoto = document.querySelector('button.plain.open');
+    const areaPhoto = document.querySelector('button.plain.open');
     const areaOpen = document.querySelector('div.area');
     const btnClose = document.querySelector('button.plain.close');
     const fieldProfilePhoto = document.querySelector('div.fieldProfilePhoto.open');
@@ -241,8 +261,8 @@
     };
 
     $('#btnOpenArea').on("click", () => {
-        if (changePhoto) {
-            toggleClasses(changePhoto, 'close', 'open');
+        if (areaPhoto) {
+            toggleClasses(areaPhoto, 'close', 'open');
             toggleClasses(areaOpen, 'open', 'close');
             toggleClasses(fieldProfilePhoto, 'close', 'open');
             btnClose.classList.remove('close');
@@ -250,26 +270,126 @@
     });
 
     $('#btnCloseArea').on("click", () => {
-        toggleClasses(changePhoto, 'open', 'close');
+        toggleClasses(areaPhoto, 'open', 'close');
         toggleClasses(areaOpen, 'close', 'open');
         toggleClasses(fieldProfilePhoto, 'open', 'close');
         btnClose.classList.add('close');
     });
 
-    function allowDrop(ev) {
-        ev.preventDefault();
+    $(document).ready(function () {
+        // File input change event
+        $("#fileImage").change(function () {
+            previewImage(this);
+        });
+
+        // Drag and drop events
+        var dropArea = $("#drop-area");
+
+        dropArea.on('dragenter', function (e) {
+            e.preventDefault();
+            dropArea.addClass('dragImageActive');  // Add class for visual indication
+            console.log("drag enter")
+        });
+
+        dropArea.on('dragover', function (e) {
+            e.preventDefault();
+            dropArea.removeClass('dragImageNoActive');  // Add class for visual indication
+            dropArea.addClass('dragImageActive');  // Add class for visual indication
+            console.log("drag over")
+        });
+
+        dropArea.on('dragleave', function () {
+            dropArea.removeClass('dragImageActive');
+            dropArea.addClass('dragImageNoActive');
+            console.log("drag leave");
+        });
+
+        dropArea.on('drop', function (e) {
+            e.preventDefault();
+            dropArea.removeClass('dragImageActive');
+            dropArea.addClass('dragImageNoActive');
+            console.log("drop");
+            $("#fileImage")[0].files = e.originalEvent.dataTransfer.files;
+
+            previewImage($("#fileImage")[0]);
+            toggleClasses(areaPhoto, 'open', 'close');
+            toggleClasses(areaOpen, 'close', 'open');
+            toggleClasses(fieldProfilePhoto, 'open', 'close');
+            btnClose.classList.add('close');
+        });
+
+        // Function to preview the selected image
+        function previewImage(input) {
+            var file = input.files[0];
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#thumbnail').attr("src", e.target.result);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+
+    function changePhoto(form) {
+        // AJAX upload
+
+
+            // previewImage(FILE_IMAGE_ID[0]);
+            var formData = new FormData();
+            formData.append('file', this.files[0]);
+            var url = '[[@{/account/profile-info-update}]]';
+
+            params = {photos: formData, _csrf: csrfValue}
+
+            $.post(url, params, function (response) {
+                if (response === "OK") {
+                    form.submit();
+                }
+            }).fail(function () {
+                console.log(`Error`, `Image could not upload to server`);
+            })
     }
 
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
+    function previewImage(e) {
+        var files;
+
+        if (e.dataTransfer && e.dataTransfer.files) {
+            // Drag-and-drop case
+            e.preventDefault();
+            files = e.dataTransfer.files;
+        } else if (e.target.files) {
+            // File input change case
+            files = e.target.files;
+        } else {
+            console.error("Unable to retrieve files.");
+            return;
+        }
+
+        $("#fileImage")[0].files = files;
+
+        var input = $("#fileImage")[0].files;
+        var file = input[0];
+
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#thumbnail').attr("src", e.target.result);
+            };
+
+            reader.readAsDataURL(file);
+            toggleClasses(areaPhoto, 'open', 'close');
+            toggleClasses(areaOpen, 'close', 'open');
+            toggleClasses(fieldProfilePhoto, 'open', 'close');
+            btnClose.classList.add('close');
+        }
     }
 
-    function drop(ev) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
-    }
 </script>
-<script th:src="@{/js/image-upload.js}"></script>
+
+<!--<script th:src="@{/js/image-upload.js}"></script>-->
 </body>
 </html>
