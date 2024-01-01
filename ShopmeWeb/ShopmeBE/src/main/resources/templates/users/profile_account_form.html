@@ -132,7 +132,7 @@
     }
 
     .dragImageNoActive {
-        border: 2px dashed rgba(1, 30, 57, 0.4);
+        border: 0.2em dashed rgba(1, 30, 57, 0.4);
     }
 </style>
 
@@ -162,7 +162,8 @@
         </div>
 
         <section>
-            <form th:action="@{/account/profile-info-update}" method="post" enctype="multipart/form-data" th:object="${user}">
+            <form th:action="@{/account/profile-info-update}" method="post" enctype="multipart/form-data"
+                  th:object="${user}" onsubmit="return changePhoto(this)">
                 <input type="hidden" th:field="*{id}"/>
                 <article data-article="profile" class="active" style="min-height: inherit; max-height: inherit">
                     <div class="form-group row">
@@ -178,7 +179,7 @@
                     <div class="area close dragImageNoActive" id="drop-area">
                         <input type="hidden" th:field="*{photos}"/>
                         <button type="button" id="fileImageBtn" style="cursor:pointer" onclick="$('#fileImage').click()">Change photo</button>
-                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2"/>
+                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg, image/svg" class="mb-2" onchange="previewImage(event)"/>
                         <p class="error"></p>
                     </div>
                     <div class="form-group row">
@@ -249,7 +250,7 @@
         })
     );
 
-    const changePhoto = document.querySelector('button.plain.open');
+    const areaPhoto = document.querySelector('button.plain.open');
     const areaOpen = document.querySelector('div.area');
     const btnClose = document.querySelector('button.plain.close');
     const fieldProfilePhoto = document.querySelector('div.fieldProfilePhoto.open');
@@ -260,8 +261,8 @@
     };
 
     $('#btnOpenArea').on("click", () => {
-        if (changePhoto) {
-            toggleClasses(changePhoto, 'close', 'open');
+        if (areaPhoto) {
+            toggleClasses(areaPhoto, 'close', 'open');
             toggleClasses(areaOpen, 'open', 'close');
             toggleClasses(fieldProfilePhoto, 'close', 'open');
             btnClose.classList.remove('close');
@@ -269,113 +270,11 @@
     });
 
     $('#btnCloseArea').on("click", () => {
-        toggleClasses(changePhoto, 'open', 'close');
+        toggleClasses(areaPhoto, 'open', 'close');
         toggleClasses(areaOpen, 'close', 'open');
         toggleClasses(fieldProfilePhoto, 'open', 'close');
         btnClose.classList.add('close');
     });
-
-    // $(document).ready(function () {
-    //     $('#btnCancel').on("click", function () {
-    //         window.location = moduleURL;
-    //     });
-    //
-    //     $('#fileImage').change(function () {
-    //         let fileSize = this.files[0].size;
-    //         const MEGABYTE = 1048576
-    //
-    //         if (fileSize > MEGABYTE) {
-    //             this.setCustomValidity("You must choose an image less than 1MB!");
-    //             this.reportValidity();
-    //         } else {
-    //             this.setCustomValidity("");
-    //             showImageThumbnail(this);
-    //             toggleClasses(changePhoto, 'open', 'close');
-    //             toggleClasses(areaOpen, 'close', 'open');
-    //             toggleClasses(fieldProfilePhoto, 'open', 'close');
-    //             btnClose.classList.add('close');
-    //         }
-    //     });
-    //
-    //     let dropArea = $('.area.close');
-    //
-    //     // dropArea.on('dragenter', function (e) {
-    //     //     e.preventDefault();
-    //     //     e.stopPropagation();
-    //     //     dropArea[0].classList.add("dragImageActive")
-    //     //     dropArea[0].classList.remove("dragImageNoActive")
-    //     //     console.log('dragenter')
-    //     // });
-    //     //
-    //     // dropArea.on('dragOver', function (e) {
-    //     //     e.preventDefault();
-    //     //     e.stopPropagation();
-    //     //     dropArea[0].classList.add("dragImageActive")
-    //     //     dropArea[0].classList.remove("dragImageNoActive")
-    //     //     console.log('dragOver')
-    //     // });
-    //     //
-    //     // dropArea.on('dragLeave', function (e) {
-    //     //     dropArea[0].classList.add("dragImageNoActive")
-    //     //     dropArea[0].classList.remove("dragImageActive")
-    //     //     console.log('dragLeave');
-    //     // });
-    //
-    //     dropArea.on('drop', function (e) {
-    //         e.preventDefault();
-    //         console.log('drop')
-    //         $('#fileImage')[0].files = e.dataTransfer.files;
-    //
-    //         // console.log(e.dataTransfer.files)
-    //
-    //         showImageThumbnail(e.dataTransfer);
-    //         dropArea[0].classList.add("dragImageNoActive");
-    //         dropArea[0].classList.remove("dragImageActive");
-    //         toggleClasses(changePhoto, 'open', 'close');
-    //         toggleClasses(areaOpen, 'close', 'open');
-    //         toggleClasses(fieldProfilePhoto, 'open', 'close');
-    //         btnClose.classList.add('close');
-    //     });
-    //
-    //
-    //
-    //     $("#fileImage").on("change", function () {
-    //         var formData = new FormData();
-    //         formData.append('file', this.files[0]);
-    //
-    //         // url = "[[@{/account/profile-info-update}]]";
-    //         let csrfValue = $("input[name='_csrf']").val();
-    //         let uri = "[[@{/account/profile-info-update}]]";
-    //
-    //         formData.append('_csrf', csrfValue);
-    //
-    //         $.ajax({
-    //             type: 'POST',
-    //             url: uri, // Assuming your Spring endpoint is mapped to "/upload"
-    //             data: formData,
-    //             contentType: false,
-    //             processData: false,
-    //             success: function (response) {
-    //                 console.log('Upload successful:', response);
-    //                 // Handle the response from the server as needed
-    //             },
-    //             error: function (error) {
-    //                 console.error('Error uploading file:', error);
-    //                 // Handle the error as needed
-    //             }
-    //         });
-    //     });
-    // });
-    //
-    // function showImageThumbnail(fileInput) {
-    //     let file = fileInput.files[0];
-    //     let reader = new FileReader();
-    //     reader.onload = function (e) {
-    //         $('#thumbnail').attr("src", e.target.result);
-    //     };
-    //
-    //     reader.readAsDataURL(file);
-    // }
 
     $(document).ready(function () {
         // File input change event
@@ -388,27 +287,32 @@
 
         dropArea.on('dragenter', function (e) {
             e.preventDefault();
-            dropArea.addClass('dragover');  // Add class for visual indication
+            dropArea.addClass('dragImageActive');  // Add class for visual indication
+            console.log("drag enter")
         });
 
         dropArea.on('dragover', function (e) {
             e.preventDefault();
-            dropArea.addClass('dragover');  // Add class for visual indication
+            dropArea.removeClass('dragImageNoActive');  // Add class for visual indication
+            dropArea.addClass('dragImageActive');  // Add class for visual indication
+            console.log("drag over")
         });
 
         dropArea.on('dragleave', function () {
-            dropArea.removeClass('dragover');  // Remove class
+            dropArea.removeClass('dragImageActive');
+            dropArea.addClass('dragImageNoActive');
+            console.log("drag leave");
         });
 
         dropArea.on('drop', function (e) {
             e.preventDefault();
-            dropArea.removeClass('dragover');  // Remove class
+            dropArea.removeClass('dragImageActive');
+            dropArea.addClass('dragImageNoActive');
             console.log("drop");
-            var files = e.originalEvent.dataTransfer.files;
-            $("#fileImage")[0].files = files;
+            $("#fileImage")[0].files = e.originalEvent.dataTransfer.files;
 
             previewImage($("#fileImage")[0]);
-            toggleClasses(changePhoto, 'open', 'close');
+            toggleClasses(areaPhoto, 'open', 'close');
             toggleClasses(areaOpen, 'close', 'open');
             toggleClasses(fieldProfilePhoto, 'open', 'close');
             btnClose.classList.add('close');
@@ -427,36 +331,62 @@
                 reader.readAsDataURL(file);
             }
         }
-
-        // AJAX upload
-        $("#fileImage").on("change", function () {
-            var formData = new FormData();
-            formData.append('file', this.files[0]);
-
-            $.ajax({
-                type: 'POST',
-                url: '/account/profile-info-update',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    console.log('Upload successful:', response);
-                    // Handle the response from the server as needed
-                },
-                error: function (error) {
-                    console.error('Error uploading file:', error);
-                    // Handle the error as needed
-                }
-            });
-        });
     });
 
+    function changePhoto(form) {
+        // AJAX upload
 
 
+            // previewImage(FILE_IMAGE_ID[0]);
+            var formData = new FormData();
+            formData.append('file', this.files[0]);
+            var url = '[[@{/account/profile-info-update}]]';
 
+            params = {photos: formData, _csrf: csrfValue}
 
+            $.post(url, params, function (response) {
+                if (response === "OK") {
+                    form.submit();
+                }
+            }).fail(function () {
+                console.log(`Error`, `Image could not upload to server`);
+            })
+    }
 
+    function previewImage(e) {
+        var files;
 
+        if (e.dataTransfer && e.dataTransfer.files) {
+            // Drag-and-drop case
+            e.preventDefault();
+            files = e.dataTransfer.files;
+        } else if (e.target.files) {
+            // File input change case
+            files = e.target.files;
+        } else {
+            console.error("Unable to retrieve files.");
+            return;
+        }
+
+        $("#fileImage")[0].files = files;
+
+        var input = $("#fileImage")[0].files;
+        var file = input[0];
+
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#thumbnail').attr("src", e.target.result);
+            };
+
+            reader.readAsDataURL(file);
+            toggleClasses(areaPhoto, 'open', 'close');
+            toggleClasses(areaOpen, 'close', 'open');
+            toggleClasses(fieldProfilePhoto, 'open', 'close');
+            btnClose.classList.add('close');
+        }
+    }
 
 </script>
 
