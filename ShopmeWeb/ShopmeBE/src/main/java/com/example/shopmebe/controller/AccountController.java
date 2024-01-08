@@ -10,6 +10,7 @@ import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,7 @@ public class AccountController {
     }
 
     @GetMapping("/profile-settings")
+    @PreAuthorize("#loggedUser.username == authentication.principal.username")
     public String viewProfile(@AuthenticationPrincipal ShopmeUserDetails loggedUser, Model model) {
 
         User user = userService.getUserByEmail(loggedUser.getUsername());
@@ -78,6 +80,7 @@ public class AccountController {
     }
 
     @GetMapping("/security-settings")
+    @PreAuthorize("#loggedUser.username == authentication.principal.username")
     public String viewSecurity(@AuthenticationPrincipal ShopmeUserDetails loggedUser, Model model) {
         User user = userService.getUserByEmail(loggedUser.getUsername());
         model.addAttribute("user", user);
@@ -95,11 +98,11 @@ public class AccountController {
         if (!bindingResult.hasErrors()) {
             if (userService.updatePassword(user, loggedUser)) {
                 redirectAttributes.addFlashAttribute("message", "New password has been saved successfully");
-                return "security_account_form";
+                return "users/security_account_form";
             }
             redirectAttributes.addFlashAttribute("message", "test");
         }
 
-        return "security_account_form";
+        return "users/security_account_form";
     }
 }
