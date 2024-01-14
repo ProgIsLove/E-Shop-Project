@@ -2,6 +2,7 @@ package com.example.shopmebe.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class FileUploadUtil {
 
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
@@ -26,7 +28,8 @@ public class FileUploadUtil {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            throw new IOException(String.format("Could not save file: %s %s", fileName, ex));
+            log.error(String.format("Error while saving file: %s %s %s", fileName, ex.getMessage(), ex));
+            throw ex;
         }
     }
 
@@ -39,12 +42,12 @@ public class FileUploadUtil {
                     try {
                         Files.delete(file);
                     } catch (IOException ex) {
-                        System.out.println("Could not delete file: " + file);
+                        log.error(String.format("Could not delete file: %s", file));
                     }
                 }
             });
         } catch (IOException ex) {
-            System.out.println("Could not list directory: " + dirPath);
+            log.error(String.format("Could not list directory: %s", dirPath));
         }
     }
 }
