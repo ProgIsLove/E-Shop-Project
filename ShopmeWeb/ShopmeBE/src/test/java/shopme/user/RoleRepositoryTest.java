@@ -2,7 +2,6 @@ package shopme.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.repository.RoleRepository;
-import com.example.shopmebe.service.UserService;
 import com.shopme.common.entity.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;

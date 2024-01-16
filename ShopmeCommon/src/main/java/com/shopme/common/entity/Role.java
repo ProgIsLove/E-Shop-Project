@@ -3,6 +3,8 @@ package com.shopme.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "roles")
 @Getter
@@ -13,6 +15,7 @@ import lombok.*;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Integer id;
     @Column(length = 40, nullable = false, unique = true)
     private String name;
@@ -27,5 +30,19 @@ public class Role {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Role role = (Role) obj;
+        return getName() != null ? getName().equals(role.getName()) : role.getName() == null;
+    }
+
+    @Override
+    public final int hashCode() {
+        return getClass().hashCode();
     }
 }
