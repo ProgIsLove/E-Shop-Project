@@ -8,6 +8,14 @@ services:
     volumes:
       - devShopmeDb:/var/lib/devShopmedb
       - testShopmeDb:/var/lib/testShopmedb
+    depends_on:
+      - mysqlDevDb
+      - mysqlTestDb
+    environment:
+      - DATABASE_URL_DEV=jdbc:mysql://mysqlDevDb:3306/devShopme
+      - DATABASE_URL_TEST=jdbc:mysql://mysqlTestDb:3308/testShopme
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=root
 
   mysqlDevDb:
     image: mysql:latest
