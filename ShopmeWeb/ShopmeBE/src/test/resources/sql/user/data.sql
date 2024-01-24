@@ -1,0 +1,1 @@
+INSERT INTO users(id, email, enabled, first_name, last_name, password, photos) VALUES (1,'nam@codejava.net',1,'Nam','Ha Minh','$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu','namhm.png')
