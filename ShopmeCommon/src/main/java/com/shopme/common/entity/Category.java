@@ -20,7 +20,7 @@ public class Category {
     private String name;
     @Column(length = 64, nullable = false, unique = true)
     private String alias;
-    @Column(length = 128, nullable = false, unique = true)
+    @Column(length = 128, nullable = false)
     private String image;
     private boolean enabled;
     @OneToOne
