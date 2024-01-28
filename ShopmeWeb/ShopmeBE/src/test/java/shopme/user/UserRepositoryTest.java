@@ -1,322 +1,174 @@
 package shopme.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.exception.UserNotFoundException;
-import com.example.shopmebe.repository.RoleRepository;
 import com.example.shopmebe.repository.UserRepository;
-import com.example.shopmebe.service.UserService;
-import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
-//Predelat na service nazev tridy i testovat methody userService.methoda()....
-
-
+@Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = ShopmeBeApplication.class)
-@Rollback(value = false)
-class UserRepositoryTest {
+public class UserRepositoryTest {
 
-    @Mock
-    private UserRepository userRepositoryMock;
-    @Mock
-    private RoleRepository roleRepositoryMock;
-    @Mock
-    private PasswordEncoder passwordEncoderMock;
-    @InjectMocks
-    private UserService userService;
     @Autowired
-    private TestEntityManager entityManager;
+    private UserRepository userRepository;
 
-    @Captor
-    ArgumentCaptor<User> captorUser;
+    @Container
+    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:latest")
+            .withDatabaseName("shopmedbTest")
+            .withUsername("root")
+            .withPassword("rootTest");
 
-    private final static int ID = 1;
-    private static User userAnna;
-    private static User userJohn;
 
-
-    @BeforeEach
-    void setup() {
-        captorUser = ArgumentCaptor.forClass(User.class);
-
-        Role roleAdmin = Role.builder()
-                             .id(1)
-                             .name("Admin")
-                             .description("manage everything").build();
-
-        Role roleSalesperson = Role.builder()
-                             .id(2)
-                             .name("Salesperson")
-                             .description("manage product price, customers, shipping, orders and sales report").build();
-
-        Set<Role> annaRoles = new HashSet<>();
-        annaRoles.add(roleAdmin);
-
-        Set<Role> johnRoles = new HashSet<>();
-        johnRoles.add(roleAdmin);
-        johnRoles.add(roleSalesperson);
-
-        userAnna = User.builder()
-                       .id(1)
-                       .email("anna@company.com")
-                       .password("anna123")
-                       .firstName("Anna")
-                       .roles(annaRoles)
-                       .enabled(false)
-                       .lastName("Croft").build();
-
-        userJohn = User.builder()
-                       .id(2)
-                       .email("john@company.com")
-                       .password("john123")
-                       .firstName("John")
-                       .roles(johnRoles)
-                       .enabled(true)
-                       .lastName("Croft").build();
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", mySQLContainer::getUsername);
+        registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
     @Test
-    void testCreateNewUserWithOneRole() {
-        when(userRepositoryMock.save(userAnna)).thenReturn(userAnna);
+    public void findUserById() {
+        Optional<User> userById = userRepository.findById(1);
 
-        userService.save(userAnna);
+        User expectedUser = new User();
+        expectedUser.setId(1);
+        expectedUser.setFirstName("Nam");
+        expectedUser.setLastName("Ha Minh");
+        expectedUser.setEmail("nam@codejava.net");
+        expectedUser.setEnabled(true);
+        expectedUser.setPhotos("namhm.png");
+        expectedUser.setPassword("$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu");
 
-        verify(userRepositoryMock).save(captorUser.capture());
-
-        assertThat(captorUser.getValue().getId()).isPositive();
-        assertEquals(userAnna, captorUser.getValue());
+        assertThat(userById).isPresent();
+        assertThat(userById.get().getId()).isPositive();
+        assertThatCode(() -> assertThat(userById.get()).usingRecursiveComparison().isEqualTo(expectedUser))
+                .doesNotThrowAnyException();
     }
 
     @Test
-    void testCreateNewUserWithTwoRoles() {
-        when(userRepositoryMock.save(userJohn)).thenReturn(userJohn);
-
-        userService.save(userJohn);
-
-        verify(userRepositoryMock).save(captorUser.capture());
-
-        User user = captorUser.getValue();
-
-        List<String> rolesName = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
-
-        assertThat(user.getId()).isPositive();
-        assertEquals("John", user.getFirstName());
-        assertEquals("Croft", user.getLastName());
-        assertEquals(2, user.getRoles().size());
-
-        List<String> expected = new ArrayList<>();
-        expected.add("Admin");
-        expected.add("Salesperson");
-        assertEquals(expected, rolesName);
-    }
-
-    @Test
-    void testListAllUsers() {
-        when(userRepositoryMock.findAll(Sort.by("firstName").ascending())).thenReturn(List.of(userAnna, userJohn));
-
-        List<User> users = userService.listAll();
-
-        verify(userRepositoryMock).findAll(Sort.by("firstName").ascending());
-
-        List<String> usersName = users.stream().map(User::getFirstName).collect(Collectors.toList());
-
-        assertNotNull(users);
-        assertEquals(2, users.size());
-
-        List<String> expected = new ArrayList<>();
-        expected.add("Anna");
-        expected.add("John");
-        assertEquals(expected, usersName);
-    }
-
-    @Test
-    void testGetUserById() throws UserNotFoundException {
-        when(userRepositoryMock.findById(ID)).thenReturn(Optional.of(userAnna));
-        User userById = userService.getUserById(ID);
-//        Optional<User> userById = userRepositoryMock.findById(ID);
-        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
-        verify(userRepositoryMock).findById(idCaptor.capture());
-
-        Integer idValue = idCaptor.getValue();
-
-//        assertTrue(userById.isPresent());
-//
-//        User user = userById.get();
-
-        assertEquals(ID, idValue);
-        assertEquals("Anna", userById.getFirstName());
-        assertEquals("Croft", userById.getLastName());
-        assertEquals(1, userById.getRoles().size());
-    }
-
-    @Test
-    void testUpdateUserDetails() {
-        when(userRepositoryMock.findById(ID)).thenReturn(Optional.of(userAnna));
-
-        User user = userRepositoryMock.findById(ID).get();
-        user.setEnabled(true);
-        user.setLastName("Smart");
-
-        when(userRepositoryMock.save(user)).thenReturn(user);
-        userRepositoryMock.save(user);
-        verify(userRepositoryMock).save(captorUser.capture());
-
-        User captorAnnaUser = captorUser.getValue();
-
-        assertEquals(ID, user.getId());
-        assertEquals("Smart", captorAnnaUser.getLastName());
-        assertTrue(captorAnnaUser.isEnabled());
-    }
-
-    @Test
-    void testUpdateUserRole() {
-        when(userRepositoryMock.findById(ID)).thenReturn(Optional.of(userAnna));
-
-        User newUserRole = userRepositoryMock.findById(ID).get();
-
-        Role roleAdmin = entityManager.find(Role.class, 1);
-        Role roleSalesperson = entityManager.find(Role.class, 2);
-
-        newUserRole.getRoles().remove(roleAdmin);
-        newUserRole.addRole(roleSalesperson);
-
-        when(userRepositoryMock.save(newUserRole)).thenReturn(newUserRole);
-        userRepositoryMock.save(newUserRole);
-        verify(userRepositoryMock).save(captorUser.capture());
-
-        User user = captorUser.getValue();
-
-        assertEquals("Salesperson", getRoleName(user.getRoles()));
-        assertEquals("Anna", user.getFirstName());
-        assertEquals("Croft", user.getLastName());
-        assertEquals(1, user.getRoles().size());
-    }
-
-    @Test
-    void testDeleteUser() {
-        userRepositoryMock.deleteById(ID);
-
-        verify(userRepositoryMock).deleteById(eq(userAnna.getId()));
-        Optional<User> userById = userRepositoryMock.findById(ID);
+    public void findUserByIdNotExists() {
+        Integer id = 2000;
+        Optional<User> userById = userRepository.findById(id);
 
         assertThat(userById).isEmpty();
     }
 
     @Test
-    void testGetUserByEmailNotFound() {
-        String email = "test@company.com";
+    public void findAllUsersSortByName() {
+        int size = 0;
+        Iterable<User> usersIterable = userRepository.findAll(Sort.by("firstName").ascending());
 
-        when(userRepositoryMock.getUserByEmail(anyString())).thenThrow(new NullPointerException("Email not found!"));
-
-        Assertions.assertThrows(NullPointerException.class, () -> userRepositoryMock.getUserByEmail(email));
-    }
-
-    @Test
-    void testGetUserByEmail() {
-
-        when(userRepositoryMock.getUserByEmail(anyString())).thenReturn(Optional.ofNullable(userAnna));
-        userRepositoryMock.getUserByEmail(userAnna.getEmail());
-        ArgumentCaptor<String> mail = ArgumentCaptor.forClass(String.class);
-        verify(userRepositoryMock).getUserByEmail(mail.capture());
-
-        assertThat(mail.getValue()).isNotNull();
-        assertEquals(mail.getValue(), userAnna.getEmail());
-    }
-
-    @Test
-    void testCountById() {
-
-        when(userRepositoryMock.countById(anyInt())).thenReturn(anyLong());
-        Long countById = userRepositoryMock.countById(ID);
-        verify(userRepositoryMock, atLeastOnce()).countById(anyInt());
-
-        assertThat(countById).isNotNull();
-    }
-
-    @Test
-    @Transactional
-    void testDisabledUser() {
-
-//        when(userRepositoryMock.updateEnabledStatus(anyInt(), anyBoolean())).thenCallRealMethod();
-//        doNothing().when(userRepositoryMock).updateEnabledStatus(anyInt(), anyBoolean());
-//        doCallRealMethod().when(userRepositoryMock).updateEnabledStatus(anyInt(), anyBoolean());
-
-        userRepositoryMock.updateEnabledStatus(2, false);
-        verify(userRepositoryMock, times(1)).updateEnabledStatus(2, false);
-//
-        assertEquals(2, userJohn.getId());
-//        assertFalse(userJohn.isEnabled());
-    }
-
-    @Test
-    void testEnabledUser() {
-//        userAnna.setEnabled(true);
-
-        userRepositoryMock.updateEnabledStatus(ID, true);
-        verify(userRepositoryMock).updateEnabledStatus(anyInt(), anyBoolean());
-//
-//        assertEquals(ID, userAnna.getId());
-//        assertTrue(userAnna.isEnabled());
-    }
-
-    @Test
-    void testListFirstPage() {
-        int pageNumber = 0;
-        int pageSize = 2;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        
-        Page<User> page = new PageImpl<>(List.of(userAnna, userJohn));
-        when(userRepositoryMock.findAll(pageable)).thenReturn(page);
-        List<User> listUsers = userRepositoryMock.findAll(pageable).getContent();
-
-        assertThat(listUsers).hasSize(pageSize);
-    }
-
-    @Test
-    void testSearchUsers() {
-        String keyword = "anna";
-
-        int pageNumber = 0;
-        int pageSize = 1;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<User> page = new PageImpl<>(List.of(userAnna));
-        when(userRepositoryMock.findByFullnameOrEmail(keyword, pageable)).thenReturn(page);
-        List<User> listUsers = userRepositoryMock.findByFullnameOrEmail(keyword, pageable).getContent();
-
-        assertThat(listUsers).hasSize(pageSize).isNotEmpty();
-    }
-
-    private String getRoleName(Set<Role> roles) {
-        for (Role name : roles) {
-            return name.getName();
+        if (usersIterable instanceof Collection<User>) {
+            size = ((Collection<User>) usersIterable).size();
         }
 
-        return null;
+        assertNotNull(usersIterable);
+        assertEquals(2, size);
+        assertThat(convertIterableToList(usersIterable)).isSortedAccordingTo(Comparator.comparing(User::getFirstName));
+    }
+
+    @Test
+    public void findAllUsersSortByEmail() {
+        int size = 0;
+        Iterable<User> usersIterable = userRepository.findAll(Sort.by("email").ascending());
+
+        if (usersIterable instanceof Collection<User>) {
+            size = ((Collection<User>) usersIterable).size();
+        }
+
+        assertNotNull(usersIterable);
+        assertEquals(2, size);
+        assertThat(convertIterableToList(usersIterable)).isSortedAccordingTo(Comparator.comparing(User::getEmail));
+    }
+
+    @Test
+    public void getUserByEmail() {
+        Optional<User> userByEmail = userRepository.getUserByEmail("nam@codejava.net");
+
+        User expectedUser = new User();
+        expectedUser.setId(1);
+        expectedUser.setFirstName("Nam");
+        expectedUser.setLastName("Ha Minh");
+        expectedUser.setEmail("nam@codejava.net");
+        expectedUser.setEnabled(true);
+        expectedUser.setPhotos("namhm.png");
+        expectedUser.setPassword("$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu");
+
+
+        assertThat(userByEmail).isPresent();
+        assertThat(userByEmail.get().getId()).isPositive();
+        assertThatCode(() -> assertThat(userByEmail.get()).usingRecursiveComparison().isEqualTo(expectedUser))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void findByFullnameOrEmail() {
+        int pageNumber = 0;
+        int pageSize = 1;
+        List<User> findByEmail = userRepository.findByFullnameOrEmail("nam@codejava.net", PageRequest.of(pageNumber, pageSize)).getContent();
+        List<User> findByFullname = userRepository.findByFullnameOrEmail("Nam Ha Minh", PageRequest.of(pageNumber, pageSize)).getContent();
+
+        User expectedUser = new User();
+        expectedUser.setId(1);
+        expectedUser.setFirstName("Nam");
+        expectedUser.setLastName("Ha Minh");
+        expectedUser.setEmail("nam@codejava.net");
+        expectedUser.setEnabled(true);
+        expectedUser.setPhotos("namhm.png");
+        expectedUser.setPassword("$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu");
+
+
+        assertThat(findByEmail).size().isEqualTo(1);
+        assertThat(findByEmail).isNotEmpty();
+        assertThat(findByFullname).size().isEqualTo(1);
+        assertThat(findByFullname).isNotEmpty();
+
+        assertThatCode(() -> assertThat(findByEmail.get(0)).usingRecursiveComparison().isEqualTo(expectedUser))
+                .doesNotThrowAnyException();
+
+        assertThatCode(() -> assertThat(findByFullname.get(0)).usingRecursiveComparison().isEqualTo(expectedUser))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void updateEnabledStatus() {
+        Integer id = 1;
+        userRepository.updateEnabledStatus(id, false);
+        Optional<User> userById = userRepository.findById(id);
+
+        assertThat(userById).isPresent();
+        assertThat(userById.get().getId()).isPositive();
+        assertFalse(userById.get().isEnabled());
+    }
+
+    private <S> List<S> convertIterableToList(Iterable<S> iterableList) {
+        return StreamSupport.stream(iterableList.spliterator(), false)
+                .collect(Collectors.toList());
     }
 }
