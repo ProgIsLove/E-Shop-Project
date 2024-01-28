@@ -1,16 +1,21 @@
 package com.shopme.common.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "categories")
 @Setter
 @Getter
+@Builder
 public class Category {
 
     @Id
@@ -28,4 +33,48 @@ public class Category {
     private Category parent;
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
+
+    public Category() {
+    }
+
+    public Category(Integer id, String name, String alias, String image, boolean enabled, Category parent, Set<Category> children) {
+        this.id = id;
+        this.name = name;
+        this.alias = name;
+        this.image = "default.png";
+        this.enabled = enabled;
+        this.parent = parent;
+        this.children = children;
+    }
+
+    public Category(String name) {
+        this.name = name;
+        this.alias = name;
+        this.image = "default.png";
+    }
+
+    public Category(String name, Category parent) {
+        this(name);
+        this.parent = parent;
+    }
+
+    public void addSubCategory(Category subcategory) {
+        this.children.add(subcategory);
+        subcategory.setParent(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return id.equals(category.id) &&
+                name.equals(category.name) &&
+                enabled == category.enabled;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, enabled);
+    }
 }
