@@ -68,13 +68,11 @@ public class Category {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
-        return id.equals(category.id) &&
-                name.equals(category.name) &&
-                enabled == category.enabled;
+        return getName() != null ? getName().equals(category.getName()) : category.getName() == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, enabled);
+        return getClass().hashCode();
     }
 }
