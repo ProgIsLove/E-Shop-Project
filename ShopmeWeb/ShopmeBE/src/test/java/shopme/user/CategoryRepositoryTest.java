@@ -3,6 +3,7 @@ package shopme.user;
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.repository.CategoryRepository;
 import com.shopme.common.entity.Category;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -54,7 +55,6 @@ public class CategoryRepositoryTest {
         assertThat(categoryById).isPresent();
         assertThat(categoryById.get().getId()).isPositive();
 
-
         Set<Category> expectedChildren = new HashSet<>();
         expectedChildren.add(Category.builder().id(6).name("Cameras").enabled(true).build());
         expectedChildren.add(Category.builder().id(7).name("Smartphones").enabled(true).build());
@@ -84,6 +84,24 @@ public class CategoryRepositoryTest {
 
 //        assertThatCode(() -> assertThat(categoryById.get()).usingRecursiveComparison().isEqualTo(expectedParent))
 //                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void equalsAndHashCodeTest() {
+        Set<Category> categories = new HashSet<>();
+
+        Category expectedParent = new Category("Notebook");
+        expectedParent.setId(2);
+        expectedParent.setEnabled(true);
+
+        Category subCategory = new Category("Notebook");
+        subCategory.setId(3);
+        subCategory.setEnabled(true);
+
+        categories.add(expectedParent);
+        categories.add(subCategory);
+
+        Assertions.assertEquals(1, categories.size());
     }
 
     @Test

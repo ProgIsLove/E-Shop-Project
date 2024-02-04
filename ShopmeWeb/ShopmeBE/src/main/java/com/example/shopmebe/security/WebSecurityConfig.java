@@ -59,6 +59,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/users/**").hasAuthority("Admin")
+                .requestMatchers("categories/**").hasAnyAuthority("Admin", "Editor")
                 .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated()
         ).formLogin((form) -> form
