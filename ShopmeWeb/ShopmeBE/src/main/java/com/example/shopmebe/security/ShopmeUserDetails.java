@@ -3,11 +3,12 @@ package com.example.shopmebe.security;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import lombok.AllArgsConstructor;
+import org.hibernate.Session;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,11 +23,18 @@ public class ShopmeUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<Role> roles = user.getRoles();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//        Session session = sessionFactory.openSession();
+//        SessionFactoryImpl sessionFactory =
+//        SessionFactory sessionFactory = ;
+//        final Session session = sessionFactory.openSession();
+//        session.beginTransaction();
+//        Set<Role> roles = user.getRoles();
 
         for(Role role : roles) {
            authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
 
+//        session.close();
         return authorities;
     }
 
