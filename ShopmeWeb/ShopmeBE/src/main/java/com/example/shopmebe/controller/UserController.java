@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Controller
-@RequestMapping
 public class UserController {
 
     private final UserService userService;
