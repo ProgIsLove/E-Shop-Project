@@ -13,20 +13,23 @@ import java.util.Set;
 @AllArgsConstructor
 public class CategoryService {
 
-    private final CategoryRepository repo;
+    private final CategoryRepository categoryRepository;
 
     public List<Category> listALl() {
-        return (List<Category>) repo.findAll();
+        return (List<Category>) categoryRepository.findAll();
+    }
+
+    public Category save(Category category) {
+        return categoryRepository.save(category);
     }
 
     public List<Category> listCategoriesUsedInForm() {
         List<Category> categoriesUsedInForm = new ArrayList<>();
-        Iterable<Category> categories = repo.findAll();
+        Iterable<Category> categories = categoryRepository.findAll();
 
         for(Category category : categories) {
             if (category.getParent() == null) {
-                categoriesUsedInForm.add(Category.builder()
-                        .name(category.getName()).build());
+                categoriesUsedInForm.add(Category.copyIdAndName(category));
 
                 listChildren(categoriesUsedInForm, category.getChildren(), 0);
             }
@@ -44,7 +47,9 @@ public class CategoryService {
             sb.append("--".repeat(Math.max(0, newSubLevel)));
 
             categoriesUsedInForm.add(Category.builder()
-                    .name(sb + subCategory.getName()).build());
+                    .id(subCategory.getId())
+                    .name(sb + subCategory.getName())
+                    .build());
             listChildren(categoriesUsedInForm, subCategory.getChildren(), newSubLevel);
         }
     }
