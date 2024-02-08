@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Category {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(length = 128, nullable = false, unique = true)
     private String name;
@@ -45,6 +45,13 @@ public class Category {
         this.enabled = enabled;
         this.parent = parent;
         this.children = children;
+    }
+
+    public static Category copyIdAndName(Category category) {
+        return Category.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
     }
 
     public Category(String name) {
