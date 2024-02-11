@@ -57,7 +57,7 @@ public class Category {
     public Category(String name) {
         this.name = name;
         this.alias = name;
-        this.image = "default.png";
+        this.image = null;
     }
 
     public Category(String name, Category parent) {
@@ -68,6 +68,12 @@ public class Category {
     public void addSubCategory(Category subcategory) {
         this.children.add(subcategory);
         subcategory.setParent(this);
+    }
+
+    @Transient
+    public String getImagePath() {
+        if (this.id == null || this.image == null) return "/images/image-preview-thumbnail.png";
+        return "../category-images/" + this.id + "/" + this.image;
     }
 
     @Override

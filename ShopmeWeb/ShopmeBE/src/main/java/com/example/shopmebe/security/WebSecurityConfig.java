@@ -58,6 +58,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/images/**").permitAll()
+                .requestMatchers("/static/js/**").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/users/**").hasAuthority("Admin")
                 .requestMatchers("categories/**").hasAnyAuthority("Admin", "Editor")
                 .requestMatchers("/login").permitAll()
@@ -76,11 +79,6 @@ public class WebSecurityConfig {
         http.authenticationManager(authenticationManager());
 
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/images/**", "/static/js/**", "/webjars/**");
     }
 
     @Bean
