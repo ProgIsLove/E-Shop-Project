@@ -76,7 +76,7 @@ public class User {
 
     @Transient
     public String getPhotosImagePath() {
-        if (id == null || photos == null) return "/images/image-portrait-solid.svg";
+        if (this.id == null || this.photos == null) return "/images/image-portrait-solid.svg";
         return "/user-photos/" + this.id + "/" + this.photos;
     }
 

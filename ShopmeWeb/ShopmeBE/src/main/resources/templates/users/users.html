@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head('Home - Shopme Admin')">
+<head th:replace="~{fragments :: page_head('Home - Shopme Admin')}">
 <body>
 <div class="modal" tabindex="-1" id="confirmModal">
     <div class="modal-dialog">
@@ -61,16 +61,14 @@
             <thead class="table-dark">
             <tr>
                 <th class="hideable-column">
-                    <th th:replace="fragments :: column_link('id', 'User ID', 'tag')"></th>
-                </th>
+                    <th th:replace="~{fragments :: column_link('id', 'User ID', 'tag')}"></th>
                 <th>Photos</th>
                 <th class="hideable-column">
-                <th th:replace="fragments :: column_link('email', 'E-mail', 'tag')" class="hideable-column"></th>
-                </th>
-                <th th:replace="fragments :: column_link('firstName', 'First Name', 'none')"></th>
-                <th th:replace="fragments :: column_link('lastName', 'Last Name', 'none')"></th>
+                <th th:replace="~{fragments :: column_link('email', 'E-mail', 'tag')}" class="hideable-column"></th>
+                <th th:replace="~{fragments :: column_link('firstName', 'First Name', 'none')}"></th>
+                <th th:replace="~{fragments :: column_link('lastName', 'Last Name', 'none')}"></th>
                 <th>Roles</th>
-                <th th:replace="fragments :: column_link('enabled', 'Enabled', 'none')"></th>
+                <th th:replace="~{fragments :: column_link('enabled', 'Enabled', 'none')}"></th>
                 <th></th>
             </tr>
             </thead>
@@ -86,14 +84,11 @@
                 <td>[[${user.lastName}]]</td>
                 <td>[[${user.roles}]]</td>
                 <td>
-                    <a th:if="${user.enabled == true}"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/false'}"
-                       title="Disable this user">
-                        <i class="fas fa-check-circle fa-2x icon-green"></i></a>
-                    <a th:if="${user.enabled == false}"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/true'}"
-                       title="Enable this user">
-                        <i class="fas fa-circle fa-2x icon-dark"></i></a>
+                    <a th:replace="~{fragments :: disable(${user.enabled}) }"
+                       th:href="@{'/users/' + ${user.id} + '/enabled/false'}"></a>
+
+                    <a th:replace="~{fragments :: enabled(${user.enabled})}"
+                       th:href="@{'/users/' + ${user.id} + '/enabled/true'}"></a>
                 </td>
                 <td>
                     <a th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"><i
@@ -120,15 +115,11 @@
                 <div>[[${user.fullName}]]</div>
                 <div>[[${user.roles}]]</div>
                 <div class="mt-2">
-                    <a th:if="${user.enabled == true}"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/false'}"
-                       title="Disable this user">
-                        <i class="fas fa-check-circle fa-2x icon-green"></i></a>
+                    <a th:replace="~{fragments :: disable(${user.enabled}) }"
+                       th:href="@{'/users/' + ${user.id} + '/enabled/false'}"></a>
 
-                    <a th:if="${user.enabled == false}"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/true'}"
-                       title="Enable this user">
-                        <i class="fas fa-circle fa-2x icon-dark"></i></a>
+                    <a th:replace="~{fragments :: enabled(${user.enabled})}"
+                       th:href="@{'/users/' + ${user.id} + '/enabled/true'}"></a>
                     &nbsp;
                     <a th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"><i
                             class="fas fa-edit fa-2x icon-green"></i></a>
@@ -155,7 +146,7 @@
         <nav>
             <ul class="pagination justify-content-center flex-wrap">
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(1, 'First')"></a>
+                    <a th:replace="~{fragments :: page_link(1, 'First')}"></a>
                 </li>
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
                     <a th:replace="fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
@@ -164,7 +155,7 @@
                 <th:block th:if="${totalPages <= 10}">
                 <li th:each="i : ${#numbers.sequence(1, totalPages)}"
                     th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                    <a th:replace="fragments :: page_link(${i}, ${i})"></a>
+                    <a th:replace="~{fragments :: page_link(${i}, ${i})}"></a>
                 </li>
                 </th:block>
 
@@ -172,7 +163,7 @@
                     <th:block th:if="${currentPage <= 5 || currentPage >= totalPages - 4}">
                         <li th:each="i : ${#numbers.sequence(1, 5)}"
                             th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:replace="fragments :: page_link(${i}, ${i})"></a>
+                            <a th:replace="~{fragments :: page_link(${i}, ${i})}"></a>
                         </li>
 
                         <a th:href="6" class="page-link">...</a>
@@ -197,16 +188,16 @@
                 </th:block>
 
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${currentPage + 1}, 'Next')"></a>
+                    <a th:replace="~{fragments :: page_link(${currentPage + 1}, 'Next')}"></a>
                 </li>
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${totalPages}, 'Last')"></a>
+                    <a th:replace="~{fragments :: page_link(${totalPages}, 'Last')}"></a>
                 </li>
             </ul>
         </nav>
     </div>
 
-    <div th:replace="fragments :: footer">
+    <div th:replace="~{fragments :: footer}">
     </div>
 
 </div>
@@ -214,11 +205,10 @@
     $(document).ready(function () {
         $('.link-delete').on("click", function (e) {
             e.preventDefault();
-            //alert($(this).attr("href"));
             link = $(this);
             userId = link.attr("userId");
             $('#yesBtn').attr("href", link.attr("href"));
-            $('#confirmText').text("Are you sure you want to delete the user ID " + userId + "?") //refactor
+            $('#confirmText').text(`Are you sure you want to delete the user ID ${userId}?`)
             $('#confirmModal').show();
             $('#modalClose, #modalCross').on('click', function () {
                 $('#confirmModal').hide();
