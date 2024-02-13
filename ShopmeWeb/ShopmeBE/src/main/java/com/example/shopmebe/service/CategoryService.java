@@ -1,5 +1,6 @@
 package com.example.shopmebe.service;
 
+import com.example.shopmebe.exception.CategoryNotFoundException;
 import com.example.shopmebe.repository.CategoryRepository;
 import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
@@ -52,5 +53,11 @@ public class CategoryService {
                     .build());
             listChildren(categoriesUsedInForm, subCategory.getChildren(), newSubLevel);
         }
+    }
+
+    public Category get(Integer id) throws CategoryNotFoundException {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        String.format("Could not find any category with ID: %d", id)));
     }
 }
