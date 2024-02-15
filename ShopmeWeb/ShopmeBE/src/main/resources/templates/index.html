@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-<head th:replace="fragments :: page_head('Home - Shopme Admin')">
+<head th:replace="~{fragments :: page_head('Home - Shopme Admin')}">
 
 </head>
 <body>
 <div class="container-fluid">
-    <div th:replace="navigation :: menu"></div>
+    <div th:replace="~{navigation :: menu}"></div>
     <div>
         <h1>Welcome to Shopme Admin Control panel</h1>
         Welcome
@@ -15,7 +15,7 @@
     </div>
 
 
-    <div th:replace="fragments :: footer">
+    <div th:replace="~{fragments :: footer}">
     </div>
 
 </div>

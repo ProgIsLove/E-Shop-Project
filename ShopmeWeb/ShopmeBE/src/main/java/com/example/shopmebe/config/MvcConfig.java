@@ -1,5 +1,6 @@
 package com.example.shopmebe.config;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,13 +12,19 @@ import java.nio.file.Paths;
 public class MvcConfig implements WebMvcConfigurer {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String dirName = "user-photos";
-        Path userPhotosDir = Paths.get(dirName);
+    public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
+        addResourceHandler(registry, "user-photos");
+        addResourceHandler(registry, "../category-images");
+    }
 
-        String userPhotosPath = userPhotosDir.toFile().getAbsolutePath();
+    private void addResourceHandler(ResourceHandlerRegistry registry, String dirName) {
+        Path path = Paths.get(dirName);
+        String actualDirName = path.getFileName().toString();
 
-        registry.addResourceHandler("/" + dirName + "/**")
-                .addResourceLocations("file:/" + userPhotosPath + "/");
+        String absolutePath = path.toAbsolutePath().toString();
+        System.out.println("Directory Path for " + actualDirName + ": " + absolutePath);
+
+        registry.addResourceHandler("/" + actualDirName + "/**")
+                .addResourceLocations("file:/" + absolutePath + "/");
     }
 }

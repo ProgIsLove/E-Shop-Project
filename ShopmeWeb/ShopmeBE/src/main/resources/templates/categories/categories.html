@@ -5,13 +5,27 @@
     <title>Title</title>
 </head>
 <body>
+
+<style>
+    td img {
+        border-radius: 50%;
+        mix-blend-mode: multiply;
+        width: 3.12rem;
+        height: 3.12rem;
+        display: block;
+    }
+
+    form div {
+        padding-top: 0.5rem;
+    }
+
+</style>
 <div class="container-fluid">
     <div th:replace="~{navigation :: menu}"></div>
     <div>
         <h2>Manage Categories</h2>
-
-        <a th:href="@{/categories/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
-        <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+        <a th:href="@{/categories/new}" class="fas fa-folder-plus fa-2x icon-dark me-2"></a>
+        <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark me-2"></a>
     </div>
 
     <div th:if="${message != null}" class="alert alert-success text-center">
@@ -19,17 +33,20 @@
     </div>
 
     <div>
-        <form th:action="@{/categories/page/1}" class="form-check-inline m-3">
-            Filter:&nbsp;
-            <input type="search" name="keyword" th:value="${keyword}" class="form-control" required/>
-            &nbsp;&nbsp;
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i>
-            </button>
-            &nbsp;&nbsp;
-            <button type="button" class="btn btn-secondary" onclick="clearFilter()">
-                <i class="fas fa-eraser"></i>
-            </button>
+        <form th:action="@{/categories/page/1}" class="row g-3 mb-2">
+            <div class="col-auto">
+                <input type="search" name="keyword" th:value="${keyword}" class="form-control" placeholder="Filter" required/>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
         </form>
     </div>
 
@@ -50,7 +67,7 @@
                     <td>[[${cat.id}]]</td>
                     <td>
                         <i th:if="${cat.image == null}" class="fa-solid fa-image-portrait fa-3x icon-dark"></i>
-                        <img th:if="${cat.image != null}" th:src="@{${cat.imagePath}}" style="width: 50px">
+                        <img th:if="${cat.image != null}" th:src="@{${cat.imagePath}}">
                     </td>
                     <td>[[${cat.name}]]</td>
                     <td>[[${cat.alias}]]</td>
