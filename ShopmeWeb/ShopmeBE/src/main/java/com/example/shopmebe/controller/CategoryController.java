@@ -67,7 +67,7 @@ public class CategoryController {
                                RedirectAttributes redirectAttributes) {
 
         try {
-            Category category = categoryService.get(id);
+            Category category = categoryService.categoryById(id);
             List<Category> categories = categoryService.listCategoriesUsedInForm();
 
             model.addAttribute("category", category);

@@ -28,7 +28,7 @@ public class CategoryService {
         List<Category> categoriesUsedInForm = new ArrayList<>();
         Iterable<Category> categories = categoryRepository.findAll();
 
-        for(Category category : categories) {
+        for (Category category : categories) {
             if (category.getParent() == null) {
                 categoriesUsedInForm.add(Category.copyIdAndName(category));
 
@@ -55,9 +55,28 @@ public class CategoryService {
         }
     }
 
-    public Category get(Integer id) throws CategoryNotFoundException {
+    public Category categoryById(Integer id) throws CategoryNotFoundException {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(
                         String.format("Could not find any category with ID: %d", id)));
+    }
+
+    public String checkUnique(Integer id, String name, String alias) {
+        boolean isCreatingNew = (id == null || id == 0);
+
+        Category categoryByName = categoryRepository.findByName(name);
+
+        if (isCreatingNew) {
+            if (categoryByName != null) {
+                return "DuplicateName";
+            } else {
+                Category categoryByAlias = categoryRepository.findByAlias(alias);
+                if (categoryByAlias != null) {
+                    return "DuplicateAlias";
+                }
+            }
+        }
+
+        return "OK";
     }
 }
