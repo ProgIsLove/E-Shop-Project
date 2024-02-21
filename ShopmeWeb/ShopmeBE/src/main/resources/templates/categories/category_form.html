@@ -1,34 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head(${pageTitle})">
+<head th:replace="~{fragments/common_fragments :: page_head(${pageTitle})}">
 </head>
 <body>
 
-<div class="modal" tabindex="-1" id="modalDialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="modalCross"></button>
-            </div>
-            <div class="modal-body">
-                <p id="modalBody">Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="container-fluid">
-    <div th:replace="navigation :: menu"></div>
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
     <div>
         <h2>Manage Categories | [[${pageTitle}]]</h2>
     </div>
 
     <form th:action="@{/categories/save}" method="post" enctype="multipart/form-data"
           style="max-width: 500px; margin: 0 auto;"
-         th:object="${category}">
+          th:object="${category}">
         <input type="hidden" th:field="*{id}" />
         <div class="border border-secondary rounded p-3">
             <div class="form-group row">
@@ -82,13 +66,63 @@
         </div>
     </form>
 
-
-    <div th:replace="fragments :: footer"></div>
+    <div th:replace="~{fragments/modal_fragments :: modal_dialog}"></div>
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
 
 
     </div>
 <script type="text/javascript">
     moduleURL = "[[@{/categories}]]";
+
+    function checkUnique(form) {
+        let catId = $("#id").val();
+        let catName = $("#name").val();
+        let catAlias = $("#alias").val();
+        let csrfValue = $("input[name='_csrf']").val();
+
+        const URL = "[[@{/v1/categories/check-unique}]]"
+        const PARAMS = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue}
+
+        $.post(URL, PARAMS, function (response) {
+            if (response === "OK") {
+                form.submit();
+            } else if (response === "Duplicate Name") {
+                showWarningModal(`There is another category having same name ${catName}`);
+            } else if (response === "Duplicate Alias") {
+                showWarningModal(`There is another category having same alias ${catAlias}`);
+            } else {
+                showErrorModal(`Unknown response from server`);
+            }
+        }).fail(function () {
+            showErrorModal(`Could not connect to the server`);
+        });
+
+        return false;
+    }
+
+    $(document).ready(function() {
+        $('form').on('submit', function() {
+            return checkUnique(this);
+        });
+    });
+
+    function showModalDialog(title, message) {
+        $('#modalTitle').text(title);
+        $('#modalBody').text(message);
+        $('#modalDialog').show();
+        $('#modalClose, #modalCross').on('click', function () {
+            $('#modalDialog').hide();
+        })
+    }
+
+    function showErrorModal(message) {
+        showModalDialog("Error", message);
+    }
+
+    function showWarningModal(message) {
+        showModalDialog("Warning", message)
+    }
+
 
 </script>
 <script th:src="@{/js/image-upload.js}"></script>

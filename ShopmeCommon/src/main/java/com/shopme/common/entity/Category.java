@@ -1,6 +1,7 @@
 package com.shopme.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,11 +41,17 @@ public class Category {
     public Category(Integer id, String name, String alias, String image, boolean enabled, Category parent, Set<Category> children) {
         this.id = id;
         this.name = name;
-        this.alias = name;
-        this.image = "default.png";
+        this.alias = alias;
+        this.image = image;
         this.enabled = enabled;
         this.parent = parent;
         this.children = children;
+    }
+
+    public Category(Integer id, String name, String alias) {
+        this.id = id;
+        this.name = name;
+        this.alias = alias;
     }
 
     public static Category copyIdAndName(Category category) {
@@ -57,7 +64,7 @@ public class Category {
     public Category(String name) {
         this.name = name;
         this.alias = name;
-        this.image = null;
+        this.image = "image-thumbnail.png";
     }
 
     public Category(String name, Category parent) {

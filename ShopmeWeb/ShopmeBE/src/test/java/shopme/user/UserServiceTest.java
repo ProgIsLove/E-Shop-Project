@@ -1,8 +1,6 @@
 package shopme.user;
 
-import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.exception.UserNotFoundException;
-import com.example.shopmebe.repository.RoleRepository;
 import com.example.shopmebe.repository.UserRepository;
 import com.example.shopmebe.service.UserService;
 import com.shopme.common.entity.Role;
@@ -10,18 +8,14 @@ import com.shopme.common.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -32,25 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-//Predelat na service nazev tridy i testovat methody userService.methoda()....
-
-
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = ShopmeBeApplication.class)
-@Rollback(value = false)
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepositoryMock;
     @Mock
-    private RoleRepository roleRepositoryMock;
-    @Mock
     private PasswordEncoder passwordEncoderMock;
     @InjectMocks
     private UserService userService;
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Captor
     ArgumentCaptor<User> captorUser;
@@ -59,17 +43,20 @@ class UserServiceTest {
     private static User userAnna;
     private static User userJohn;
 
+    private static Role roleAdmin;
+
+    private static Role roleSalesperson;
 
     @BeforeEach
     void setup() {
         captorUser = ArgumentCaptor.forClass(User.class);
 
-        Role roleAdmin = Role.builder()
+        roleAdmin = Role.builder()
                              .id(1)
                              .name("Admin")
                              .description("manage everything").build();
 
-        Role roleSalesperson = Role.builder()
+        roleSalesperson = Role.builder()
                              .id(2)
                              .name("Salesperson")
                              .description("manage product price, customers, shipping, orders and sales report").build();
@@ -114,7 +101,8 @@ class UserServiceTest {
 
     @Test
     void testCreateNewUserWithTwoRoles() {
-        when(userRepositoryMock.save(userJohn)).thenReturn(userJohn);
+        when(userRepositoryMock.findById(userJohn.getId())).thenReturn(Optional.of(userJohn));
+        when(userRepositoryMock.save(any())).thenReturn(userJohn);
 
         userService.save(userJohn);
 
@@ -199,14 +187,12 @@ class UserServiceTest {
 
         User newUserRole = userRepositoryMock.findById(ID).get();
 
-        Role roleAdmin = entityManager.find(Role.class, 1);
-        Role roleSalesperson = entityManager.find(Role.class, 2);
-
         newUserRole.getRoles().remove(roleAdmin);
         newUserRole.addRole(roleSalesperson);
 
         when(userRepositoryMock.save(newUserRole)).thenReturn(newUserRole);
-        userRepositoryMock.save(newUserRole);
+        userService.save(newUserRole);
+
         verify(userRepositoryMock).save(captorUser.capture());
 
         User user = captorUser.getValue();

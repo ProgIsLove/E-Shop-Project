@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: page_head('Categories - Shopme Admin')}">
+<head th:replace="~{fragments/common_fragments :: page_head('Categories - Shopme Admin')}">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -21,7 +21,7 @@
 
 </style>
 <div class="container-fluid">
-    <div th:replace="~{navigation :: menu}"></div>
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
     <div>
         <h2>Manage Categories</h2>
         <a th:href="@{/categories/new}" class="fas fa-folder-plus fa-2x icon-dark me-2"></a>
@@ -72,9 +72,9 @@
                     <td>[[${cat.name}]]</td>
                     <td>[[${cat.alias}]]</td>
                     <td>
-                        <a th:replace="~{fragments :: disable(${cat.enabled}) }"></a>
+                        <a th:replace="~{fragments/common_fragments :: disable(${cat.enabled}) }"></a>
 
-                        <a th:replace="~{fragments :: enabled(${cat.enabled})}"></a>
+                        <a th:replace="~{fragments/common_fragments :: enabled(${cat.enabled})}"></a>
                     </td>
                     <td>
                         <a th:href="@{'/categories/edit/' + ${cat.id}}" title="Edit this category"><i
@@ -90,7 +90,7 @@
         </table>
     </div>
 
-    <div th:replace="~{fragments :: footer}"></div>
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
 </div>
 </body>
 </html>

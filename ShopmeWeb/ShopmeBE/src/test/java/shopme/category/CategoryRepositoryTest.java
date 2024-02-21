@@ -1,8 +1,9 @@
-package shopme.user;
+package shopme.category;
 
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.repository.CategoryRepository;
 import com.shopme.common.entity.Category;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,38 +53,29 @@ public class CategoryRepositoryTest {
         Integer id = 1;
         Optional<Category> categoryById = categoryRepository.findById(id);
 
+
+        Category expectedParent = new Category("Electronics");
+        expectedParent.setId(1);
+        expectedParent.setImage("image-thumbnail.png");
+        expectedParent.setEnabled(true);
+
+        Category category1 = new Category("Cameras");
+        category1.setId(6);
+        category1.setImage("image-thumbnail.png");
+        category1.setEnabled(true);
+
+        Category category2 = new Category("Smartphones");
+        category2.setId(7);
+        category2.setImage("image-thumbnail.png");
+        category2.setEnabled(true);
+
+        expectedParent.addSubCategory(category1);
+        expectedParent.addSubCategory(category2);
+
         assertThat(categoryById).isPresent();
         assertThat(categoryById.get().getId()).isPositive();
-
-        Set<Category> expectedChildren = new HashSet<>();
-        expectedChildren.add(Category.builder().id(6).name("Cameras").enabled(true).build());
-        expectedChildren.add(Category.builder().id(7).name("Smartphones").enabled(true).build());
-
-        Category expectedParent = Category.builder()
-                .id(1)
-                .name("Electronics")
-                .enabled(true)
-                .children(expectedChildren)
-                .build();
-
-        Set<Category> actualChildren = new HashSet<>(categoryById.get().getChildren());
-
-        assertThat(actualChildren.size()).isPositive();
-        assertThat(actualChildren).size().isEqualTo(2);
-        assertThat(actualChildren).isEqualTo(expectedChildren);
-
-        assertThat(categoryById.get().getName()).isEqualTo(expectedParent.getName());
-
-        for (Category category : actualChildren) {
-            assertThat(expectedChildren).contains(category);
-        }
-
-        for (Category category : expectedChildren) {
-            assertThat(actualChildren).contains(category);
-        }
-
-//        assertThatCode(() -> assertThat(categoryById.get()).usingRecursiveComparison().isEqualTo(expectedParent))
-//                .doesNotThrowAnyException();
+        assertThatCode(() -> assertThat(categoryById.get()).usingRecursiveComparison().isEqualTo(expectedParent))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -142,5 +134,38 @@ public class CategoryRepositoryTest {
 
         assertThatCode(() -> assertThat(categoryById.get()).usingRecursiveComparison().isEqualTo(expectedParent))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void testFindByName() {
+        String name = "Computers";
+        Category categoryByName = categoryRepository.findByName(name);
+
+        assertThat(categoryByName).isNotNull();
+        assertThat(categoryByName.getName()).isEqualTo(name);
+    }
+
+    @Test
+    public void testFindByNameNotFound() {
+        String name = "test";
+        Category categoryByName = categoryRepository.findByName(name);
+
+        assertThat(categoryByName).isNull();
+    }
+
+    @Test
+    public void testFindByAlias() {
+        String name = "Computers";
+        Category categoryByAlias = categoryRepository.findByAlias(name);
+
+        assertThat(categoryByAlias).isNotNull();
+    }
+
+    @Test
+    public void testFindByAliasNotFound() {
+        String name = "test";
+        Category categoryByAlias = categoryRepository.findByAlias(name);
+
+        assertThat(categoryByAlias).isNull();
     }
 }
