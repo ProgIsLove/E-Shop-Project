@@ -68,12 +68,21 @@ public class CategoryService {
 
         if (isCreatingNew) {
             if (categoryByName != null) {
-                return "DuplicateName";
+                return "Duplicate Name";
             } else {
                 Category categoryByAlias = categoryRepository.findByAlias(alias);
                 if (categoryByAlias != null) {
-                    return "DuplicateAlias";
+                    return "Duplicate Alias";
                 }
+            }
+        } else {
+            if (categoryByName != null && categoryByName.getId() != null) {
+                return "Duplicate Name";
+            }
+
+            Category categoryByAlias = categoryRepository.findByAlias(alias);
+            if (categoryByAlias != null && categoryByAlias.getId() != null) {
+                return "Duplicate Alias";
             }
         }
 

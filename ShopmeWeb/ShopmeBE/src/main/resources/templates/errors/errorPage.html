@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: page_head('Home - Shopme Admin')}">
+<head th:replace="~{fragments/common_fragments :: page_head('Home - Shopme Admin')}">
 </head>
 <body>
 <div class="container-fluid">
-    <div th:replace="navigation :: menu"></div>
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
     <div class="m-3 text-center">
         <h2>[[${errorMsg}]]</h2>
     </div>
 
-    <div th:replace="fragments :: footer"></div>
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
 </div>
 
 </body>

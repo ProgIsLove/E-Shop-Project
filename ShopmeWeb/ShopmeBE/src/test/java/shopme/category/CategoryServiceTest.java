@@ -30,7 +30,7 @@ public class CategoryServiceTest {
 
         String isUnique = categoryService.checkUnique(null, name, null);
 
-        assertThat(isUnique).isEqualTo("DuplicateName");
+        assertThat(isUnique).isEqualTo("Duplicate Name");
     }
 
     @Test
@@ -43,6 +43,46 @@ public class CategoryServiceTest {
 
         String isUnique = categoryService.checkUnique(null, null, alias);
 
-        assertThat(isUnique).isEqualTo("DuplicateAlias");
+        assertThat(isUnique).isEqualTo("Duplicate Alias");
+    }
+
+    @Test
+    public void testCheckUniqueInEditModeReturnDuplicateName() {
+        Integer id = 1;
+        String name = "Computers";
+
+        Category category = new Category(2, name, null);
+
+        when(categoryRepositoryMock.findByName(name)).thenReturn(category);
+
+        String isUnique = categoryService.checkUnique(id, name, null);
+
+        assertThat(isUnique).isEqualTo("Duplicate Name");
+    }
+
+    @Test
+    public void testCheckUniqueInEditModeReturnDuplicateAlias() {
+        Integer id = 1;
+        String alias = "Computers";
+
+        Category category = new Category(2, null, alias);
+
+        when(categoryRepositoryMock.findByAlias(alias)).thenReturn(category);
+
+        String isUnique = categoryService.checkUnique(id, null, alias);
+
+        assertThat(isUnique).isEqualTo("Duplicate Alias");
+    }
+
+    @Test
+    public void testCheckUniqueInEditModeReturnOK() {
+        Integer id = 1;
+        String alias = "test";
+
+        when(categoryRepositoryMock.findByAlias(alias)).thenReturn(null);
+
+        String isUnique = categoryService.checkUnique(id, null, alias);
+
+        assertThat(isUnique).isEqualTo("OK");
     }
 }

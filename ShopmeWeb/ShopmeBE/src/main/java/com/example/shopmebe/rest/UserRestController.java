@@ -1,6 +1,7 @@
 package com.example.shopmebe.rest;
 
 import com.example.shopmebe.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -8,10 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserRestController {
 
-    @Autowired
     private UserService userService;
 
     @PostMapping("/users/check-email")

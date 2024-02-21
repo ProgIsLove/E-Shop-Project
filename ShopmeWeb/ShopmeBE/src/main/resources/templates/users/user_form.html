@@ -1,34 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: page_head(${pageTitle})}">
+<head th:replace="~{fragments/common_fragments :: page_head(${pageTitle})}">
 </head>
 <body>
 
-<div class="modal" tabindex="-1" id="modalDialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="modalCross"></button>
-            </div>
-            <div class="modal-body">
-                <p id="modalBody">Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="container-fluid">
-    <div th:replace="navigation :: menu"></div>
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
     <div>
         <h2>Manage Users | [[${pageTitle}]]</h2>
     </div>
 
     <form th:action="@{/users/save}" method="post" enctype="multipart/form-data"
           style="max-width: 700px; margin: 0 auto;"
-         th:object="${user}" onsubmit="return checkEmailUnique(this);">
+         th:object="${user}">
         <input type="hidden" th:field="*{id}" />
         <div class="border border-secondary rounded p-3">
             <div class="form-group row">
@@ -92,30 +77,31 @@
         </div>
     </form>
 
+    <div th:replace="~{fragments/modal_fragments :: modal_dialog}"></div>
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
 
-    <div th:replace="~{fragments :: footer}"></div>
 
-
-    </div>
+</div>
 <script type="text/javascript">
     moduleURL = "[[@{/}]]";
     function checkEmailUnique(form) {
-        url = "[[@{/users/check-email}]]";
-        userEmail = $("#email").val();
-        userId = $("#id").val();
-        csrfValue = $("input[name='_csrf']").val();
-        params = {id: userId, email: userEmail, _csrf: csrfValue};
+        let userEmail = $("#email").val();
+        let userId = $("#id").val();
+        let csrfValue = $("input[name='_csrf']").val();
 
-        $.post(url, params, function (response) {
+        const URL = "[[@{/users/check-email}]]";
+        const PARAMS = {id: userId, email: userEmail, _csrf: csrfValue};
+
+        $.post(URL, PARAMS, function (response) {
             if (response === "OK") {
                 form.submit();
             } else if (response === "Duplicated") {
-                showModalDialog(`Warning`, `There is another user having the email: ${userEmail}`);
+                showWarningModal(`There is another user having the email: ${userEmail}`);
             } else {
-                showModalDialog(`Error`, `Unknown response from server`);
+                showErrorModal(`Unknown response from server`);
             }
         }).fail(function () {
-            showModalDialog(`Error`, `Could not connect to server`);
+            showErrorModal(`Could not connect to server`);
         })
 
         return false;
@@ -126,8 +112,22 @@
         $('#modalBody').text(message);
         $('#modalDialog').show();
         $('#modalClose, #modalCross').on('click', function () {
-                $('#modalDialog').hide();
+            $('#modalDialog').hide();
         })
+    }
+
+    $(document).ready(function() {
+        $('form').on('submit', function() {
+            return checkEmailUnique(this);
+        });
+    });
+
+    function showErrorModal(message) {
+        showModalDialog("Error", message);
+    }
+
+    function showWarningModal(message) {
+        showModalDialog("Warning", message)
     }
 </script>
 <script th:src="@{/js/image-upload.js}"></script>

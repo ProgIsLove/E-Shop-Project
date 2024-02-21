@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="page_head(title)">
+    <meta http-equiv="Content-Type" charset="UTF-8" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+    <script type="text/javascript" th:src="@{/js/logout.js}"></script>
+    <script src="https://kit.fontawesome.com/a0661b4ae5.js" crossorigin="anonymous"></script>
+
+    <title>[[${title}]]</title>
+</head>
+<body>
+<div th:fragment="modal_dialog" class="modal" tabindex="-1" id="modalDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="modalCross"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalBody">Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
