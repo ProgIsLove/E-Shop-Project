@@ -61,6 +61,22 @@ public class Category {
                 .build();
     }
 
+    public static Category copyFull(Category category) {
+        return Category.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .image(category.getImage())
+                .alias(category.getAlias())
+                .enabled(category.isEnabled())
+                .build();
+    }
+
+    public static Category copyFull(Category category, String name) {
+        Category copyCategory = Category.copyFull(category);
+        copyCategory.setName(name);
+        return copyCategory;
+    }
+
     public Category(String name) {
         this.name = name;
         this.alias = name;
