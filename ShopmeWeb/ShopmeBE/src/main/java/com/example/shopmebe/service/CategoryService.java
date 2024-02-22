@@ -4,11 +4,10 @@ import com.example.shopmebe.exception.CategoryNotFoundException;
 import com.example.shopmebe.repository.CategoryRepository;
 import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -17,22 +16,62 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public List<Category> listALl() {
-        return (List<Category>) categoryRepository.findAll();
+        List<Category> category = categoryRepository.findRootCategories(Sort.by("name").ascending());
+        return listHierarchicalCategories(category);
     }
 
     public Category save(Category category) {
         return categoryRepository.save(category);
     }
 
+    private List<Category> listHierarchicalCategories(List<Category> rootCategories) {
+        List<Category> hierarchicalCategories = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+
+        for (Category rootCategory : rootCategories) {
+            hierarchicalCategories.add(Category.copyFull(rootCategory));
+
+            Set<Category> children = sortSubCategories(rootCategory.getChildren());
+
+            for (Category subCategory : children) {
+                sb.delete(0, sb.length()); //clear StringBuilder
+                sb.append("--").append(subCategory.getName());
+                hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(sb)));
+
+                listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1);
+            }
+        }
+
+        return hierarchicalCategories;
+    }
+
+    private void listSubHierarchicalCategories(List<Category> hierarchicalCategories, Category parent, int subLevel) {
+        Set<Category> children = sortSubCategories(parent.getChildren());
+        int newSubLevel = subLevel + 1;
+        StringBuilder sb = new StringBuilder();
+
+        for (Category subCategory : children) {
+            sb.delete(0, sb.length()); //clear StringBuilder
+            sb.append("--".repeat(Math.max(0, newSubLevel)));
+
+            sb.append(subCategory.getName());
+            hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(sb)));
+
+            listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel);
+        }
+    }
+
     public List<Category> listCategoriesUsedInForm() {
         List<Category> categoriesUsedInForm = new ArrayList<>();
-        Iterable<Category> categories = categoryRepository.findAll();
+        Iterable<Category> categories = categoryRepository.findRootCategories(Sort.by("name").ascending());
 
         for (Category category : categories) {
             if (category.getParent() == null) {
                 categoriesUsedInForm.add(Category.copyIdAndName(category));
 
-                listChildren(categoriesUsedInForm, category.getChildren(), 0);
+                SortedSet<Category> sortedSubCategories = sortSubCategories(category.getChildren());
+
+                listChildren(categoriesUsedInForm, sortedSubCategories, 0);
             }
         }
 
@@ -49,9 +88,12 @@ public class CategoryService {
 
             categoriesUsedInForm.add(Category.builder()
                     .id(subCategory.getId())
-                    .name(sb + subCategory.getName())
+                    .name(String.valueOf(sb.append(subCategory.getName())))
                     .build());
-            listChildren(categoriesUsedInForm, subCategory.getChildren(), newSubLevel);
+
+            SortedSet<Category> sortedSubCategories = sortSubCategories(subCategory.getChildren());
+
+            listChildren(categoriesUsedInForm, sortedSubCategories, newSubLevel);
         }
     }
 
@@ -87,5 +129,18 @@ public class CategoryService {
         }
 
         return "OK";
+    }
+
+    private SortedSet<Category> sortSubCategories(Set<Category> children) {
+        TreeSet<Category> sortedChildren = new TreeSet<>(new Comparator<Category>() {
+            @Override
+            public int compare(Category cat1, Category cat2) {
+
+                return cat1.getName().compareTo(cat2.getName());
+            }
+        });
+
+        sortedChildren.addAll(children);
+        return sortedChildren;
     }
 }
