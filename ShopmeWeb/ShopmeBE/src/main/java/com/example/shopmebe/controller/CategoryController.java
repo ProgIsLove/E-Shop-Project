@@ -5,6 +5,7 @@ import com.example.shopmebe.service.CategoryService;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -26,9 +27,16 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/categories")
-    public String listAll(Model model) {
-        List<Category> listCategories = categoryService.listALl();
+    public String listAll(@Param("sortDir") String sortDir, Model model) {
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
+        List<Category> listCategories = categoryService.listALl(sortDir);
+
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
         model.addAttribute("listCategories", listCategories);
+        model.addAttribute("reverseSortDir", reverseSortDir);
 
         return "categories/categories";
     }
