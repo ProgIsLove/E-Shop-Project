@@ -76,9 +76,7 @@
                     <td>[[${cat.name}]]</td>
                     <td>[[${cat.alias}]]</td>
                     <td>
-                        <a th:replace="~{fragments/common_fragments :: disable(${cat.enabled}) }"></a>
-
-                        <a th:replace="~{fragments/common_fragments :: enabled(${cat.enabled})}"></a>
+                        <a th:replace="~{fragments/common_fragments :: category_status }"></a>
                     </td>
                     <td>
                         <a th:href="@{'/categories/edit/' + ${cat.id}}" title="Edit this category"><i
