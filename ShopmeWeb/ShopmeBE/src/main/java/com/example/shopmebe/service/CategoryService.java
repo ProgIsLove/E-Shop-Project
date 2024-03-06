@@ -6,6 +6,7 @@ import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -149,5 +150,10 @@ public class CategoryService {
 
         sortedChildren.addAll(children);
         return sortedChildren;
+    }
+
+    @Transactional
+    public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
+        categoryRepository.updateEnabledStatus(id, enabled);
     }
 }

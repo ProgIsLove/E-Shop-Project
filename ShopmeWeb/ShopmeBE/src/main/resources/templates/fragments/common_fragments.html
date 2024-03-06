@@ -30,16 +30,18 @@
    th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}
                     + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${label}]]</a>
 
-<a th:fragment="disable(isEnabled)"
-   th:if = "${isEnabled} == true"
-   title="Disable this user"><i class="fas fa-check-circle fa-2x icon-green"></i></a>
-
-<a th:fragment="enabled(isEnabled)"
-   th:if = "${isEnabled} == false"
-   title="Enable this user"><i class="fas fa-circle fa-2x icon-dark"></i></a>
-
 <div th:fragment="footer" class="text-center m-3">
     <p>Shopme Control Panel - Copyright &copy; Shopme</p>
+</div>
+
+<div th:fragment="category_status" th:remove="tag">
+    <a th:if="${cat.enabled == true}"
+       th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}"
+       title="Disable this category"><i class="fa-solid fa-circle-check fa-2x icon-green"></i></a>
+
+    <a th:if="${cat.enabled == false}"
+       th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"
+       title="Enable this category"><i class="fa-solid fa-circle-check fa-2x icon-red"></i></a>
 </div>
 
 </body>
