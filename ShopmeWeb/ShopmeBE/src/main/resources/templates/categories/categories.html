@@ -76,23 +76,30 @@
                     <td>[[${cat.name}]]</td>
                     <td>[[${cat.alias}]]</td>
                     <td>
-                        <a th:replace="~{fragments/common_fragments :: category_status }"></a>
+                        <div th:replace="~{fragments/common_fragments :: category_status }"></div>
                     </td>
                     <td>
-                        <a th:href="@{'/categories/edit/' + ${cat.id}}" title="Edit this category"><i
-                                class="fas fa-edit fa-2x icon-green"></i></a>
-                        &nbsp;
-                        <a class="link-delete"
-                           th:href="@{'/categories/delete/' + ${cat.id}}"
-                           title="Delete this category">
-                            <i class="fas fa-trash fa-2x icon-red link-delete"></i></a>
+                        <div th:replace="~{fragments/common_fragments :: category_actions}"></div>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+    <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
+
     <div th:replace="~{fragments/common_fragments :: footer}"></div>
 </div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    moduleURL = "[[@{/categories}]]";
+
+    $(document).ready(function () {
+        $(".link-delete").on("click", (e) => {
+            e.preventDefault()
+            showDeleteConfirmModel($(this), 'category');
+        })
+    })
+</script>
 </body>
 </html>

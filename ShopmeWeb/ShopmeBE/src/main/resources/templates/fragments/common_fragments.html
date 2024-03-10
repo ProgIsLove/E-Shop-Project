@@ -25,6 +25,14 @@
     </span>
 </th>
 
+<a th:fragment="disable(isEnabled)"
+   th:if = "${isEnabled} == true"
+   title="Disable this user"><i class="fas fa-check-circle fa-2x icon-green"></i></a>
+
+<a th:fragment="enabled(isEnabled)"
+   th:if = "${isEnabled} == false"
+   title="Enable this user"><i class="fas fa-circle fa-2x icon-dark"></i></a>
+
 <a th:fragment="page_link(pageNum, label)"
    class="page-link"
    th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}
@@ -42,6 +50,28 @@
     <a th:if="${cat.enabled == false}"
        th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"
        title="Enable this category"><i class="fa-solid fa-circle-check fa-2x icon-red"></i></a>
+</div>
+
+<div th:fragment="category_actions" th:remove="tag">
+    <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
+    title="Edit this category"></a>
+    &nbsp;
+    <th:block th:if="${cat.hasChildren == false}">
+        <a class="fas fa-trash fa-2x icon-dark link-delete"
+           th:href="@{'/categories/delete/' + ${cat.id}}"
+           th:entityId="${cat.id}"
+           title="Delete this category"></a>
+    </th:block>
+</div>
+
+<div th:fragment="user_actions" th:remove="tag">
+    <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
+       title="Edit this user"></a>
+    &nbsp;
+        <a class="fas fa-trash fa-2x icon-dark link-delete"
+           th:href="@{'/users/delete/' + ${user.id}}"
+           th:entityId="${user.id}"
+           title="Delete this user"></a>
 </div>
 
 </body>

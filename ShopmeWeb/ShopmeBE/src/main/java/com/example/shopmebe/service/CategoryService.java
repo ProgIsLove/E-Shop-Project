@@ -28,7 +28,7 @@ public class CategoryService {
 
     private List<Category> listHierarchicalCategories(List<Category> rootCategories, String sortDir) {
         List<Category> hierarchicalCategories = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (Category rootCategory : rootCategories) {
             hierarchicalCategories.add(Category.copyFull(rootCategory));
@@ -36,9 +36,9 @@ public class CategoryService {
             Set<Category> children = sortSubCategories(rootCategory.getChildren(), sortDir);
 
             for (Category subCategory : children) {
-                sb.delete(0, sb.length()); //clear StringBuilder
-                sb.append("--").append(subCategory.getName());
-                hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(sb)));
+                stringBuilder.delete(0, stringBuilder.length()); //clear StringBuilder
+                stringBuilder.append("--").append(subCategory.getName());
+                hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(stringBuilder)));
 
                 listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1, sortDir);
             }
@@ -53,14 +53,14 @@ public class CategoryService {
                                                String sortDir) {
         Set<Category> children = sortSubCategories(parent.getChildren(), sortDir);
         int newSubLevel = subLevel + 1;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (Category subCategory : children) {
-            sb.delete(0, sb.length()); //clear StringBuilder
-            sb.append("--".repeat(Math.max(0, newSubLevel)));
+            stringBuilder.delete(0, stringBuilder.length()); //clear StringBuilder
+            stringBuilder.append("--".repeat(Math.max(0, newSubLevel)));
 
-            sb.append(subCategory.getName());
-            hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(sb)));
+            stringBuilder.append(subCategory.getName());
+            hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(stringBuilder)));
 
             listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel, sortDir);
         }
@@ -85,16 +85,17 @@ public class CategoryService {
 
     private void listChildren(List<Category> categoriesUsedInForm, Set<Category> children, int subLevel) {
         int newSubLevel = subLevel + 1;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (Category subCategory : children) {
-            sb.delete(0, sb.length()); //clear StringBuilder
-            sb.append("--".repeat(Math.max(0, newSubLevel)));
+            stringBuilder.delete(0, stringBuilder.length()); //clear StringBuilder
+            stringBuilder.append("--".repeat(Math.max(0, newSubLevel)));
 
-            categoriesUsedInForm.add(Category.builder()
-                    .id(subCategory.getId())
-                    .name(String.valueOf(sb.append(subCategory.getName())))
-                    .build());
+            Category copiedCategory = new Category();
+            copiedCategory.setId(subCategory.getId());
+            copiedCategory.setName(String.valueOf(stringBuilder.append(subCategory.getName())));
+
+            categoriesUsedInForm.add(copiedCategory);
 
             SortedSet<Category> sortedSubCategories = sortSubCategories(subCategory.getChildren());
 
@@ -155,5 +156,14 @@ public class CategoryService {
     @Transactional
     public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
         categoryRepository.updateEnabledStatus(id, enabled);
+    }
+    @Transactional
+    public void delete(Integer id) throws CategoryNotFoundException {
+        Long countById = categoryRepository.countById(id);
+        if (countById == null ||  countById == 0) {
+            throw new CategoryNotFoundException(String.format("Could not find any category with ID %d", id));
+        }
+
+        categoryRepository.deleteById(id);
     }
 }

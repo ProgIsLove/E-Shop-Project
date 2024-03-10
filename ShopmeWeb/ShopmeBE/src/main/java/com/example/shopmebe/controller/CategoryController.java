@@ -6,6 +6,7 @@ import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -98,6 +99,23 @@ public class CategoryController {
         String status = enabled ? "enabled" : "disabled";
         String message = String.format("The category ID %d has been %s", id, status);
         redirectAttributes.addFlashAttribute("message", message);
+
+        return "redirect:/categories";
+    }
+
+    @GetMapping("/categories/delete/{id}")
+    public String deleteCategory(@PathVariable(name = "id") Integer id,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            categoryService.delete(id);
+            String categoryDir = "../category-images" + id;
+            FileUploadUtil.removeDir(categoryDir);
+
+            redirectAttributes.addFlashAttribute("message",
+                    String.format("The category ID %s has been deleted successfully", id));
+        } catch (CategoryNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+        }
 
         return "redirect:/categories";
     }

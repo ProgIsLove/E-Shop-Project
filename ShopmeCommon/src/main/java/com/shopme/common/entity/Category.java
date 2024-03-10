@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Table(name = "categories")
 @Setter
 @Getter
-@Builder
 public class Category {
 
     @Id
@@ -34,6 +33,8 @@ public class Category {
     private Category parent;
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
+    @Transient
+    private boolean hasChildren;
 
     public Category() {
     }
@@ -55,20 +56,33 @@ public class Category {
     }
 
     public static Category copyIdAndName(Category category) {
-        return Category.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .build();
+        Category copiedCategory = new Category();
+        copiedCategory.setId(category.getId());
+        copiedCategory.setName(category.getName());
+        return copiedCategory;
     }
 
+//    public static Category copyFull(Category category) {
+//        return Category.builder()
+//                .id(category.getId())
+//                .name(category.getName())
+//                .image(category.getImage())
+//                .alias(category.getAlias())
+//                .enabled(category.isEnabled())
+//                .hasChildren(category.getChildren().size() > 0)
+//                .build();
+//    }
+
     public static Category copyFull(Category category) {
-        return Category.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .image(category.getImage())
-                .alias(category.getAlias())
-                .enabled(category.isEnabled())
-                .build();
+        Category copyCategory = new Category();
+        copyCategory.setId(category.getId());
+        copyCategory.setName(category.getName());
+        copyCategory.setImage(category.getImage());
+        copyCategory.setAlias(category.getAlias());
+        copyCategory.setEnabled(category.isEnabled());
+        copyCategory.setHasChildren(category.getChildren().size() > 0);
+
+        return copyCategory;
     }
 
     public static Category copyFull(Category category, String name) {
@@ -97,6 +111,14 @@ public class Category {
     public String getImagePath() {
         if (this.id == null) return "/images/image-thumbnail.png";
         return "/category-images/" + this.id + "/" + this.image;
+    }
+
+    public boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
     }
 
     @Override

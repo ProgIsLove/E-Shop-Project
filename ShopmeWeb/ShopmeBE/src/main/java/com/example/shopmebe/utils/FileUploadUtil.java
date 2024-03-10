@@ -50,4 +50,14 @@ public class FileUploadUtil {
             log.error(String.format("Could not list directory: %s", dirPath));
         }
     }
+
+    public static void removeDir(String dir) {
+        cleanDirectory(dir);
+
+        try {
+            Files.delete(Paths.get(dir));
+        } catch (IOException e) {
+            log.error(String.format("Could not remove directory: %s", dir));
+        }
+    }
 }

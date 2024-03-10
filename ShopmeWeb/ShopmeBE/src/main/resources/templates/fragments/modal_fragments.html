@@ -14,18 +14,20 @@
     <title>[[${title}]]</title>
 </head>
 <body>
-<div th:fragment="modal_dialog" class="modal" tabindex="-1" id="modalDialog">
+
+<div th:fragment="confirm_modal" class="modal" tabindex="-1" id="confirmModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-danger" id="modalTitle">Modal title</h5>
+                <h5 class="modal-title text-danger" id="modal-title">Delete Confirmation</h5>
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="modalCross"></button>
             </div>
             <div class="modal-body">
-                <p id="modalBody">Modal body text goes here.</p>
+                <span id="confirmText"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">Close</button>
+                <a class="btn btn-success" href="" id="yesButton">Yes</a>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalClose">No</button>
             </div>
         </div>
     </div>
