@@ -112,7 +112,6 @@
                     &nbsp;
                     <a class="link-delete"
                        th:href="@{'/users/delete/' + ${user.id}}"
-                       th:userId="${user.id}"
                        th:entityId="${user.id}"
                        title="Delete this user">
                         <i class="fas fa-trash fa-2x icon-red link-delete"></i></a>
@@ -194,7 +193,7 @@
     }
 
     $(document).ready(function () {
-        $(".link-delete").on("click", (e) => {
+        $('.link-delete').on("click", function (e) {
             e.preventDefault()
             showDeleteConfirmModel($(this), 'user');
         })

@@ -95,7 +95,7 @@
     moduleURL = "[[@{/categories}]]";
 
     $(document).ready(function () {
-        $(".link-delete").on("click", (e) => {
+        $('.link-delete').on("click", function (e) {
             e.preventDefault()
             showDeleteConfirmModel($(this), 'category');
         })
