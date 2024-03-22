@@ -2,8 +2,11 @@ package com.example.shopmebe.service;
 
 import com.example.shopmebe.exception.CategoryNotFoundException;
 import com.example.shopmebe.repository.CategoryRepository;
+import com.example.shopmebe.utils.CategoryPageInfo;
 import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +16,21 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class CategoryService {
-
+    public  static final int ROOT_CATEGORIES_PER_PAGE = 4;
     private final CategoryRepository categoryRepository;
 
-    public List<Category> listALl(String sortDir) {
+    public List<Category> listByPage(CategoryPageInfo pageInfo, int pageNum, String sortDir) {
         Sort sort = Sort.by("name");
-        List<Category> category = categoryRepository.findRootCategories(sortDir.equals("asc") ? sort.ascending() : sort.descending());
-        return listHierarchicalCategories(category, sortDir);
+
+        PageRequest pageable = PageRequest.of(pageNum - 1, ROOT_CATEGORIES_PER_PAGE, sortDir.equals("asc") ? sort.ascending() : sort.descending());
+
+        Page<Category> pageCategories = categoryRepository.findRootCategories(pageable);
+        List<Category> rootCategories = pageCategories.getContent();
+
+        pageInfo.setTotalElements(pageCategories.getTotalElements());
+        pageInfo.setTotalPages(pageCategories.getTotalPages());
+
+        return listHierarchicalCategories(rootCategories, sortDir);
     }
 
     public Category save(Category category) {

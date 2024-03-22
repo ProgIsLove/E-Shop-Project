@@ -2,6 +2,7 @@ package com.example.shopmebe.controller;
 
 import com.example.shopmebe.exception.CategoryNotFoundException;
 import com.example.shopmebe.service.CategoryService;
+import com.example.shopmebe.utils.CategoryPageInfo;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Category;
 import lombok.AllArgsConstructor;
@@ -28,14 +29,33 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/categories")
-    public String listAll(@Param("sortDir") String sortDir, Model model) {
+    public String listFirstPage(@Param("sortDir") String sortDir, Model model) {
+        return listByPage(1, sortDir, model);
+    }
+
+    @GetMapping("/categories/page/{pageNum}")
+    public String listByPage(@PathVariable(name = "pageNum") int pageNum, @Param("sortDir") String sortDir, Model model) {
         if (sortDir == null || sortDir.isEmpty()) {
             sortDir = "asc";
         }
-        List<Category> listCategories = categoryService.listALl(sortDir);
+        CategoryPageInfo page = new CategoryPageInfo();
+        List<Category> listCategories = categoryService.listByPage(page, pageNum, sortDir);
+
+        long startCount = (long) (pageNum - 1) * CategoryService.ROOT_CATEGORIES_PER_PAGE + 1;
+        long endCount = startCount + CategoryService.ROOT_CATEGORIES_PER_PAGE - 1;
+        if (endCount > page.getTotalElements()) {
+            endCount = page.getTotalElements();
+        }
 
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
 
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("sortField", "name");
+        model.addAttribute("sortField", sortDir);
         model.addAttribute("listCategories", listCategories);
         model.addAttribute("reverseSortDir", reverseSortDir);
 

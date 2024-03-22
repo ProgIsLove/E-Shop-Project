@@ -57,7 +57,7 @@
                     <th>ID</th>
                     <th>Category Image</th>
                     <th>
-                        <a class="text-white" th:href="@{'/categories?sortDir=' + ${reverseSortDir}}">Category Name</a>
+                        <a class="text-white" th:href="@{'/categories/page/' + ${pageNum} + '?sortDir=' + ${reverseSortDir}}">Category Name</a>
                         <span th:class="${reverseSortDir == 'desc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
                         </span>
                     </th>
@@ -86,8 +86,8 @@
         </table>
     </div>
 
+    <div th:replace="~{fragments/common_fragments :: pagination('/categories', 'top-level categories')}"></div>
     <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
-
     <div th:replace="~{fragments/common_fragments :: footer}"></div>
 </div>
 <script th:src="@{/js/common_list.js}"></script>
