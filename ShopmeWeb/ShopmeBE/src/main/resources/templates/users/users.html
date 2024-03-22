@@ -121,67 +121,9 @@
         </div>
     </div>
 
-    <div class="text-center m-1" th:if="${totalItems > 0}">
-        <span>Showing users # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
-    </div>
-    <div class="text-center m-1" th:unless="${totalItems > 0}">
-        <span>No users found</span>
-    </div>
-
-    <div th:if="${totalPages > 1}">
-        <nav>
-            <ul class="pagination justify-content-center flex-wrap">
-                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(1, 'First')}"></a>
-                </li>
-                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${currentPage - 1}, 'Previous')}"></a>
-                </li>
-
-                <th:block th:if="${totalPages <= 10}">
-                <li th:each="i : ${#numbers.sequence(1, totalPages)}"
-                    th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${i}, ${i})}"></a>
-                </li>
-                </th:block>
-
-                <th:block th:if="${totalPages > 10}">
-                    <th:block th:if="${currentPage <= 5 || currentPage >= totalPages - 4}">
-                        <li th:each="i : ${#numbers.sequence(1, 5)}"
-                            th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:replace="~{fragments/common_fragments :: page_link(${i}, ${i})}"></a>
-                        </li>
-
-                        <a th:href="6" class="page-link">...</a>
-
-                        <li th:each="i : ${#numbers.sequence(totalPages - 4, totalPages)}"
-                            th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:href="@{${i}}" class="page-link">[[${i}]]</a>
-                        </li>
-                    </th:block>
-                    <th:block th:if="${currentPage <= 5 && currentPage < totalPages -4}">
-                        <a th:href="@{${currentPage - 5}}" class="page-link">...</a>
-
-                        <li th:each="i : ${#numbers.sequence(currentPage - 4, currentPage + 4)}"
-                            th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:href="@{${i}}" class="page-link">[[${i}]]</a>
-                        </li>
 
 
-                        <a th:href="@{${currentPage + 5}}" class="page-link">...</a>
-
-                    </th:block>
-                </th:block>
-
-                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${currentPage + 1}, 'Next')}"></a>
-                </li>
-                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${totalPages}, 'Last')}"></a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+    <div th:replace="~{fragments/common_fragments :: pagination('/users', 'users')}"></div>
     <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
     <div th:replace="~{fragments/common_fragments :: footer}"></div>
 
