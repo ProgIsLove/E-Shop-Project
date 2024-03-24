@@ -137,5 +137,26 @@
     </nav>
 </div>
 </div>
+
+<div th:fragment="search_form(moduleURL)">
+    <form th:action="@{${moduleURL}}" class="row g-3 mb-2">
+        <input type="hidden" name="sortField" th:value="${sortField}"/>
+        <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+        <div class="col-auto">
+            <input type="search" id="filter" name="keyword" th:value="${keyword}" class="form-control"
+                   placeholder="Search User" required/>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </div>
+    </form>
+</div>
 </body>
 </html>
