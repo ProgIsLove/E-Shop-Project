@@ -27,26 +27,7 @@
         [[${message}]]
     </div>
 
-    <div>
-        <form th:action="@{/users/page/1}" class="row g-3 mb-2">
-            <input type="hidden" name="sortField" th:value="${sortField}"/>
-            <input type="hidden" name="sortDir" th:value="${sortDir}"/>
-            <div class="col-auto">
-                <input type="search" id="filter" name="keyword" th:value="${keyword}" class="form-control"
-                       placeholder="Search User" required/>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-secondary" onclick="clearFilter()">
-                    <i class="fas fa-eraser"></i>
-                </button>
-            </div>
-        </form>
-    </div>
+    <div th:replace="~{fragments/common_fragments :: search_form('/users/page/1')}"></div>
 
 
     <div class="full-details">
