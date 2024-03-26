@@ -150,12 +150,12 @@ public class CategoryService {
                 }
             }
         } else {
-            if (categoryByName != null && categoryByName.getId() != null) {
+            if (categoryByName != null && !Objects.equals(categoryByName.getId(), id)) {
                 return "Duplicate Name";
             }
 
             Category categoryByAlias = categoryRepository.findByAlias(alias);
-            if (categoryByAlias != null && categoryByAlias.getId() != null) {
+            if (categoryByAlias != null && !Objects.equals(categoryByAlias.getId(), id)) {
                 return "Duplicate Alias";
             }
         }

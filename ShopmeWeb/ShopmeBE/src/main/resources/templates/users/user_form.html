@@ -82,6 +82,8 @@
 
 
 </div>
+<script th:src="@{/js/image-upload.js}"></script>
+<script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
     moduleURL = "[[@{/}]]";
     function checkEmailUnique(form) {
@@ -111,7 +113,7 @@
         $('#modalTitle').text(title);
         $('#modalBody').text(message);
         $('#modalDialog').show();
-        $('#modalClose, #modalCross').on('click', function () {
+        $('#modalDialogClose, #modalDialogCross').on('click', function () {
             $('#modalDialog').hide();
         })
     }
@@ -130,6 +132,5 @@
         showModalDialog("Warning", message)
     }
 </script>
-<script th:src="@{/js/image-upload.js}"></script>
 </body>
 </html>
