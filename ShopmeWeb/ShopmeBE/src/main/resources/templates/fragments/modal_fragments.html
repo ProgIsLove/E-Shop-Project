@@ -15,7 +15,26 @@
 </head>
 <body>
 
-<div th:fragment="confirm_modal" class="modal" tabindex="-1" id="confirmModal">
+<div th:fragment="modal_dialog" class="modal text-center" id="modalDialog">
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle">Warning</h4>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" id="modalDialogCross"></button>
+            </div>
+
+            <div class="modal-body">
+                <span id="modalBody"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalDialogClose">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="confirm_modal" class="modal text-center" id="confirmModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
