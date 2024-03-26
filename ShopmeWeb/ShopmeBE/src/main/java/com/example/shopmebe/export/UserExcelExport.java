@@ -71,7 +71,7 @@ public class UserExcelExport extends AbstractExporter {
     }
 
     public void export(List<User> users, HttpServletResponse response) throws IOException {
-        setResponseHeader(response, ".xlsx", "application/octet-stream");
+        setResponseHeader(response, ".xlsx", "application/octet-stream", "users_");
 
         try (WORKBOOK;
              ServletOutputStream outputStream = response.getOutputStream();
