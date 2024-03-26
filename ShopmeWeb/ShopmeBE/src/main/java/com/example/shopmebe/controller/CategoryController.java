@@ -1,10 +1,12 @@
 package com.example.shopmebe.controller;
 
 import com.example.shopmebe.exception.CategoryNotFoundException;
+import com.example.shopmebe.export.CategoryCsvExporter;
 import com.example.shopmebe.service.CategoryService;
 import com.example.shopmebe.utils.CategoryPageInfo;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Category;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
@@ -142,5 +144,12 @@ public class CategoryController {
         }
 
         return "redirect:/categories";
+    }
+
+    @GetMapping("/categories/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        List<Category> listCategories = categoryService.listCategoriesUsedInForm();
+        CategoryCsvExporter exporter = new CategoryCsvExporter();
+        exporter.export(listCategories, response);
     }
 }

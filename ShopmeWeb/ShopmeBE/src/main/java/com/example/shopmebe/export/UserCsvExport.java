@@ -12,7 +12,7 @@ import java.util.List;
 public class UserCsvExport extends AbstractExporter {
 
     public void export(List<User> users, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, ".csv", "text/csv");
+        super.setResponseHeader(response, ".csv", "text/csv", "users_");
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
