@@ -19,6 +19,10 @@
         padding-top: 0.5rem;
     }
 
+    /*.categoryContainer > div:not(:last-child) {*/
+    /*    margin-right: 10px;*/
+    /*}*/
+
 </style>
 <div class="container-fluid">
     <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
@@ -46,7 +50,7 @@
                         <span th:class="${reverseSortDir == 'desc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
                         </span>
                     </th>
-                    <th>Alias</th>
+                    <th class="hideable-column">Alias</th>
                     <th>Enabled</th>
                     <th></th>
                 </tr>
@@ -56,10 +60,10 @@
                     <td>[[${cat.id}]]</td>
                     <td>
                         <i th:if="${cat.image == null}" class="fa-solid fa-image-portrait fa-3x icon-dark"></i>
-                        <img th:if="${cat.image != null}" th:src="@{${cat.imagePath}}">
+                        <img th:if="${cat.image != null}" th:src="@{${cat.imagePath}}" style="width: 100px" class="img-fluid">
                     </td>
                     <td>[[${cat.name}]]</td>
-                    <td>[[${cat.alias}]]</td>
+                    <td class="hideable-column">[[${cat.alias}]]</td>
                     <td>
                         <div th:replace="~{fragments/common_fragments :: category_status }"></div>
                     </td>
@@ -69,6 +73,23 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="less-details">
+        <div th:each="cat : ${listCategories}" class="row m-1">
+            <div class="col-4">
+                <img th:src="@{${cat.imagePath}}" style="width: 100px" class="img-fluid"/>
+            </div>
+            <div class="col-8">
+                <div>[[${cat.name}]]</div>
+                <div class="mt-2" >
+                    <div th:replace="~{fragments/common_fragments :: category_status }"></div>
+                    &nbsp;
+                    <div th:replace="~{fragments/common_fragments :: category_actions}"></div>
+                </div>
+            </div>
+            <div class="categoryContainer"></div>
+        </div>
     </div>
 
     <div th:if="${keyword != null}" class="text-center">
