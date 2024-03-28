@@ -78,20 +78,19 @@
                 <span th:if="${user.photos == null}" class="fa-solid fa-image-portrait fa-3x icon-dark"></span>
                 <img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px">
             </div>
-            <div class="col-8 my-3">
+            <div class="col-8">
                 <div>[[${user.fullName}]]</div>
                 <div>[[${user.roles}]]</div>
                 <div class="mt-2">
-                    <a class="mx-2"
-                       th:replace="~{fragments/common_fragments :: disable(${user.enabled}) }"
+                    <a th:replace="~{fragments/common_fragments :: disable(${user.enabled}) }"
                        th:href="@{'/users/' + ${user.id} + '/enabled/false'}"></a>
 
-                    <a class="mx-2"
-                       th:replace="~{fragments/common_fragments :: enabled(${user.enabled})}"
+                    <a th:replace="~{fragments/common_fragments :: enabled(${user.enabled})}"
                        th:href="@{'/users/' + ${user.id} + '/enabled/true'}"></a>
-                    <a class="mx-2"
-                       th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user">
-                        <i class="fas fa-edit fa-2x icon-green"></i></a>
+                    &nbsp;
+                    <a th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"><i
+                            class="fas fa-edit fa-2x icon-green"></i></a>
+                    &nbsp;
                     <a class="link-delete"
                        th:href="@{'/users/delete/' + ${user.id}}"
                        th:entityId="${user.id}"
@@ -99,6 +98,7 @@
                         <i class="fas fa-trash fa-2x icon-red link-delete"></i></a>
                 </div>
             </div>
+            <div>&nbsp;</div>
         </div>
     </div>
 
