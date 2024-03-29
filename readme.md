@@ -1,3 +1,4 @@
 title: Readme
 
-lots of good tips
+lots of good tips.
+its simple site.
