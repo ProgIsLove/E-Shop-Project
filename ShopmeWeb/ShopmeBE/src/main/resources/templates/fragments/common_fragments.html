@@ -14,8 +14,8 @@
     <title>[[${title}]]</title>
 </head>
 <body>
-<th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
-    <a th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} +'&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir}
+<th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+    <a th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir}
                        + ${keyword != null ? '&keyword=' + keyword : ''}}"
        class="text-white">
         [[${columnLabel}]]
@@ -42,37 +42,31 @@
     <p>Shopme Control Panel - Copyright &copy; Shopme</p>
 </div>
 
-<div th:fragment="category_status" th:remove="tag">
-    <a class="mx-2"
-       th:if="${cat.enabled == true}"
-       th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}"
-       title="Disable this category"><i class="fa-solid fa-circle-check fa-2x icon-green"></i></a>
+<div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
+    <a th:if="${enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+        th:href="@{${entityURL} + '/enabled/false'}"
+        th:title="'Disble this ' + ${entityName}"
+    ></a>
 
-    <a class="mx-2"
-       th:if="${cat.enabled == false}"
-       th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"
-       title="Enable this category"><i class="fa-solid fa-circle-check fa-2x icon-red"></i></a>
+    <a th:if="${enabled == false}" class="fas fa-circle fa-2x icon-dark"
+        th:href="@{${entityURL} + '/enabled/true'}"
+       th:title="'Enabled this ' + ${entityName}"
+    ></a>
 </div>
 
-<div th:fragment="category_actions" th:remove="tag">
-    <a class="mx-2" th:href="@{'/categories/edit/' + ${cat.id}}"
-    title="Edit this category"><i class="fa-solid fa-pen-to-square fa-2x icon-green"></i></a>
-    <th:block th:if="${cat.hasChildren == false}">
-        <a class="mx-2"
-                th:href="@{'/categories/delete/' + ${cat.id}}"
-           th:entityId="${cat.id}"
-           title="Delete this category"><i class="fas fa-trash fa-2x icon-red link-delete"></i></a>
+<div th:fragment="edit(entityName, entityURL)" th:remove="tag">
+    <a class="mx-2"
+       th:href="@{${entityURL}}"
+       th:title="'Edit this ' + ${entityName}"><i class="fas fa-edit fa-2x icon-green"></i></a>
+</div>
+
+<div th:fragment="delete(entityName, entityId, entityURL, visible)" th:remove="tag">
+    <th:block th:if="${visible}">
+    <a class="mx-2 link-delete"
+       th:href="@{${entityURL}}"
+       th:entityId="${entityId}"
+       th:title="'Delete this ' + ${entityName}"><i class="fas fa-trash fa-2x icon-red"></i></a>
     </th:block>
-</div>
-
-<div th:fragment="user_actions" th:remove="tag">
-    <a class="mx-2"
-       th:href="@{'/users/edit/' + ${user.id}}"
-       title="Edit this user"><i class="fas fa-edit fa-2x icon-green"></i></a>
-    <a class="mx-2"
-       th:href="@{'/users/delete/' + ${user.id}}"
-       th:entityId="${user.id}"
-       title="Delete this user"><i class="fas fa-trash fa-2x icon-red link-delete"></i></a>
 </div>
 
 <div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
@@ -139,7 +133,7 @@
 </div>
 </div>
 
-<div th:fragment="search_form(moduleURL)">
+<div th:fragment="search_form_and_message(moduleURL)">
     <form th:action="@{${moduleURL}}" class="row g-3 mb-2">
         <input type="hidden" name="sortField" th:value="${sortField}"/>
         <input type="hidden" name="sortDir" th:value="${sortDir}"/>
@@ -158,6 +152,10 @@
             </button>
         </div>
     </form>
+
+    <div th:if="${message != null}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
 </div>
 </body>
 </html>

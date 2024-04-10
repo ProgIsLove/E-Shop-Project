@@ -23,26 +23,21 @@
         <a th:href="@{/users/export/pdf}"><i class="fa-solid fa-file-pdf fa-2x icon-dark me-2"></i></a>
     </div>
 
-    <div th:if="${message != null}" class="alert alert-success text-center">
-        [[${message}]]
-    </div>
-
-    <div th:replace="~{fragments/common_fragments :: search_form('/users/page/1')}"></div>
-
+    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/users/page/1')}"></div>
 
     <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
             <tr>
                 <th class="hideable-column">
-                    <th th:replace="~{fragments/common_fragments :: column_link('id', 'User ID', 'tag')}"></th>
+                    <th th:replace="~{fragments/common_fragments :: column_link('/users', 'id', 'User ID', 'tag')}"></th>
                 <th>Photos</th>
                 <th class="hideable-column">
-                <th th:replace="~{fragments/common_fragments :: column_link('email', 'E-mail', 'tag')}" class="hideable-column"></th>
-                <th th:replace="~{fragments/common_fragments :: column_link('firstName', 'First Name', 'none')}"></th>
-                <th th:replace="~{fragments/common_fragments :: column_link('lastName', 'Last Name', 'none')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'email', 'E-mail', 'tag')}" class="hideable-column"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'firstName', 'First Name', 'none')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'lastName', 'Last Name', 'none')}"></th>
                 <th>Roles</th>
-                <th th:replace="~{fragments/common_fragments :: column_link('enabled', 'Enabled', 'none')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'enabled', 'Enabled', 'none')}"></th>
                 <th></th>
             </tr>
             </thead>
@@ -58,14 +53,12 @@
                 <td>[[${user.lastName}]]</td>
                 <td>[[${user.roles}]]</td>
                 <td>
-                    <a th:replace="~{fragments/common_fragments :: disable(${user.enabled}) }"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/false'}"></a>
-
-                    <a th:replace="~{fragments/common_fragments :: enabled(${user.enabled})}"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/true'}"></a>
+                    <div th:replace="~{fragments/common_fragments :: status(${user.enabled},
+                    'user', '/users/' + ${user.id})}"></div>
                 </td>
                 <td>
-                    <div th:replace="~{fragments/common_fragments :: user_actions}"></div>
+                    <div class="mt-2" th:replace="~{fragments/common_fragments :: edit('users', '/users/edit/' + ${user.id})}"></div>
+                    <div th:replace="~{fragments/common_fragments :: delete('users', ${user.id}, '/users/delete/' + ${user.id}, true)}"></div>
                 </td>
             </tr>
             </tbody>
@@ -82,21 +75,9 @@
                 <div>[[${user.fullName}]]</div>
                 <div>[[${user.roles}]]</div>
                 <div class="mt-2">
-                    <a class="mx-2"
-                       th:replace="~{fragments/common_fragments :: disable(${user.enabled}) }"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/false'}"></a>
-
-                    <a class="mx-2"
-                       th:replace="~{fragments/common_fragments :: enabled(${user.enabled})}"
-                       th:href="@{'/users/' + ${user.id} + '/enabled/true'}"></a>
-                    <a class="mx-2"
-                       th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user">
-                        <i class="fas fa-edit fa-2x icon-green"></i></a>
-                    <a class="link-delete"
-                       th:href="@{'/users/delete/' + ${user.id}}"
-                       th:entityId="${user.id}"
-                       title="Delete this user">
-                        <i class="fas fa-trash fa-2x icon-red link-delete"></i></a>
+                    <div class="mt-2" th:replace="~{fragments/common_fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})}"></div>
+                    <div class="mt-2" th:replace="~{fragments/common_fragments :: edit('users', '/users/edit/' + ${user.id})}"></div>
+                    <div th:replace="~{fragments/common_fragments :: delete('users', ${user.id}, '/users/delete/' + ${user.id}, true)}"></div>
                 </div>
             </div>
         </div>

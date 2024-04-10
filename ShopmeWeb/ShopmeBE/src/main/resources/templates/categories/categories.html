@@ -32,11 +32,7 @@
         <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark me-2"></a>
     </div>
 
-    <div th:if="${message != null}" class="alert alert-success text-center">
-        [[${message}]]
-    </div>
-
-    <div th:replace="~{fragments/common_fragments :: search_form('/categories/page/1')}"></div>
+    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/categories/page/1')}"></div>
 
     <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -44,12 +40,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Category Image</th>
-                    <th>
-                        <a class="text-white" th:href="@{'/categories/page/' + ${pageNum} + '?sortDir='
-                        + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">Category Name</a>
-                        <span th:class="${reverseSortDir == 'desc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
-                        </span>
-                    </th>
+                    <th th:replace="~{fragments/common_fragments :: column_link('/categories', 'name', 'Category Name', 'none')}"></th>
                     <th class="hideable-column">Alias</th>
                     <th>Enabled</th>
                     <th></th>
@@ -65,10 +56,11 @@
                     <td>[[${cat.name}]]</td>
                     <td class="hideable-column">[[${cat.alias}]]</td>
                     <td>
-                        <div th:replace="~{fragments/common_fragments :: category_status }"></div>
-                    </td>
+                        <div class="mt-2" th:replace="~{fragments/common_fragments :: status(${cat.enabled}, 'category',
+                        '/categories/' + ${cat.id}) }"></div>
                     <td>
-                        <div th:replace="~{fragments/common_fragments :: category_actions}"></div>
+                        <div th:replace="~{fragments/common_fragments :: edit('category', '/categories/edit/' + ${cat.id})}"></div>
+                        <div class="mt-2" th:replace="~{fragments/common_fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${!cat.hasChildren})}"></div>
                     </td>
                 </tr>
             </tbody>
@@ -83,8 +75,10 @@
             <div class="col-8">
                 <div>[[${cat.name}]]</div>
                 <div class="mt-2" >
-                    <div th:replace="~{fragments/common_fragments :: category_status }"></div>
-                    <div th:replace="~{fragments/common_fragments :: category_actions}"></div>
+                    <div class="mt-2" th:replace="~{fragments/common_fragments :: status(${cat.enabled}, 'category',
+                    '/categories/' + ${cat.id}) }"></div>
+                    <div class="mt-2" th:replace="~{fragments/common_fragments :: edit('category', '/categories/edit/' + ${cat.id})}"></div>
+                    <div th:replace="~{fragments/common_fragments :: delete('category', ${cat.id},'/categories/delete/' + ${cat.id}, ${!cat.hasChildren})}"></div>
                 </div>
             </div>
             <div class="categoryContainer"></div>
