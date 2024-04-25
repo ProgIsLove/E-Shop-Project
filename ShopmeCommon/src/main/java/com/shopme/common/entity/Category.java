@@ -39,8 +39,12 @@ public class Category {
     public Category() {
     }
 
-    public Category(Integer id, String name, String alias, String image, boolean enabled, Category parent, Set<Category> children) {
+    public Category(Integer id) {
         this.id = id;
+    }
+
+    public Category(Integer id, String name, String alias, String image, boolean enabled, Category parent, Set<Category> children) {
+        this(id);
         this.name = name;
         this.alias = alias;
         this.image = image;
@@ -50,10 +54,12 @@ public class Category {
     }
 
     public Category(Integer id, String name, String alias) {
-        this.id = id;
+        this(id);
         this.name = name;
         this.alias = alias;
     }
+
+
 
     public static Category copyIdAndName(Category category) {
         Category copiedCategory = new Category();
@@ -74,13 +80,11 @@ public class Category {
 //    }
 
     public static Category copyFull(Category category) {
-        Category copyCategory = new Category();
-        copyCategory.setId(category.getId());
-        copyCategory.setName(category.getName());
+        Category copyCategory = copyIdAndName(category);
         copyCategory.setImage(category.getImage());
         copyCategory.setAlias(category.getAlias());
         copyCategory.setEnabled(category.isEnabled());
-        copyCategory.setHasChildren(category.getChildren().size() > 0);
+        copyCategory.setHasChildren(!category.getChildren().isEmpty());
 
         return copyCategory;
     }
@@ -96,6 +100,7 @@ public class Category {
         this.alias = name;
         this.image = "image-thumbnail.png";
     }
+
 
     public Category(String name, Category parent) {
         this(name);
