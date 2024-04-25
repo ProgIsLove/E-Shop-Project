@@ -28,4 +28,15 @@ public class Brand {
     inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories = new HashSet<>();
+
+    public Brand() {
+
+    }
+
+    public Brand(String name) {
+        this.logo = "brand-logo.png";
+        this.name = name;
+    }
+
+
 }
