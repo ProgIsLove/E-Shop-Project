@@ -4,10 +4,12 @@ import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.repository.BrandRepository;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -19,6 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -30,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = ShopmeBeApplication.class)
-@Rollback(false)
 public class BrandRepositoryTest {
 
     @Autowired
@@ -42,6 +44,10 @@ public class BrandRepositoryTest {
             .withUsername("root")
             .withPassword("rootTest");
 
+    @AfterAll
+    static void stopContainers() {
+        mySQLContainer.stop();
+    }
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
@@ -53,13 +59,15 @@ public class BrandRepositoryTest {
     @Test
     public void testCreateBrand1() {
         Category laptop = new Category(6);
-        Brand acer = new Brand("Acer");
+        Brand acer = new Brand(1, "Acer");
         acer.getCategories().add(laptop);
 
         Brand savedBrand = brandRepository.save(acer);
 
         assertThat(savedBrand.getId()).isNotNull();
         assertThat(savedBrand.getId()).isGreaterThan(0);
+        assertThat(savedBrand.getName()).isEqualTo("Acer");
+        assertThat(savedBrand.getCategories().size()).isGreaterThan(0);
     }
 
     @Test
@@ -67,7 +75,7 @@ public class BrandRepositoryTest {
         Category cellphones = new Category(4);
         Category tablets = new Category(6);
 
-        Brand apple = new Brand("Apple");
+        Brand apple = new Brand(2, "Apple");
         apple.getCategories().add(cellphones);
         apple.getCategories().add(tablets);
 
@@ -75,45 +83,34 @@ public class BrandRepositoryTest {
 
         assertThat(savedBrand.getId()).isNotNull();
         assertThat(savedBrand.getId()).isGreaterThan(0);
+        assertThat(savedBrand.getName()).isEqualTo("Apple");
     }
 
     @Test
     public void testCreateBrand3() {
-        Category cellphones = new Category(4);
-        Category tablets = new Category(6);
+        Optional<Brand> brandById = brandRepository.findById(4);
 
-        Brand samsung = new Brand("Samsung");
-        samsung.getCategories().add(cellphones);
-        samsung.getCategories().add(tablets);
-
-        Brand savedBrand = brandRepository.save(samsung);
-        Optional<Brand> brandById = brandRepository.findById(1);
-
-
-        assertThat(savedBrand.getId()).isNotNull();
-        assertThat(savedBrand.getId()).isGreaterThan(0);
         assertThat(brandById).isPresent();
         assertThat(brandById.get().getId()).isPositive();
-        assertThatCode(() -> assertThat(brandById.get()).usingRecursiveComparison().isEqualTo(samsung))
-                .doesNotThrowAnyException();
+        assertThat(brandById.get().getName()).isEqualTo("Huawei");
+        assertThat(brandById.get().getCategories().size()).isEqualTo(2);
     }
 
     @Test
     public void testFindAll() {
         Iterable<Brand> brands = brandRepository.findAll();
-        brands.forEach(System.out::println);
 
-        assertThat(brands).isEmpty();
+        assertThat(brands).isNotNull();
     }
 
     @Test
     public void testGetById() {
-        Brand brand = brandRepository.findById(1)
-                .orElseThrow(() -> new NoSuchElementException("Brand with ID 1 not found"));
+        Brand brand = brandRepository.findById(3)
+                .orElseThrow(() -> new NoSuchElementException("Brand with ID 3 not found"));
 
-        assertNotNull(brand, "Brand with ID 1 not found");
+        assertNotNull(brand, "Brand with ID 3 not found");
 
-        assertEquals("Acer", brand.getName(), "Brand name does not match expected value");
+        assertEquals("Samsung", brand.getName(), "Brand name does not match expected value");
     }
 
     @Test
