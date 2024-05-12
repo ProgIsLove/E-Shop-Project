@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common_fragments :: page_head('Brands - Shopme Admin')}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<style>
+    td img {
+        border-radius: 50%;
+        mix-blend-mode: multiply;
+        width: 3.12rem;
+        height: 3.12rem;
+        display: block;
+    }
+
+    form div {
+        padding-top: 0.5rem;
+    }
+
+</style>
+<div class="container-fluid">
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
+    <div>
+        <h2>Manage Categories</h2>
+        <a th:href="@{/brands/new}" class="fas fa-folder-plus fa-2x icon-dark me-2"></a>
+        <a th:href="@{/brands/export/csv}" class="fas fa-file-csv fa-2x icon-dark me-2"></a>
+    </div>
+
+    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/brands/page/1')}"></div>
+
+    <div class="full-details">
+        <table class="table table-bordered table-striped table-hover table-responsive-xl">
+            <thead class="table-dark">
+            <tr>
+                <th>Brands ID</th>
+                <th>Logo</th>
+                <th>Brand Name</th>
+                <th>Categories</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="brand : ${brands}">
+                <td>[[${brand.id}]]</td>
+                <td></td>
+                <td>[[${brand.name}]]</td>
+                <td>
+                    <th:block th:each="cat : ${brand.categories}">
+                        <span class="badge text-bg-secondary" th:text="${cat.name}"></span>
+                    </th:block>
+                </td>
+                <td>
+                    <div th:replace="~{fragments/common_fragments :: edit('brand', '/brands/edit/' + ${brand.id})}"></div>
+                    <div class="mt-2" th:replace="~{fragments/common_fragments :: delete('brand', ${brand.id}, '/brands/delete/' + ${brand.id}, true)}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
+
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    moduleURL = "[[@{/brands}]]";
+
+    $(document).ready(function () {
+        $('.link-delete').on("click", function (e) {
+            e.preventDefault()
+            showDeleteConfirmModel($(this), 'brand');
+        })
+    })
+</script>
+</body>
+</html>

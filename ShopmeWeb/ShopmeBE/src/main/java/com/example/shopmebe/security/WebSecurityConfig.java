@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/static/js/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/users/**").hasAuthority("Admin")
-                .requestMatchers("categories/**").hasAnyAuthority("Admin", "Editor")
+                .requestMatchers("categories/**, brands/**").hasAnyAuthority("Admin", "Editor")
                 .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated()
         ).formLogin((form) -> form
