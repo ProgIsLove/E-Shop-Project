@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS brands
     id        INT PRIMARY KEY AUTO_INCREMENT,
     name      VARCHAR(45) NOT NULL UNIQUE,
     logo      VARCHAR(128)  NOT NULL,
-    parent_id INT,
     CONSTRAINT chk_brands_name UNIQUE (name)
 );
 
