@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -21,7 +20,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -49,6 +47,7 @@ public class BrandRepositoryTest {
         mySQLContainer.stop();
     }
 
+
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
@@ -60,6 +59,7 @@ public class BrandRepositoryTest {
     public void testCreateBrand1() {
         Category laptop = new Category(6);
         Brand acer = new Brand(1, "Acer");
+
         acer.getCategories().add(laptop);
 
         Brand savedBrand = brandRepository.save(acer);
@@ -76,6 +76,7 @@ public class BrandRepositoryTest {
         Category tablets = new Category(6);
 
         Brand apple = new Brand(2, "Apple");
+
         apple.getCategories().add(cellphones);
         apple.getCategories().add(tablets);
 
