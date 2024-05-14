@@ -16,6 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,29 +25,14 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
-@Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = ShopmeBeApplication.class)
-public class CategoryRepositoryTest {
+public class CategoryRepositoryTest extends AbstractIntegrationTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @Container
-    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:latest")
-            .withDatabaseName("shopmedbTest")
-            .withUsername("root")
-            .withPassword("rootTest");
-
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", mySQLContainer::getUsername);
-        registry.add("spring.datasource.password", mySQLContainer::getPassword);
-    }
 
     @Test
     public void testGetCategoryWithSubCategories() {
