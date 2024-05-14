@@ -4,18 +4,14 @@ import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.repository.BrandRepository;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,34 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = ShopmeBeApplication.class)
-public class BrandRepositoryTest {
+public class BrandRepositoryTest extends AbstractIntegrationTest {
 
     @Autowired
     private BrandRepository brandRepository;
-
-    @Container
-    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:latest")
-            .withDatabaseName("shopmedbTest")
-            .withUsername("root")
-            .withPassword("rootTest");
-
-    @AfterAll
-    static void stopContainers() {
-        mySQLContainer.stop();
-    }
-
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", mySQLContainer::getUsername);
-        registry.add("spring.datasource.password", mySQLContainer::getPassword);
-    }
 
     @Test
     public void testCreateBrand1() {
