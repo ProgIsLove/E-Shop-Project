@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common_fragments :: page_head(${pageTitle})}">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
+    <div>
+        <h2>Manage Categories | [[${pageTitle}]]</h2>
+    </div>
+
+    <form th:action="@{/brands/save}" method="post" enctype="multipart/form-data"
+          style="max-width: 500px; margin: 0 auto;"
+          th:object="${brand}">
+        <input type="hidden" th:field="*{id}" />
+        <div class="border border-secondary rounded p-3">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Brand Name:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{name}" required minlength="3" maxlength="128"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Brand logo:</label>
+                <div class="col-sm-8">
+                    <input type="hidden" th:field="*{logo}"/>
+                    <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg, image/svg" th:required="${brand.logoPath == null}"
+                           class="mb-2"/>
+                    <div class="mt-2">
+                        <img id="thumbnail" class="img-fluid" alt="Image preview" th:src="@{${brand.logoPath}}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Select one or more categories:</label>
+                <div class="col-sm-8">
+                    <select class="form-control" th:field="*{categories}" multiple required
+                            style="resize: vertical; height: 200px">
+                        <th:block th:each="cat : ${categories}">
+                            <option th:value="${cat.id}">[[${cat.name}]]</option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Chosen categories:</label>
+                <div class="col-sm-8">
+
+                </div>
+            </div>
+
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary m-3" />
+                <input id="btnCancel" type="button" value="Cancel" class="btn btn-secondary" />
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/modal_fragments :: modal_dialog}"></div>
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
+
+
+    </div>
+<script th:src="@{/js/image-upload.js}"></script>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    moduleURL = "[[@{/categories}]]";
+
+    function checkUnique(form) {
+        let catId = $("#id").val();
+        let catName = $("#name").val();
+        let catAlias = $("#alias").val();
+        let csrfValue = $("input[name='_csrf']").val();
+
+        const URL = "[[@{/v1/categories/check-unique}]]"
+        const PARAMS = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue}
+
+        $.post(URL, PARAMS, function (response) {
+            if (response === "OK") {
+                form.submit();
+            } else if (response === "Duplicate Name") {
+                showWarningModal(`There is another category having same name ${catName}`);
+            } else if (response === "Duplicate Alias") {
+                showWarningModal(`There is another category having same alias ${catAlias}`);
+            } else {
+                showErrorModal(`Unknown response from server`);
+            }
+        }).fail(function () {
+            showErrorModal(`Could not connect to the server`);
+        });
+
+        return false;
+    }
+
+    $(document).ready(function() {
+        $('form').on('submit', function() {
+            return checkUnique(this);
+        });
+    });
+
+    function showModalDialog(title, message) {
+        $('#modalTitle').text(title);
+        $('#modalBody').text(message);
+        $('#modalDialog').show();
+        $('#modalDialogClose, #modalDialogCross').on('click', function () {
+            $('#modalDialog').hide();
+        })
+    }
+
+    function showErrorModal(message) {
+        showModalDialog("Error", message);
+    }
+
+    function showWarningModal(message) {
+        showModalDialog("Warning", message)
+    }
+</script>
+</body>
+</html>
