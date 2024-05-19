@@ -33,10 +33,15 @@ public class Brand {
 
     }
 
-
     public Brand(Integer id, String name) {
         this.id = id;
         this.name = name;
         this.logo = "brand-logo.png";
+    }
+
+    @Transient
+    public String getLogoPath() {
+        if (this.id == null) return "/images/image-thumbnail.png";
+        return "/brand-images/" + this.id + "/" + this.logo;
     }
 }
