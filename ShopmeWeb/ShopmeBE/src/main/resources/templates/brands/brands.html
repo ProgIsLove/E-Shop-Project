@@ -3,6 +3,7 @@
 <head th:replace="~{fragments/common_fragments :: page_head('Brands - Shopme Admin')}">
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
 
@@ -44,7 +45,10 @@
             <tbody>
             <tr th:each="brand : ${brands}">
                 <td>[[${brand.id}]]</td>
-                <td></td>
+                <td>
+                    <i th:if="${brand.logo == null}" class="fa-solid fa-image-portrait fa-3x icon-dark"></i>
+                    <img th:if="${brand.logo != null}" th:src="@{${brand.logoPath}}" style="width: 100px" class="img-fluid">
+                </td>
                 <td>[[${brand.name}]]</td>
                 <td>
                     <th:block th:each="cat : ${brand.categories}">

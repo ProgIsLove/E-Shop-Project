@@ -39,7 +39,7 @@ public class CategoryService {
         if (keyword != null && !keyword.isEmpty()) {
             List<Category> searchResult = pageCategories.getContent();
             for (Category category : searchResult) {
-                category.setHasChildren(category.getChildren().size() > 0);
+                category.setHasChildren(!category.getChildren().isEmpty());
             }
 
             return searchResult;
@@ -183,6 +183,7 @@ public class CategoryService {
     public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
         categoryRepository.updateEnabledStatus(id, enabled);
     }
+
     @Transactional
     public void delete(Integer id) throws CategoryNotFoundException {
         Long countById = categoryRepository.countById(id);
