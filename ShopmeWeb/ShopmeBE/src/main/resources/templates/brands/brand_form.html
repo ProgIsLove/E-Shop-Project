@@ -95,21 +95,18 @@
     }
 
     function checkUnique(form) {
-        let catId = $("#id").val();
-        let catName = $("#name").val();
-        let catAlias = $("#alias").val();
+        let brandId = $("#id").val();
+        let brandName = $("#name").val();
         let csrfValue = $("input[name='_csrf']").val();
 
-        const URL = "[[@{/v1/categories/check-unique}]]"
-        const PARAMS = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue}
+        const URL = "[[@{/v1/brands/check-unique}]]"
+        const PARAMS = {id: brandId, name: brandName, _csrf: csrfValue}
 
         $.post(URL, PARAMS, function (response) {
             if (response === "OK") {
                 form.submit();
             } else if (response === "Duplicate Name") {
-                showWarningModal(`There is another category having same name ${catName}`);
-            } else if (response === "Duplicate Alias") {
-                showWarningModal(`There is another category having same alias ${catAlias}`);
+                showWarningModal(`There is another brand having same name ${brandName}`);
             } else {
                 showErrorModal(`Unknown response from server`);
             }

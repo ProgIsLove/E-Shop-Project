@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BrandService {
@@ -40,5 +41,23 @@ public class BrandService {
         }
 
         brandRepository.deleteById(id);
+    }
+
+    public String checkUnique(Integer id, String name) {
+        boolean isCreatingNew = (id == null || id == 0);
+
+        Brand brandByName = brandRepository.findByName(name);
+
+        if (isCreatingNew) {
+            if (brandByName != null) {
+                return "Duplicate Name";
+            }
+        } else {
+            if (brandByName != null && !Objects.equals(brandByName.getId(), id)) {
+                return "Duplicate Name";
+            }
+        }
+
+        return "OK";
     }
 }
