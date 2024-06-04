@@ -2,12 +2,12 @@ package com.example.shopmebe.controller;
 
 
 import com.example.shopmebe.exception.BrandNotFoundException;
-import com.example.shopmebe.exception.CategoryNotFoundException;
 import com.example.shopmebe.service.BrandService;
 import com.example.shopmebe.service.CategoryService;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -36,8 +36,42 @@ public class BrandController {
 
     @GetMapping("/brands")
     public String listAll(Model model) {
-        List<Brand> brands = brandService.listBrands();
+        return listByPage(1, model, "name", "asc", null);
+    }
+
+    @GetMapping("/brands/page/{pageNum}")
+    public String listByPage(@PathVariable("pageNum") int pageNum,
+                           Model model,
+                           @RequestParam("sortField") String sortField,
+                           @RequestParam("sortDir") String sortDir,
+                           @RequestParam(name = "keyword", required = false) String keyword
+                           ) {
+
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
+
+        Page<Brand> page = brandService.listByPage(pageNum, sortField, sortDir, keyword);
+        List<Brand> brands = page.getContent();
+
+        long startCount = (long) (pageNum - 1) * BrandService.BRAND_PER_PAGE + 1;
+        long endCount = startCount + BrandService.BRAND_PER_PAGE - 1;
+        if (endCount > page.getTotalElements()) {
+            endCount = page.getTotalElements();
+        }
+
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("brands", brands);
+        model.addAttribute("reverseSortDir", reverseSortDir);
 
         return "brands/brands";
     }
