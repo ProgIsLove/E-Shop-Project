@@ -18,14 +18,12 @@ public class MvcConfig implements WebMvcConfigurer {
         addResourceHandler(registry, "../brand-images");
     }
 
-    private void addResourceHandler(ResourceHandlerRegistry registry, String dirName) {
-        Path path = Paths.get(dirName);
-        String actualDirName = path.getFileName().toString();
+    private void addResourceHandler(ResourceHandlerRegistry registry, String pathPattern) {
+        Path path = Paths.get(pathPattern);
+        String absolutePath = path.toFile().getAbsolutePath();
+        String logicalPath = pathPattern.replace("..", "") + "/**";
 
-        String absolutePath = path.toAbsolutePath().toString();
-        System.out.println("Directory Path for " + actualDirName + ": " + absolutePath);
-
-        registry.addResourceHandler("/" + actualDirName + "/**")
+        registry.addResourceHandler(logicalPath)
                 .addResourceLocations("file:/" + absolutePath + "/");
     }
 }
