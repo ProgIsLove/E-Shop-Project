@@ -3,24 +3,24 @@ package com.example.shopmebe.service;
 import com.example.shopmebe.exception.BrandNotFoundException;
 import com.example.shopmebe.repository.BrandRepository;
 import com.shopme.common.entity.Brand;
-import com.shopme.common.entity.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
 public class BrandService {
 
+    public static final int BRAND_PER_PAGE = 10;
+
     private final BrandRepository brandRepository;
 
     public BrandService(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
-    }
-
-    public List<Brand> listBrands() {
-        return (List<Brand>) brandRepository.findAll();
     }
 
     public Brand getBrandById(Integer id) throws BrandNotFoundException {
@@ -59,5 +59,18 @@ public class BrandService {
         }
 
         return "OK";
+    }
+
+    public Page<Brand> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+
+        Pageable pageable = PageRequest.of(pageNum - 1, BRAND_PER_PAGE, sort);
+
+        if (keyword != null) {
+            return brandRepository.findAll(keyword, pageable);
+        }
+
+        return brandRepository.findAll(pageable);
     }
 }
