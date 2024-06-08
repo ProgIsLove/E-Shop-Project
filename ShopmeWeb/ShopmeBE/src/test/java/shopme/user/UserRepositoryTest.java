@@ -2,7 +2,9 @@ package shopme.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.repository.UserRepository;
+import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -10,18 +12,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import shopme.testcontainers.AbstractIntegrationTest;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -38,31 +32,44 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    public void findUserById() {
-        Optional<User> userById = userRepository.findById(1);
+    private User expectedUser;
 
-        User expectedUser = new User();
+    @BeforeEach
+    public void setup() {
+        Role role = new Role();
+        role.setId(1);
+        role.setName("Admin");
+        role.setDescription("manage everything");
+
+        expectedUser = new User();
         expectedUser.setId(1);
         expectedUser.setFirstName("Nam");
         expectedUser.setLastName("Ha Minh");
         expectedUser.setEmail("nam@codejava.net");
         expectedUser.setEnabled(true);
         expectedUser.setPhotos("namhm.png");
+        expectedUser.addRole(role);
         expectedUser.setPassword("$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu");
+    }
+
+    @Test
+    public void findUserById() {
+        Optional<User> userById = userRepository.findById(1);
 
         assertThat(userById).isPresent();
         assertThat(userById.get().getId()).isPositive();
-        assertThatCode(() -> assertThat(userById.get()).usingRecursiveComparison().isEqualTo(expectedUser))
+        assertThatCode(() -> assertThat(userById.get()).usingRecursiveComparison().isEqualTo(this.expectedUser))
                 .doesNotThrowAnyException();
     }
 
     @Test
     public void findUserByIdNotExists() {
-        Integer id = 2000;
-        Optional<User> userById = userRepository.findById(id);
+        Integer nonExistentUserId  = 2000;
+        Optional<User> optionalUser = userRepository.findById(nonExistentUserId);
 
-        assertThat(userById).isEmpty();
+        assertThat(optionalUser)
+                .as("Check if user with ID %d exists", nonExistentUserId)
+                .isEmpty();
     }
 
     @Test
@@ -97,19 +104,9 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
     public void getUserByEmail() {
         Optional<User> userByEmail = userRepository.getUserByEmail("nam@codejava.net");
 
-        User expectedUser = new User();
-        expectedUser.setId(1);
-        expectedUser.setFirstName("Nam");
-        expectedUser.setLastName("Ha Minh");
-        expectedUser.setEmail("nam@codejava.net");
-        expectedUser.setEnabled(true);
-        expectedUser.setPhotos("namhm.png");
-        expectedUser.setPassword("$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu");
-
-
         assertThat(userByEmail).isPresent();
         assertThat(userByEmail.get().getId()).isPositive();
-        assertThatCode(() -> assertThat(userByEmail.get()).usingRecursiveComparison().isEqualTo(expectedUser))
+        assertThatCode(() -> assertThat(userByEmail.get()).usingRecursiveComparison().isEqualTo(this.expectedUser))
                 .doesNotThrowAnyException();
     }
 
@@ -120,25 +117,15 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         List<User> findByEmail = userRepository.findByFullnameOrEmail("nam@codejava.net", PageRequest.of(pageNumber, pageSize)).getContent();
         List<User> findByFullname = userRepository.findByFullnameOrEmail("Nam Ha Minh", PageRequest.of(pageNumber, pageSize)).getContent();
 
-        User expectedUser = new User();
-        expectedUser.setId(1);
-        expectedUser.setFirstName("Nam");
-        expectedUser.setLastName("Ha Minh");
-        expectedUser.setEmail("nam@codejava.net");
-        expectedUser.setEnabled(true);
-        expectedUser.setPhotos("namhm.png");
-        expectedUser.setPassword("$2a$10$bDqskP9Z/y6BIZnFLgJ8HuwMYaZXD9w2jVk2pYHXgn1k6N4nckleu");
-
-
         assertThat(findByEmail).size().isEqualTo(1);
         assertThat(findByEmail).isNotEmpty();
         assertThat(findByFullname).size().isEqualTo(1);
         assertThat(findByFullname).isNotEmpty();
 
-        assertThatCode(() -> assertThat(findByEmail.get(0)).usingRecursiveComparison().isEqualTo(expectedUser))
+        assertThatCode(() -> assertThat(findByEmail.get(0)).usingRecursiveComparison().isEqualTo(this.expectedUser))
                 .doesNotThrowAnyException();
 
-        assertThatCode(() -> assertThat(findByFullname.get(0)).usingRecursiveComparison().isEqualTo(expectedUser))
+        assertThatCode(() -> assertThat(findByFullname.get(0)).usingRecursiveComparison().isEqualTo(this.expectedUser))
                 .doesNotThrowAnyException();
     }
 
