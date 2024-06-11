@@ -20,7 +20,7 @@ public class Product {
     private String name;
     @Column(unique = true, length = 256, nullable = false)
     private String alias;
-    @Column(length = 512, nullable = false, name = "shrot_description")
+    @Column(length = 512, nullable = false, name = "short_description")
     private String shortDescription;
     @Column(length = 4096, nullable = false, name = "full_description")
     private String fullDescription;
@@ -51,4 +51,12 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

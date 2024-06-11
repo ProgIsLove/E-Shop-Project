@@ -72,11 +72,37 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>8.5.12</version> <!-- Ensure this is the latest stable version -->
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-mysql</artifactId>
+                <version>8.5.12</version> <!-- Ensure this matches the Flyway core version -->
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>8.5.12</version>
+                <configuration>
+                    <url>jdbc:mysql://localhost:3306/shopmedb?createDatabaseIfNotExist=true</url>
+                    <user>root</user>
+                    <password>root</password>
+                </configuration>
             </plugin>
 
             <plugin>
