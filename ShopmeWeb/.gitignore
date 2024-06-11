@@ -34,3 +34,5 @@ build/
 
 /category-images/
 /brand-images/
+*.png
+*.jpg
