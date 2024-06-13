@@ -45,7 +45,7 @@
 <div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
     <a th:if="${enabled == true}" class="fas fa-check-circle fa-2x icon-green"
         th:href="@{${entityURL} + '/enabled/false'}"
-        th:title="'Disble this ' + ${entityName}"
+        th:title="'Disable this ' + ${entityName}"
     ></a>
 
     <a th:if="${enabled == false}" class="fas fa-circle fa-2x icon-dark"
