@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -21,6 +22,10 @@ public class BrandService {
 
     public BrandService(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
+    }
+
+    public List<Brand> findAllBrandsWithIdAndName() {
+        return brandRepository.findAllBrandsWithIdAndName();
     }
 
     public Brand getBrandById(Integer id) throws BrandNotFoundException {
