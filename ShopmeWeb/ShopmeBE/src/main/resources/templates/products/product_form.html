@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/common_fragments :: page_head(${pageTitle})}">
+<head>
+    <head th:replace="~{fragments/common_fragments :: page_head(${pageTitle}, 'tag')}"></head>
+    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}">
+    <script th:src="@{/richtext/jquery.richtext.min.js}"></script>
 </head>
 <body>
 
@@ -26,15 +29,23 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">Details</button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab">Shipping</button>
+            </li>
         </ul>
 
         <div class="tab-content">
             <div class="tab-pane active p-3" id="overview" role="tabpanel">
-                <div th:replace="~{fragments/overview_fragment :: content}"></div>
+                <div th:replace="~{products/fragments/product_overview_fragment :: content}"></div>
             </div>
-            <div class="tab-pane" id="description" role="tabpanel">Description</div>
+            <div class="tab-pane" id="description" role="tabpanel">
+                <div th:replace="~{products/fragments/product_description_fragment :: content}"></div>
+            </div>
             <div class="tab-pane" id="images" role="tabpanel">Images</div>
             <div class="tab-pane" id="details" role="tabpanel">Details</div>
+            <div class="tab-pane p-3" id="shipping" role="tabpanel">
+                <div th:replace="~{products/fragments/product_shipping_fragment :: content}"></div>
+            </div>
         </div>
         <div class="text-center">
             <input type="submit" value="Save" class="btn btn-primary m-3" />
@@ -57,6 +68,11 @@
     const dropDownCategories = $("#category");
 
     $(document).ready(function () {
+
+        $("#shortDescription").richText();
+        $("#fullDescription").richText();
+
+
         dropDownBrands.change(function () {
             dropDownCategories.empty();
             getCategories();
