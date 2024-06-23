@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -48,10 +49,11 @@ public class ProductController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(Product product) {
-        log.info("Product saved " + product.getName());
-        log.info("Brand id " + product.getBrand().getId());
-        log.info("Category id " + product.getCategory().getId());
+    public String saveProduct(Product product, RedirectAttributes redirectAttributes) {
+        productService.save(product);
+
+        redirectAttributes.addFlashAttribute("message", "The product has been saved successfully");
+
 
         return "redirect:/products";
     }
