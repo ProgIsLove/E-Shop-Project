@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/static/js/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
+                .requestMatchers("/welcome").permitAll()
                 .requestMatchers("/users/**").hasAuthority("Admin")
                 .requestMatchers("categories/**, brands/**").hasAnyAuthority("Admin", "Editor")
                 .requestMatchers("products/**").hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
