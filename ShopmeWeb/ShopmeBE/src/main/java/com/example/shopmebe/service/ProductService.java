@@ -1,11 +1,13 @@
 package com.example.shopmebe.service;
 
 import com.example.shopmebe.repository.ProductRepository;
+import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductService {
@@ -35,5 +37,23 @@ public class ProductService {
         product.setModifiedTime(new Date());
 
         productRepository.save(product);
+    }
+
+    public String checkUnique(Integer id, String name) {
+        boolean isCreatingNew = (id == null || id == 0);
+
+        Product productByName = productRepository.findByName(name);
+
+        if (isCreatingNew) {
+            if (productByName != null) {
+                return "Duplicate";
+            }
+        } else {
+            if (productByName != null && !Objects.equals(productByName.getId(), id)) {
+                return "Duplicate";
+            }
+        }
+
+        return "OK";
     }
 }
