@@ -61,7 +61,7 @@
 <script th:src="@{/js/image-upload.js}"></script>
 <script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-    const moduleURL = "[[@{/products}]]";
+    let moduleURL = "[[@{/products}]]";
     const brandModuleURL = "[[@{/v1/brands}]]";
 
     const dropDownBrands = $("#brand");
@@ -93,6 +93,53 @@
                     .appendTo(dropDownCategories);
             });
         });
+    }
+
+    function checkUnique(form) {
+        let productId = $("#id").val();
+        let productName = $("#name").val();
+        let csrfValue = $("input[name='_csrf']").val();
+
+        const URL = "[[@{/v1/products/check-unique}]]";
+
+        const PARAMS = {id: productId, name: productName, _csrf: csrfValue};
+
+        $.post(URL, PARAMS, function (response) {
+            if(response === "OK") {
+                form.submit();
+            } else if (response === "Duplicate") {
+                showWarningModal(`There is another product having same name ${productName}`);
+            } else {
+                showErrorModal("Unknown response from server.");
+            }
+        }).fail(function () {
+            showErrorModal("Could not connect to the sever");
+        })
+
+        return false;
+    }
+
+    $(document).ready(function() {
+        $('form').on('submit', function() {
+            return checkUnique(this);
+        });
+    });
+
+    function showModalDialog(title, message) {
+        $('#modalTitle').text(title);
+        $('#modalBody').text(message);
+        $('#modalDialog').show();
+        $('#modalDialogClose, #modalDialogCross').on('click', function () {
+            $('#modalDialog').hide();
+        })
+    }
+
+    function showErrorModal(message) {
+        showModalDialog("Error", message);
+    }
+
+    function showWarningModal(message) {
+        showModalDialog("Warning", message)
     }
 </script>
 </body>
