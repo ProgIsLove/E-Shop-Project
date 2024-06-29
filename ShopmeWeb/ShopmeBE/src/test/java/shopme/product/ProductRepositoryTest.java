@@ -1,8 +1,7 @@
 package shopme.product;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.repository.BrandRepository;
-import com.example.shopmebe.repository.ProductRepository;
+import com.example.shopmebe.product.ProductRepository;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
@@ -12,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.Date;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;

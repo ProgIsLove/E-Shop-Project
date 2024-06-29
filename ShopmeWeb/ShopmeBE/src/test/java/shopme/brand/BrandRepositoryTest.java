@@ -1,7 +1,7 @@
 package shopme.brand;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.repository.BrandRepository;
+import com.example.shopmebe.brand.BrandRepository;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import org.junit.jupiter.api.Test;

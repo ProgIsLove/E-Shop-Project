@@ -1,21 +1,15 @@
 package shopme.category;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.repository.CategoryRepository;
+import com.example.shopmebe.category.CategoryRepository;
 import com.shopme.common.entity.Category;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.HashSet;

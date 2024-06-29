@@ -1,8 +1,8 @@
 package shopme.user;
 
 import com.example.shopmebe.exception.UserNotFoundException;
-import com.example.shopmebe.repository.UserRepository;
-import com.example.shopmebe.service.UserService;
+import com.example.shopmebe.user.UserRepository;
+import com.example.shopmebe.user.UserService;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.junit.jupiter.api.Assertions;

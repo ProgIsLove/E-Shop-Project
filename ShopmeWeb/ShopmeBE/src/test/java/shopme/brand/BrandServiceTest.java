@@ -1,7 +1,9 @@
 package shopme.brand;
 
-import com.example.shopmebe.repository.BrandRepository;
-import com.example.shopmebe.service.BrandService;
+import com.example.shopmebe.brand.BrandRepository;
+import com.example.shopmebe.brand.BrandService;
+import com.example.shopmebe.brand.BrandStatus;
+import com.example.shopmebe.brand.CheckUniqueRequest;
 import com.shopme.common.entity.Brand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,51 +28,56 @@ public class BrandServiceTest {
     @Test
     public void testCheckUniqueInNewModeReturnDuplicate() {
         String name = "Acer";
+        CheckUniqueRequest request = new CheckUniqueRequest(null, name);
+
         Brand brand = new Brand(null, name);
 
         when(brandRepository.findByName(name)).thenReturn(brand);
 
-        String result = brandService.checkUnique(null, name);
+        BrandStatus result = brandService.checkUnique(request);
 
-        assertThat(result).isEqualTo("Duplicate Name");
+        assertThat(result).isEqualTo(BrandStatus.DUPLICATE_NAME);
     }
 
     @Test
     public void testCheckUniqueInNewModeReturnOk() {
-        Integer id = null;
         String name = "Acer";
+        CheckUniqueRequest request = new CheckUniqueRequest(null, name);
 
         when(brandRepository.findByName(name)).thenReturn(null);
 
-        String result = brandService.checkUnique(null, name);
+        BrandStatus result = brandService.checkUnique(request);
 
-        assertThat(result).isEqualTo("OK");
+        assertThat(result).isEqualTo(BrandStatus.OK);
     }
 
     @Test
     public void testCheckUniqueInEditModeReturnDuplicate() {
-
         Integer id = 1;
+        Integer editId = 2;
         String name = "Acer";
+        CheckUniqueRequest request = new CheckUniqueRequest(editId, name);
+
         Brand brand = new Brand(id, name);
 
         when(brandRepository.findByName(name)).thenReturn(brand);
 
-        String result = brandService.checkUnique(2, name);
+        BrandStatus result = brandService.checkUnique(request);
 
-        assertThat(result).isEqualTo("Duplicate Name");
+        assertThat(result).isEqualTo(BrandStatus.DUPLICATE_NAME);
     }
 
     @Test
     public void testCheckUniqueInEditModeReturnOk() {
         Integer id = 1;
         String name = "Acer";
+        CheckUniqueRequest request = new CheckUniqueRequest(id, name);
         Brand brand = new Brand(id, name);
 
         when(brandRepository.findByName(name)).thenReturn(brand);
 
-        String result = brandService.checkUnique(id, name);
+        BrandStatus result = brandService.checkUnique(request);
 
-        assertThat(result).isEqualTo("OK");
+        assertThat(result).isEqualTo(BrandStatus.OK);
     }
 }

@@ -4,48 +4,31 @@ services:
     build: .
     networks:
       - devShopmeDb
-      - testShopmeDb
     volumes:
       - devShopmeDb:/var/lib/devShopmedb
-      - testShopmeDb:/var/lib/testShopmedb
     depends_on:
       - mysqlDevDb
-      - mysqlTestDb
     environment:
       - DATABASE_URL_DEV=jdbc:mysql://mysqlDevDb:3306/devShopme
-      - DATABASE_URL_TEST=jdbc:mysql://mysqlTestDb:3308/testShopme
       - DATABASE_USERNAME=root
       - DATABASE_PASSWORD=root
 
   mysqlDevDb:
     image: mysql:latest
     ports:
-      - 3306:3306
+      - '3306:3306'
+    expose:
+      - '3306'
     environment:
       - MYSQL_ROOT_PASSWORD=root
     networks:
       - devShopmeDb
     volumes:
-#      - ./src/main/resources:/docker-entrypoint-initdb.d
       - devShopmeDb:/var/lib/devShopmedb
-
-  mysqlTestDb:
-    image: mysql:latest
-    ports:
-      - 3308:3308
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootTest
-    networks:
-      - testShopmeDb
-    volumes:
-      - testShopmeDb:/var/lib/testShopmedb
 
 networks:
   devShopmeDb:
-  testShopmeDb:
 volumes:
   devShopmeDb:
-    driver: local
-  testShopmeDb:
     driver: local
 

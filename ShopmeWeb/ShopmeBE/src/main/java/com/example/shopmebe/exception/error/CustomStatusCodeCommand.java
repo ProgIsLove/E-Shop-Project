@@ -9,8 +9,10 @@ public class CustomStatusCodeCommand {
 
     static {
 
-        STATUS_CODE = Map.of(403, CustomStatusCode.FORBIDDEN,
+        STATUS_CODE = Map.of(
+                403, CustomStatusCode.FORBIDDEN,
                 404, CustomStatusCode.NOT_FOUND,
+                415, CustomStatusCode.MEDIA_TYPE_UNSUPPORTED,
                 500, CustomStatusCode.INTERNAL_ERROR);
     }
 
