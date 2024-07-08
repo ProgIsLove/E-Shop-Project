@@ -73,6 +73,8 @@ public class WebSecurityConfig {
                 .key("springRocks")
         ).logout((logout) -> logout
                 .logoutUrl("/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll());
 
         http.authenticationManager(authenticationManager());

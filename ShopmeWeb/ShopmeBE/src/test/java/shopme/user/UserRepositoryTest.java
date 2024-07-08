@@ -1,7 +1,7 @@
 package shopme.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.repository.UserRepository;
+import com.example.shopmebe.user.UserRepository;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.junit.jupiter.api.BeforeEach;

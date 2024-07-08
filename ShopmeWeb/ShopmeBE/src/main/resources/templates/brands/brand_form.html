@@ -81,41 +81,60 @@
             divChosenCategories.empty()
             showChosenCategories();
         });
+        showChosenCategories();
     });
 
     function showChosenCategories() {
         dropdownCategories.children("option:selected")
             .each(function() {
-                selectedCategory = $(this);
-                catId = selectedCategory.val();
-                catName = selectedCategory.text().replace(/-/g, "");
+                let selectedCategory = $(this);
+                let catName = selectedCategory.text().replace(/-/g, "");
 
                 divChosenCategories.append("<span class='badge text-bg-secondary m-1'>" + catName + "</span>")
             })
     }
 
     function checkUnique(form) {
-        let brandId = $("#id").val();
-        let brandName = $("#name").val();
-        let csrfValue = $("input[name='_csrf']").val();
-
         const URL = "[[@{/v1/brands/check-unique}]]"
-        const PARAMS = {id: brandId, name: brandName, _csrf: csrfValue}
+        let requestData = {
+            id: $("#id").val(),
+            name: $("#name").val(),
+        };
 
-        $.post(URL, PARAMS, function (response) {
-            if (response === "OK") {
-                form.submit();
-            } else if (response === "Duplicate Name") {
-                showWarningModal(`There is another brand having same name ${brandName}`);
-            } else {
-                showErrorModal(`Unknown response from server`);
+        let csrfToken = $("input[name='_csrf']").val();
+
+
+        $.post({
+            url: URL,
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function(response) {
+                switch (response.status) {
+                    case "OK":
+                        form.submit();
+                        break;
+                    default:
+                        showErrorModal(`Unknown response from server`);
+                        break;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 409) {
+                    let response = JSON.parse(xhr.responseText);
+                    showWarningModal(response.details);
+                } else {
+                    showErrorModal(`Could not connect to the server`);
+                }
             }
-        }).fail(function () {
-            showErrorModal(`Could not connect to the server`);
         });
 
         return false;
     }
+
 
     $(document).ready(function() {
         $('form').on('submit', function() {

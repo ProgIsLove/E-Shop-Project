@@ -77,27 +77,43 @@
     moduleURL = "[[@{/categories}]]";
 
     function checkUnique(form) {
-        let catId = $("#id").val();
-        let catName = $("#name").val();
-        let catAlias = $("#alias").val();
-        let csrfValue = $("input[name='_csrf']").val();
-
         const URL = "[[@{/v1/categories/check-unique}]]"
-        const PARAMS = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue}
 
-        $.post(URL, PARAMS, function (response) {
-            if (response === "OK") {
-                form.submit();
-            } else if (response === "Duplicate Name") {
-                showWarningModal(`There is another category having same name ${catName}`);
-            } else if (response === "Duplicate Alias") {
-                showWarningModal(`There is another category having same alias ${catAlias}`);
-            } else {
-                showErrorModal(`Unknown response from server`);
+        let requestData = {
+            id: $("#id").val(),
+            name: $("#name").val(),
+            alias: $("#alias").val()
+        }
+
+        let csrfToken = $("input[name='_csrf']").val();
+
+        $.post({
+            url: URL,
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function(response) {
+                switch (response.status) {
+                    case "OK":
+                        form.submit();
+                        break;
+                    default:
+                        showErrorModal(`Unknown response from server`);
+                        break;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 409) {
+                    let response = JSON.parse(xhr.responseText);
+                    showWarningModal(response.details);
+                } else {
+                    showErrorModal(`Could not connect to the server`);
+                }
             }
-        }).fail(function () {
-            showErrorModal(`Could not connect to the server`);
-        });
+        })
 
         return false;
     }

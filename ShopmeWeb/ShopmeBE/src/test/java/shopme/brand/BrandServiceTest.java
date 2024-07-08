@@ -1,7 +1,9 @@
 package shopme.brand;
 
-import com.example.shopmebe.repository.BrandRepository;
-import com.example.shopmebe.service.BrandService;
+import com.example.shopmebe.brand.BrandRepository;
+import com.example.shopmebe.brand.BrandService;
+import com.example.shopmebe.exception.ConflictException;
+import com.shopme.common.request.CheckUniqueNameRequest;
 import com.shopme.common.entity.Brand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -26,51 +31,58 @@ public class BrandServiceTest {
     @Test
     public void testCheckUniqueInNewModeReturnDuplicate() {
         String name = "Acer";
+        CheckUniqueNameRequest request = new CheckUniqueNameRequest(null, name);
+
         Brand brand = new Brand(null, name);
 
-        when(brandRepository.findByName(name)).thenReturn(brand);
+        when(brandRepository.findByName(name)).thenReturn(Optional.of(brand));
 
-        String result = brandService.checkUnique(null, name);
+        Exception exception = assertThrows(ConflictException.class, () -> brandService.checkUnique(request));
 
-        assertThat(result).isEqualTo("Duplicate Name");
+        String expectedMessage = "There is another brand with the same name " + name;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testCheckUniqueInNewModeReturnOk() {
-        Integer id = null;
         String name = "Acer";
+        CheckUniqueNameRequest request = new CheckUniqueNameRequest(null, name);
 
-        when(brandRepository.findByName(name)).thenReturn(null);
+        when(brandRepository.findByName(name)).thenReturn(Optional.ofNullable(any()));
 
-        String result = brandService.checkUnique(null, name);
-
-        assertThat(result).isEqualTo("OK");
+        assertDoesNotThrow(() -> brandService.checkUnique(request));
     }
 
     @Test
     public void testCheckUniqueInEditModeReturnDuplicate() {
-
         Integer id = 1;
+        Integer editId = 2;
         String name = "Acer";
+        CheckUniqueNameRequest request = new CheckUniqueNameRequest(editId, name);
+
         Brand brand = new Brand(id, name);
 
-        when(brandRepository.findByName(name)).thenReturn(brand);
+        when(brandRepository.findByName(name)).thenReturn(Optional.of(brand));
 
-        String result = brandService.checkUnique(2, name);
+        Exception exception = assertThrows(ConflictException.class, () -> brandService.checkUnique(request));
 
-        assertThat(result).isEqualTo("Duplicate Name");
+        String expectedMessage = "There is another brand with the same name " + name;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testCheckUniqueInEditModeReturnOk() {
         Integer id = 1;
         String name = "Acer";
+        CheckUniqueNameRequest request = new CheckUniqueNameRequest(id, name);
         Brand brand = new Brand(id, name);
 
-        when(brandRepository.findByName(name)).thenReturn(brand);
+        when(brandRepository.findByName(name)).thenReturn(Optional.of(brand));
 
-        String result = brandService.checkUnique(id, name);
-
-        assertThat(result).isEqualTo("OK");
+        assertDoesNotThrow(() -> brandService.checkUnique(request));
     }
 }
