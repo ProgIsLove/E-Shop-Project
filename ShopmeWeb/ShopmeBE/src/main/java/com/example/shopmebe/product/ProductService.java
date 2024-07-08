@@ -4,6 +4,7 @@ import com.shopme.common.request.CheckUniqueNameRequest;
 import com.example.shopmebe.exception.ConflictException;
 import com.shopme.common.entity.Product;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -48,5 +49,10 @@ public class ProductService {
         if (productByName.isPresent() && (isCreatingNew || !Objects.equals(productByName.get().getId(), checkUniqueNameRequest.id()))) {
             throw new ConflictException(String.format("There is another product with the same name %s", checkUniqueNameRequest.name()));
         }
+    }
+
+    @Transactional
+    public void updateProductEnabledStatus(Integer id, boolean enabled) {
+        productRepository.updateEnabledStatus(id, enabled);
     }
 }
