@@ -1,11 +1,14 @@
 package com.example.shopmebe.product;
 
+import com.shopme.common.request.CheckUniqueNameRequest;
+import com.example.shopmebe.exception.ConflictException;
 import com.shopme.common.entity.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -37,21 +40,13 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public String checkUnique(Integer id, String name) {
-        boolean isCreatingNew = (id == null || id == 0);
+    public void checkUnique(CheckUniqueNameRequest checkUniqueNameRequest) throws ConflictException {
+        boolean isCreatingNew = (checkUniqueNameRequest.id() == null || checkUniqueNameRequest.id() == 0);
 
-        Product productByName = productRepository.findByName(name);
+        Optional<Product> productByName = productRepository.findByName(checkUniqueNameRequest.name());
 
-        if (isCreatingNew) {
-            if (productByName != null) {
-                return "Duplicate";
-            }
-        } else {
-            if (productByName != null && !Objects.equals(productByName.getId(), id)) {
-                return "Duplicate";
-            }
+        if (productByName.isPresent() && (isCreatingNew || !Objects.equals(productByName.get().getId(), checkUniqueNameRequest.id()))) {
+            throw new ConflictException(String.format("There is another product with the same name %s", checkUniqueNameRequest.name()));
         }
-
-        return "OK";
     }
 }

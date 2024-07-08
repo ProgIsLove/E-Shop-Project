@@ -1,7 +1,9 @@
 package com.example.shopmebe.brand;
 
 import com.example.shopmebe.exception.BrandNotFoundException;
+import com.example.shopmebe.exception.ConflictException;
 import com.shopme.common.entity.Brand;
+import com.shopme.common.request.CheckUniqueNameRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class BrandService {
@@ -47,22 +50,16 @@ public class BrandService {
         brandRepository.deleteById(id);
     }
 
-    public BrandStatus checkUnique(CheckUniqueRequest checkUniqueRequest) {
-        boolean isCreatingNew = (checkUniqueRequest.id() == null || checkUniqueRequest.id() == 0);
+    public void checkUnique(CheckUniqueNameRequest checkUniqueNameRequest) throws ConflictException {
+        boolean isCreatingNew = (checkUniqueNameRequest.id() == null || checkUniqueNameRequest.id() == 0);
 
-        Brand brandByName = brandRepository.findByName(checkUniqueRequest.name());
+        Optional<Brand> brandByName = brandRepository.findByName(checkUniqueNameRequest.name());
 
-        if (isCreatingNew) {
-            if (brandByName != null) {
-                return BrandStatus.DUPLICATE_NAME;
-            }
-        } else {
-            if (brandByName != null && !Objects.equals(brandByName.getId(), checkUniqueRequest.id())) {
-                return BrandStatus.DUPLICATE_NAME;
-            }
+        if (brandByName.isPresent() && (isCreatingNew || !Objects.equals(brandByName.get().getId(), checkUniqueNameRequest.id()))) {
+            throw new ConflictException(
+                    String.format("There is another brand with the same name %s",
+                            checkUniqueNameRequest.name()));
         }
-
-        return BrandStatus.OK;
     }
 
     public Page<Brand> listByPage(int pageNum, String sortField, String sortDir, String keyword) {

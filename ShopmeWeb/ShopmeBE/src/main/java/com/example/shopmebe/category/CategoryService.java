@@ -1,8 +1,10 @@
 package com.example.shopmebe.category;
 
 import com.example.shopmebe.exception.CategoryNotFoundException;
+import com.example.shopmebe.exception.ConflictException;
 import com.example.shopmebe.utils.CategoryPageInfo;
 import com.shopme.common.entity.Category;
+import com.shopme.common.request.CheckUniqueNameWithAliasRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -134,32 +136,37 @@ public class CategoryService {
                         String.format("Could not find any category with ID: %d", id)));
     }
 
-    public String checkUnique(Integer id, String name, String alias) {
-        boolean isCreatingNew = (id == null || id == 0);
+    public void checkUnique(CheckUniqueNameWithAliasRequest checkUniqueNameWithAliasRequest) throws ConflictException {
+        boolean isCreatingNew = (checkUniqueNameWithAliasRequest.id() == null || checkUniqueNameWithAliasRequest.id() == 0);
 
-        Category categoryByName = categoryRepository.findByName(name);
+        Optional<Category> categoryByName = categoryRepository.findByName(checkUniqueNameWithAliasRequest.name());
 
         if (isCreatingNew) {
-            if (categoryByName != null) {
-                return "Duplicate Name";
+            if (categoryByName.isPresent()) {
+                throw new ConflictException(
+                        String.format("There is another category having same name %s",
+                                checkUniqueNameWithAliasRequest.name()));
             } else {
-                Category categoryByAlias = categoryRepository.findByAlias(alias);
-                if (categoryByAlias != null) {
-                    return "Duplicate Alias";
+                Optional<Category> categoryByAlias = categoryRepository.findByAlias(checkUniqueNameWithAliasRequest.alias());
+                if (categoryByAlias.isPresent()) {
+                    throw new ConflictException(
+                            String.format("There is another category having same alias %s",
+                                    checkUniqueNameWithAliasRequest.alias()));
                 }
             }
         } else {
-            if (categoryByName != null && !Objects.equals(categoryByName.getId(), id)) {
-                return "Duplicate Name";
+            if (categoryByName.isPresent() && !Objects.equals(categoryByName.get().getId(), checkUniqueNameWithAliasRequest.id())) {
+                throw new ConflictException(
+                        String.format("There is another category having same name %s", checkUniqueNameWithAliasRequest.name()));
             }
-
-            Category categoryByAlias = categoryRepository.findByAlias(alias);
-            if (categoryByAlias != null && !Objects.equals(categoryByAlias.getId(), id)) {
-                return "Duplicate Alias";
+            Optional<Category> categoryByAlias = categoryRepository.findByAlias(checkUniqueNameWithAliasRequest.alias());
+            if (categoryByAlias.isPresent() && !Objects.equals(categoryByAlias.get().getId(), checkUniqueNameWithAliasRequest.id())) {
+                throw new ConflictException(
+                        String.format(
+                                "There is another category having same alias %s",
+                                checkUniqueNameWithAliasRequest.alias()));
             }
         }
-
-        return "OK";
     }
 
     private SortedSet<Category> sortSubCategories(Set<Category> children) {

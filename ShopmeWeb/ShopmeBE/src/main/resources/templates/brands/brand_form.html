@@ -87,9 +87,8 @@
     function showChosenCategories() {
         dropdownCategories.children("option:selected")
             .each(function() {
-                selectedCategory = $(this);
-                catId = selectedCategory.val();
-                catName = selectedCategory.text().replace(/-/g, "");
+                let selectedCategory = $(this);
+                let catName = selectedCategory.text().replace(/-/g, "");
 
                 divChosenCategories.append("<span class='badge text-bg-secondary m-1'>" + catName + "</span>")
             })
@@ -125,7 +124,8 @@
             },
             error: function(xhr, status, error) {
                 if (xhr.status === 409) {
-                    showWarningModal(`There is another brand with the same name '${requestData.name}'`);
+                    let response = JSON.parse(xhr.responseText);
+                    showWarningModal(response.details);
                 } else {
                     showErrorModal(`Could not connect to the server`);
                 }

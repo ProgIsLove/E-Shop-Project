@@ -87,24 +87,41 @@
 <script type="text/javascript">
     moduleURL = "[[@{/}]]";
     function checkEmailUnique(form) {
-        let userEmail = $("#email").val();
-        let userId = $("#id").val();
-        let csrfValue = $("input[name='_csrf']").val();
-
         const URL = "[[@{/users/check-email}]]";
-        const PARAMS = {id: userId, email: userEmail, _csrf: csrfValue};
+        let requestData = {
+            id: $("#id").val(),
+            email: $("#email").val()
+        }
 
-        $.post(URL, PARAMS, function (response) {
-            if (response === "OK") {
-                form.submit();
-            } else if (response === "Duplicated") {
-                showWarningModal(`There is another user having the email: ${userEmail}`);
-            } else {
-                showErrorModal(`Unknown response from server`);
+        let csrfToken = $("input[name='_csrf']").val();
+
+        $.post({
+            url: URL,
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function (response) {
+                switch(response.status) {
+                    case "OK":
+                        form.submit();
+                        break;
+                    default:
+                        showErrorModal(`Unknown response from server`);
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 409) {
+                    let response = JSON.parse(xhr.responseText);
+                    showWarningModal(response.details);
+                } else {
+                    showErrorModal(`Could not connect to the server`);
+                }
             }
-        }).fail(function () {
-            showErrorModal(`Could not connect to server`);
-        })
+        });
 
         return false;
     }

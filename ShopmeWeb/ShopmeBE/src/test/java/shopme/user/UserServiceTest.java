@@ -1,10 +1,12 @@
 package shopme.user;
 
+import com.example.shopmebe.exception.ConflictException;
 import com.example.shopmebe.exception.UserNotFoundException;
 import com.example.shopmebe.user.UserRepository;
 import com.example.shopmebe.user.UserService;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
+import com.shopme.common.request.CheckUniqueEmailRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -296,6 +298,59 @@ class UserServiceTest {
         List<User> listUsers = userRepositoryMock.findByFullnameOrEmail(keyword, pageable).getContent();
 
         assertThat(listUsers).hasSize(pageSize).isNotEmpty();
+    }
+
+    @Test
+    public void testCheckUniqueEmailInNewModeReturnDuplicate() {
+        String email = "john@company.com";
+        CheckUniqueEmailRequest request = new CheckUniqueEmailRequest(null, email);
+
+        when(userRepositoryMock.getUserByEmail(email)).thenReturn(Optional.of(userJohn));
+
+        Exception exception = assertThrows(ConflictException.class, () -> userService.isEmailUnique(request));
+
+        String expectedMessage = "There is another user having the email " + email;
+        String actualMessage = exception.getMessage();
+
+        assertThat(actualMessage).isEqualTo(expectedMessage);
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testCheckUniqueEmailInEditModeReturnDuplicate() {
+        String email = "john@company.com";
+        Integer id = 1;
+        CheckUniqueEmailRequest request = new CheckUniqueEmailRequest(id, email);
+
+        when(userRepositoryMock.getUserByEmail(email)).thenReturn(Optional.of(userJohn));
+
+        Exception exception = assertThrows(ConflictException.class, () -> userService.isEmailUnique(request));
+
+        String expectedMessage = "There is another user having the email " + email;
+        String actualMessage = exception.getMessage();
+
+        assertThat(actualMessage).isEqualTo(expectedMessage);
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testCheckUniqueEmailInNewModeReturnOk() {
+        String email = "john@company.com";
+        CheckUniqueEmailRequest request = new CheckUniqueEmailRequest(null, email);
+
+        when(userRepositoryMock.getUserByEmail(email)).thenReturn(Optional.ofNullable(any()));
+
+        assertDoesNotThrow(() -> userService.isEmailUnique(request));
+    }
+
+    @Test
+    public void testCheckUniqueEmailInEditModeReturnOk() {
+        String email = "john@company.com";
+        CheckUniqueEmailRequest request = new CheckUniqueEmailRequest(null, email);
+
+        when(userRepositoryMock.getUserByEmail(email)).thenReturn(Optional.ofNullable(any()));
+
+        assertDoesNotThrow(() -> userService.isEmailUnique(request));
     }
 
     private String getRoleName(Set<Role> roles) {

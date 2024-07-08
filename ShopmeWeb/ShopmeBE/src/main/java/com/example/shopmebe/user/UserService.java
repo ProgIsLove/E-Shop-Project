@@ -1,9 +1,11 @@
 package com.example.shopmebe.user;
 
+import com.example.shopmebe.exception.ConflictException;
 import com.example.shopmebe.exception.InvalidOldPasswordException;
 import com.example.shopmebe.exception.UserNotFoundException;
 import com.example.shopmebe.security.ShopmeUserDetails;
 import com.shopme.common.entity.User;
+import com.shopme.common.request.CheckUniqueEmailRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -105,19 +107,13 @@ public class UserService {
         user.setPassword(encodedPassword);
     }
 
-    public boolean isEmailUnique(Integer id, String email) {
-        Optional<User> userByEmail = userRepository.getUserByEmail(email);
+    public void isEmailUnique(CheckUniqueEmailRequest emailRequest) throws ConflictException {
+        boolean isCreatingNew = (emailRequest.id() == null);
 
-        if (userByEmail.isEmpty()){
-            return true;
-        }
+        Optional<User> userByEmail = userRepository.getUserByEmail(emailRequest.email());
 
-        boolean isCreatingNew = (id == null);
-
-        if (isCreatingNew) {
-            return false;
-        } else {
-            return Objects.equals(userByEmail.get().getId(), id);
+        if (userByEmail.isPresent() && (isCreatingNew || !Objects.equals(userByEmail.get().getId(), emailRequest.id()))) {
+            throw new ConflictException(String.format("There is another user having the email %s", emailRequest.email()));
         }
     }
 

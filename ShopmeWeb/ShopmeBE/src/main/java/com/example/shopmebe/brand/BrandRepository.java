@@ -9,12 +9,13 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BrandRepository extends PagingAndSortingRepository<Brand, Integer>, CrudRepository<Brand, Integer> {
 
     Long countById(Integer id);
 
-    Brand findByName(String name);
+    Optional<Brand> findByName(String name);
 
     @Query("SELECT b FROM Brand b WHERE b.name LIKE %:keyword%")
     Page<Brand> findAll(@Param("keyword") String keyword, Pageable pageable);

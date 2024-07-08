@@ -1,7 +1,12 @@
 package com.example.shopmebe.product;
 
+import com.shopme.common.response.CheckUniqueStatus;
+import com.shopme.common.request.CheckUniqueNameRequest;
+import com.shopme.common.response.CheckUniqueResponse;
+import com.example.shopmebe.exception.ConflictException;
 import lombok.AllArgsConstructor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,8 +16,10 @@ public class ProductRestController {
 
     private final ProductService productService;
 
-    @PostMapping("/check-unique")
-    public String checkUnique(@Param("id") Integer id, @Param("name") String name) {
-        return productService.checkUnique(id, name);
+    @PostMapping(value = "/check-unique", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CheckUniqueResponse> checkUnique(@RequestBody CheckUniqueNameRequest request) throws ConflictException {
+        productService.checkUnique(request);
+
+        return ResponseEntity.ok(new CheckUniqueResponse(CheckUniqueStatus.OK));
     }
 }

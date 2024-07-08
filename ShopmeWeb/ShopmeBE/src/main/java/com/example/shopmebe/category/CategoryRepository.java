@@ -11,6 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Integer>, CrudRepository<Category, Integer> {
     @Query("SELECT c FROM Category c WHERE c.parent.id is NULL")
@@ -24,9 +25,9 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
 
     Long countById(Integer id);
 
-    Category findByName(String name);
+    Optional<Category> findByName(String name);
 
-    Category findByAlias(String name);
+    Optional<Category> findByAlias(String name);
 
     @Query("UPDATE Category c SET c.enabled = :enabled WHERE c.id = :categoryId")
     @Modifying
