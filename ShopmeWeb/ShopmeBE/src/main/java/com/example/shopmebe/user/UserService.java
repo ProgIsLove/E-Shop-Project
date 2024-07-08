@@ -133,6 +133,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     public void updateUserEnabledStatus(Integer id, boolean enabled) {
         userRepository.updateEnabledStatus(id, enabled);
     }

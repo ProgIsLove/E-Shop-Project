@@ -81,8 +81,8 @@
 
         let requestData = {
             id: $("#id").val(),
-            name: $("#name").val(),
-            alias: $("#alias").val()
+            name: $("#name").val().trim(),
+            alias: $("#alias").val().trim()
         }
 
         let csrfToken = $("input[name='_csrf']").val();

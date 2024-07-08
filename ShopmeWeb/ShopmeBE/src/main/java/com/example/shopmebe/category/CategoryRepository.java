@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,6 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
     Optional<Category> findByAlias(String name);
 
     @Query("UPDATE Category c SET c.enabled = :enabled WHERE c.id = :categoryId")
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     void updateEnabledStatus(@Param("categoryId") Integer id, @Param("enabled") boolean enabled);
 }

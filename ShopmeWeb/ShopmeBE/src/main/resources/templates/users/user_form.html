@@ -90,7 +90,7 @@
         const URL = "[[@{/users/check-email}]]";
         let requestData = {
             id: $("#id").val(),
-            email: $("#email").val()
+            email: $("#email").val().trim()
         }
 
         let csrfToken = $("input[name='_csrf']").val();

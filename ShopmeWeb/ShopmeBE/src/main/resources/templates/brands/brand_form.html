@@ -98,7 +98,7 @@
         const URL = "[[@{/v1/brands/check-unique}]]"
         let requestData = {
             id: $("#id").val(),
-            name: $("#name").val(),
+            name: $("#name").val().trim(),
         };
 
         let csrfToken = $("input[name='_csrf']").val();
