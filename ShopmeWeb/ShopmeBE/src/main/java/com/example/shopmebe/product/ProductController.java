@@ -1,6 +1,7 @@
 package com.example.shopmebe.product;
 
 import com.example.shopmebe.brand.BrandService;
+import com.example.shopmebe.exception.ProductNotFoundException;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Product;
 import lombok.extern.slf4j.Slf4j;
@@ -59,13 +60,27 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}/enabled/{status}")
-    public String updateCategoryEnabledStatus(@PathVariable("id") Integer id,
+    public String updateProductEnabledStatus(@PathVariable("id") Integer id,
                                               @PathVariable("status") boolean enabled,
                                               RedirectAttributes redirectAttributes) {
         productService.updateProductEnabledStatus(id, enabled);
         String status = enabled ? "enabled" : "disabled";
-        String message = String.format("The category ID %d has been %s", id, status);
+        String message = String.format("The product ID %d has been %s", id, status);
         redirectAttributes.addFlashAttribute("message", message);
+
+        return "redirect:/products";
+    }
+
+    @GetMapping("/products/delete/{id}")
+    public String updateProductDelete(@PathVariable("id") Integer id,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            productService.delete(id);
+            String message = String.format("The product ID %d has been deleted successfully", id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (ProductNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
 
         return "redirect:/products";
     }
