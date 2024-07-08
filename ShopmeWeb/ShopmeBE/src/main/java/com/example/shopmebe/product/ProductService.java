@@ -1,5 +1,7 @@
 package com.example.shopmebe.product;
 
+import com.example.shopmebe.exception.CategoryNotFoundException;
+import com.example.shopmebe.exception.ProductNotFoundException;
 import com.shopme.common.request.CheckUniqueNameRequest;
 import com.example.shopmebe.exception.ConflictException;
 import com.shopme.common.entity.Product;
@@ -54,5 +56,15 @@ public class ProductService {
     @Transactional
     public void updateProductEnabledStatus(Integer id, boolean enabled) {
         productRepository.updateEnabledStatus(id, enabled);
+    }
+
+    @Transactional
+    public void delete(Integer id) throws ProductNotFoundException {
+        Long countById = productRepository.countById(id);
+        if (countById == null ||  countById == 0) {
+            throw new ProductNotFoundException(String.format("Could not find any product with ID %d", id));
+        }
+
+        productRepository.deleteById(id);
     }
 }
