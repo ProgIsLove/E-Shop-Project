@@ -74,7 +74,8 @@
 <script th:src="@{/js/image-upload.js}"></script>
 <script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-    moduleURL = "[[@{/categories}]]";
+    const MAX_FILE_SIZE = 102400;
+    const MODULE_URL = "[[@{/categories}]]";
 
     function checkUnique(form) {
         const URL = "[[@{/v1/categories/check-unique}]]"

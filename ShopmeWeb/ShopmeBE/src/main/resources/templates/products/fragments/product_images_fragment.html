@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" charset="UTF-8" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+    <script type="text/javascript" th:src="@{/js/logout.js}"></script>
+    <script src="https://kit.fontawesome.com/a0661b4ae5.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div th:fragment="content" th:remove="tag">
+    <div class="row">
+        <div class="col border m-3 p-2">
+            <div><label>Main Image: </label></div>
+            <div class="m-2">
+                <img id="thumbnail" alt="Main image preview" class="img-fluid"
+                th:src="@{${product.mainImagePath}}"/>
+            </div>
+            <div>
+                <input type="file" id="fileImage" name="fileImage" required
+                 accept="image/png, image/jpeg" />
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

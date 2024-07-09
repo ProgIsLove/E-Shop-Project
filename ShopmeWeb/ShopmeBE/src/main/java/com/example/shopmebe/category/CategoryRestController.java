@@ -5,6 +5,7 @@ import com.shopme.common.response.CheckUniqueResponse;
 import com.shopme.common.response.CheckUniqueStatus;
 import com.example.shopmebe.exception.ConflictException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class CategoryRestController {
 
     private final CategoryService categoryService;
 
-    @PostMapping("/check-unique")
+    @PostMapping(value = "/check-unique", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CheckUniqueResponse> checkUnique(@RequestBody CheckUniqueNameWithAliasRequest request) throws ConflictException {
         categoryService.checkUnique(request);
 

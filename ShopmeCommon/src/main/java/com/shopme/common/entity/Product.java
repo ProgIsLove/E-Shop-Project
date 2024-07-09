@@ -44,6 +44,9 @@ public class Product {
     private float height;
     private float weight;
 
+    @Column(length = 64, name = "main_image")
+    private String mainImage;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -58,5 +61,11 @@ public class Product {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Transient
+    public String getMainImagePath() {
+        if (id == null || mainImage == null) return "/images/image-thumbnail.png";
+        return "/product-images/" + this.id + "/" + this.mainImage;
     }
 }
