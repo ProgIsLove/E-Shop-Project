@@ -1,14 +1,13 @@
 $(document).ready(function () {
     $('#btnCancel').on("click", function () {
-        window.location = moduleURL;
+        window.location = MODULE_URL;
     });
 
     $('#fileImage').change(function () {
         let fileSize = this.files[0].size;
-        const MEGABYTE = 1048576
 
-        if (fileSize > MEGABYTE) {
-            this.setCustomValidity("You must choose an image less than 1MB!");
+        if (fileSize > MAX_FILE_SIZE) {
+            this.setCustomValidity(`You must choose an image less than ${MAX_FILE_SIZE} bytes!`);
             this.reportValidity();
         } else {
             this.setCustomValidity("");

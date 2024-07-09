@@ -26,7 +26,7 @@ public class ProductService {
         return (List<Product>) productRepository.findAll();
     }
 
-    public void save(Product product) {
+    public Product save(Product product) {
         if (product.getId() == null) {
             product.setCreatedTime(new Date());
         }
@@ -40,7 +40,7 @@ public class ProductService {
 
         product.setModifiedTime(new Date());
 
-        productRepository.save(product);
+        return productRepository.save(product);
     }
 
     public void checkUnique(CheckUniqueNameRequest checkUniqueNameRequest) throws ConflictException {

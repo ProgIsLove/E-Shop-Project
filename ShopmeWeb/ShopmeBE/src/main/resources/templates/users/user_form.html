@@ -66,7 +66,7 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Enabled</label>
                 <div class="col-sm-8">
-                    <input type="checkbox" th:field="*{enabled}">
+                    <input type="checkbox" th:field="*{enabled}"/>
                 </div>
             </div>
 
@@ -85,7 +85,9 @@
 <script th:src="@{/js/image-upload.js}"></script>
 <script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-    moduleURL = "[[@{/}]]";
+    const MAX_FILE_SIZE = 102400;
+    const MODULE_URL = "[[@{/users}]]";
+
     function checkEmailUnique(form) {
         const URL = "[[@{/users/check-email}]]";
         let requestData = {

@@ -94,6 +94,7 @@ public class BrandController {
 
             Brand savedCategory = brandService.save(brand);
             String uploadDir = "../brand-images/" + savedCategory.getId();
+            FileUploadUtil.cleanDirectory(uploadDir);
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         } else {
             brandService.save(brand);

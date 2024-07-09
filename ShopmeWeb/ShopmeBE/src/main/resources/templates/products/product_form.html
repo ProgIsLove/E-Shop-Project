@@ -14,6 +14,7 @@
     </div>
 
     <form th:action="@{/products/save}" method="post"
+          enctype="multipart/form-data"
           th:object="${product}">
         <input type="hidden" th:field="*{id}" />
         <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -41,7 +42,9 @@
             <div class="tab-pane" id="description" role="tabpanel">
                 <div th:replace="~{products/fragments/product_description_fragment :: content}"></div>
             </div>
-            <div class="tab-pane" id="images" role="tabpanel">Images</div>
+            <div class="tab-pane" id="images" role="tabpanel">
+                <div th:replace="~{products/fragments/product_images_fragment :: content}"></div>
+            </div>
             <div class="tab-pane" id="details" role="tabpanel">Details</div>
             <div class="tab-pane p-3" id="shipping" role="tabpanel">
                 <div th:replace="~{products/fragments/product_shipping_fragment :: content}"></div>
@@ -61,11 +64,13 @@
 <script th:src="@{/js/image-upload.js}"></script>
 <script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-    let moduleURL = "[[@{/products}]]";
-    const brandModuleURL = "[[@{/v1/brands}]]";
+    const MAX_FILE_SIZE = 502400;
+    const MODULE_URL = "[[@{/products}]]";
+    const BRAND_MODULE_URL = "[[@{/v1/brands}]]";
 
-    const dropDownBrands = $("#brand");
-    const dropDownCategories = $("#category");
+    const DROP_DOWN_BRANDS = $("#brand");
+    const DROP_DOWN_CATEGORIES = $("#category");
+
 
     $(document).ready(function () {
 
@@ -73,8 +78,8 @@
         $("#fullDescription").richText();
 
 
-        dropDownBrands.change(function () {
-            dropDownCategories.empty();
+        DROP_DOWN_BRANDS.change(function () {
+            DROP_DOWN_CATEGORIES.empty();
             getCategories();
         });
         //categories to show the categories of the first brand
@@ -82,15 +87,15 @@
     });
 
     function getCategories() {
-        const brandId = dropDownBrands.val();
-        const url = `${brandModuleURL}/${brandId}/categories`;
+        const brandId = DROP_DOWN_BRANDS.val();
+        const url = `${BRAND_MODULE_URL}/${brandId}/categories`;
 
         $.get(url, (responseJson) => {
             responseJson.forEach((category) => {
                 $("<option>")
                     .val(category.id)
                     .text(category.name)
-                    .appendTo(dropDownCategories);
+                    .appendTo(DROP_DOWN_CATEGORIES);
             });
         });
     }
