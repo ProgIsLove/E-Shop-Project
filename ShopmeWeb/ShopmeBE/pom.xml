@@ -94,16 +94,23 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.flywaydb</groupId>-->
-<!--                <artifactId>flyway-maven-plugin</artifactId>-->
-<!--                <version>8.5.12</version>-->
-<!--                <configuration>-->
-<!--                    <url>jdbc:mysql://localhost:3306/shopmedb?createDatabaseIfNotExist=true</url>-->
-<!--                    <user>root</user>-->
-<!--                    <password>root</password>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>8.5.12</version>
+                <configuration>
+                    <url>jdbc:mysql://localhost:3306/shopmedb?createDatabaseIfNotExist=true</url>
+                    <user></user>
+                    <password></password>
+                    <schemas>
+                        <schema>shopmedb</schema>
+                    </schemas>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration</location>
+                    </locations>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
