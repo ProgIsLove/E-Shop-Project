@@ -71,5 +71,6 @@ CREATE TABLE IF NOT EXISTS products
     weight FLOAT DEFAULT 0,
     category_id INT,
     brand_id INT,
+    main_image VARCHAR(64) NULL,
     CONSTRAINT chk_products_enabled CHECK (enabled IN (0, 1))
 );

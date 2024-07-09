@@ -57,6 +57,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
 
         expectedProduct.setPrice(678);
         expectedProduct.setCost(600);
+        expectedProduct.setMainImage(null);
     }
 
     @Test
@@ -76,6 +77,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
         product.setPrice(456);
         product.setCreatedTime(new Date());
         product.setModifiedTime(new Date());
+        product.setMainImage(null);
 
         Product saveProduct = productRepository.save(product);
 
