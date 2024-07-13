@@ -1,4 +1,4 @@
-var extraImageCount = 0;
+var extraImagesCount = 0;
 const DROP_DOWN_BRANDS = $("#brand");
 const DROP_DOWN_CATEGORIES = $("#category");
 
@@ -38,13 +38,13 @@ function showExtraImageThumbnail(fileInput, index) {
 
     reader.readAsDataURL(file);
 
-    if (index >= extraImageCount - 1) {
+    if (index >= extraImagesCount - 1) {
         addNextExtraImageSection(index + 1);
     }
 }
 
 function addNextExtraImageSection(index) {
-    htmlExtraImage = `
+    let htmlExtraImage = `
         <div class="col border m-3 p-2" id="divExtraImage${index}">
             <div id="extraImageHeader${index}"><label>Extra Image #${index + 1}:</label></div>
             <div class="m-2">
@@ -59,7 +59,7 @@ function addNextExtraImageSection(index) {
         </div>
     `;
 
-    htmlLinkRemove = `
+    let htmlLinkRemove = `
         <a class="btn fa fa-times-circle fa-2x icon-dark float-end" 
         href="javascript:removeExtraImage(${index - 1})"
         title="Remove this image"></a>
@@ -69,11 +69,24 @@ function addNextExtraImageSection(index) {
     $(`#divProductImages`).append(htmlExtraImage);
     $(`#extraImageHeader` + (index - 1)).append(htmlLinkRemove);
 
-    extraImageCount++;
+    extraImagesCount++;
 }
 
 function removeExtraImage(index) {
     $(`#divExtraImage` + index).remove();
+}
+
+function checkImageSize(fileInput, index) {
+    $(fileInput).change(function () {
+        if (this.files[0].size > MAX_FILE_SIZE) {
+            $(this).val(null);
+            this.setCustomValidity("You must choose an image less than " + (MAX_FILE_SIZE / 1000) + "KB!");
+            this.reportValidity();
+            $("#extraThumbnail" + index).attr("src", DEFAULT_IMAGE_THUMBNAIL_SRC);
+            return;
+        }
+        showExtraImageThumbnail(this, index);
+    });
 }
 
 function getCategories() {
@@ -91,7 +104,6 @@ function getCategories() {
 }
 
 function checkUnique(form) {
-    const URL = "[[@{/v1/products/check-unique}]]";
     let requestData = {
         id: $("#id").val(),
         name: $("#name").val().trim(),
@@ -100,7 +112,7 @@ function checkUnique(form) {
     let csrfToken = $("input[name='_csrf']").val();
 
     $.post({
-        url: URL,
+        url: CHECK_UNIQUE_PRODUCT,
         contentType: "application/json",
         data: JSON.stringify(requestData),
         dataTYpe: "json",

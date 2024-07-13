@@ -3,7 +3,6 @@ package shopme.category;
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.category.CategoryRepository;
 import com.shopme.common.entity.Category;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,7 +17,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -60,7 +59,7 @@ public class CategoryRepositoryTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void equalsAndHashCodeTest() {
+    void testDuplicateEntriesInSet() {
         Set<Category> categories = new HashSet<>();
 
         Category expectedParent = new Category("Notebook");
@@ -74,7 +73,8 @@ public class CategoryRepositoryTest extends AbstractIntegrationTest {
         categories.add(expectedParent);
         categories.add(subCategory);
 
-        Assertions.assertEquals(1, categories.size());
+        // Expecting only one entry in the set as both categories have the same name
+        assertEquals(1, categories.size());
     }
 
     @Test
