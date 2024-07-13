@@ -57,24 +57,36 @@ public class ProductController {
 
     @PostMapping("/products/save")
     public String saveProduct(Product product, RedirectAttributes redirectAttributes,
-                              @RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
+                              @RequestParam("fileImage") MultipartFile mainImageMultipart,
+                              @RequestParam("extraImage") MultipartFile[] extraImageMultiparts) throws IOException {
 
-        if (!multipartFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-            product.setMainImage(fileName);
+        setMainImageName(mainImageMultipart, product);
+        setExtraImageNames(extraImageMultiparts, product);
 
-            Product savedProduct = productService.save(product);
-            String uploadDir = "../product-images/" + savedProduct.getId();
-            FileUploadUtil.cleanDirectory(uploadDir);
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-        } else {
-            productService.save(product);
-        }
+        Product savedProduct = productService.save(product);
+
+        savedUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 
         redirectAttributes.addFlashAttribute("message", "The product has been saved successfully");
 
-
         return "redirect:/products";
+    }
+
+    private void savedUploadedImages(MultipartFile mainImageMultipart, MultipartFile[] extraImageMultiparts, Product savedProduct) throws IOException {
+        if (!mainImageMultipart.isEmpty()) {
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(mainImageMultipart.getOriginalFilename()));
+            String uploadDir = "../product-images/" + savedProduct.getId();
+            FileUploadUtil.cleanDirectory(uploadDir);
+            FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);
+        }
+        for (MultipartFile extraImage : extraImageMultiparts) {
+            String uploadDir = "../product-images/" + savedProduct.getId() + "/extras";
+            if (!extraImage.isEmpty()) {
+                String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
+                FileUploadUtil.saveFile(uploadDir, fileName, extraImage);
+
+            }
+        }
     }
 
     @GetMapping("/products/{id}/enabled/{status}")
@@ -90,10 +102,16 @@ public class ProductController {
     }
 
     @GetMapping("/products/delete/{id}")
-    public String updateProductDelete(@PathVariable("id") Integer id,
+    public String deleteProduct(@PathVariable("id") Integer id,
                                       RedirectAttributes redirectAttributes) {
         try {
             productService.delete(id);
+            String productExtraImageDir = "../product-images/" + id;
+            String productImagesDir = "../product-images/" + id + "/extras";
+
+            FileUploadUtil.cleanDirectory(productExtraImageDir);
+            FileUploadUtil.cleanDirectory(productImagesDir);
+
             String message = String.format("The product ID %d has been deleted successfully", id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (ProductNotFoundException e) {
@@ -101,5 +119,21 @@ public class ProductController {
         }
 
         return "redirect:/products";
+    }
+
+    private void setMainImageName(MultipartFile mainImageMultipart, Product product) {
+        if (!mainImageMultipart.isEmpty()) {
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(mainImageMultipart.getOriginalFilename()));
+            product.setMainImage(fileName);
+        }
+    }
+
+    private void setExtraImageNames(MultipartFile[] extraImageMultiparts, Product product) {
+        for (MultipartFile extraImage : extraImageMultiparts) {
+            if (!extraImage.isEmpty()) {
+                String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
+                product.addExtraImage(fileName);
+            }
+        }
     }
 }

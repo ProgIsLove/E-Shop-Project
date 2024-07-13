@@ -134,4 +134,20 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
 
         assertThat(productById.isPresent()).isFalse();
     }
+
+    @Test
+    public void testSaveProductWithImages() {
+        Integer productId = 1;
+        Product product = productRepository.findById(1).get();
+
+        product.setMainImage("main image-1.jpg");
+        product.addExtraImage("main image-1.jpg");
+        product.addExtraImage("main image-2.png");
+        product.addExtraImage("main image-3.png");
+
+        Product savedProduct = productRepository.save(product);
+
+        assertThat(savedProduct.getImages().size()).isEqualTo(3);
+
+    }
 }

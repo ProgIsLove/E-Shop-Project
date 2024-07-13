@@ -1,16 +1,11 @@
 package com.shopme.common.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "categories")
@@ -59,25 +54,12 @@ public class Category {
         this.alias = alias;
     }
 
-
-
     public static Category copyIdAndName(Category category) {
         Category copiedCategory = new Category();
         copiedCategory.setId(category.getId());
         copiedCategory.setName(category.getName());
         return copiedCategory;
     }
-
-//    public static Category copyFull(Category category) {
-//        return Category.builder()
-//                .id(category.getId())
-//                .name(category.getName())
-//                .image(category.getImage())
-//                .alias(category.getAlias())
-//                .enabled(category.isEnabled())
-//                .hasChildren(category.getChildren().size() > 0)
-//                .build();
-//    }
 
     public static Category copyFull(Category category) {
         Category copyCategory = copyIdAndName(category);
@@ -118,14 +100,8 @@ public class Category {
         return "/category-images/" + this.id + "/" + this.image;
     }
 
-    public boolean isHasChildren() {
-        return hasChildren;
-    }
 
-    public void setHasChildren(boolean hasChildren) {
-        this.hasChildren = hasChildren;
-    }
-
+    //implement equals and hashCode for Category class when using it in a Set to ensure proper handling of duplicates.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
