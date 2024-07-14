@@ -138,7 +138,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
     @Test
     public void testSaveProductWithImages() {
         Integer productId = 1;
-        Product product = productRepository.findById(1).get();
+        Product product = productRepository.findById(productId).get();
 
         product.setMainImage("main image-1.jpg");
         product.addExtraImage("main image-1.jpg");
@@ -148,6 +148,20 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
         Product savedProduct = productRepository.save(product);
 
         assertThat(savedProduct.getImages().size()).isEqualTo(3);
+    }
 
+    @Test
+    public void testSaveProductWithDetails() {
+        Integer productId = 1;
+        Product product = productRepository.findById(productId).get();
+
+        product.addDetail("Device memory", "128gb");
+        product.addDetail("CPU Model", "MediaTek");
+        product.addDetail("OS", "Android 10");
+
+        Product savedProduct = productRepository.save(product);
+
+        assertThat(savedProduct.getDetails()).isNotEmpty();
+        assertThat(savedProduct.getDetails().size()).isEqualTo(3);
     }
 }

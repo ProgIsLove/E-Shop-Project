@@ -18,19 +18,22 @@ $(document).ready(function () {
 
     $("input[name='extraImage']").each(function (index) {
         $(this).change(function () {
-            // $('#extraImage').change(function () {
-            //     if(!checkFileSize(this)) {
-            //         return;
-            //     }
-            // });
-            // extraImageCount++;
-            showExtraImageThumbnail(this, index);
+            checkImageSize(this, index);
+            // showExtraImageThumbnail(this, index);
         })
     });
 });
 
 function showExtraImageThumbnail(fileInput, index) {
     let file = fileInput.files[0];
+
+    let fileName = file.name;
+
+    let imageNameHiddenField = $("#imageName" + index);
+    if (imageNameHiddenField.length) {
+        imageNameHiddenField.val(fileName);
+    }
+
     let reader = new FileReader();
     reader.onload = function (e) {
         $('#extraThumbnail' + index).attr("src", e.target.result);
@@ -38,7 +41,8 @@ function showExtraImageThumbnail(fileInput, index) {
 
     reader.readAsDataURL(file);
 
-    if (index >= extraImagesCount - 1) {
+    console.log(`Index ${index} and counter ${extraImagesCount}`)
+    if (index > extraImagesCount - 1) {
         addNextExtraImageSection(index + 1);
     }
 }
@@ -53,7 +57,7 @@ function addNextExtraImageSection(index) {
             </div>
             <div>
                 <input type="file" name="extraImage"
-                       onchange="showExtraImageThumbnail(this, ${index})"
+                       onchange="checkImageSize(this, ${index})"
                        accept="image/png, image/jpeg" />
             </div>
         </div>
@@ -70,6 +74,7 @@ function addNextExtraImageSection(index) {
     $(`#extraImageHeader` + (index - 1)).append(htmlLinkRemove);
 
     extraImagesCount++;
+    console.log(extraImagesCount);
 }
 
 function removeExtraImage(index) {
@@ -77,16 +82,14 @@ function removeExtraImage(index) {
 }
 
 function checkImageSize(fileInput, index) {
-    $(fileInput).change(function () {
-        if (this.files[0].size > MAX_FILE_SIZE) {
-            $(this).val(null);
-            this.setCustomValidity("You must choose an image less than " + (MAX_FILE_SIZE / 1000) + "KB!");
-            this.reportValidity();
+        if (fileInput.files[0].size > MAX_FILE_SIZE) {
+            $(fileInput).val(null);
+            fileInput.setCustomValidity(`You must choose an image less than ${(MAX_FILE_SIZE / 1000)} KB!`);
+            fileInput.reportValidity();
             $("#extraThumbnail" + index).attr("src", DEFAULT_IMAGE_THUMBNAIL_SRC);
             return;
         }
-        showExtraImageThumbnail(this, index);
-    });
+        showExtraImageThumbnail(fileInput, index);
 }
 
 function getCategories() {
