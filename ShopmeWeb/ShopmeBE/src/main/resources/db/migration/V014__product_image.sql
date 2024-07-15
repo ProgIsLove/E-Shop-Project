@@ -5,5 +5,7 @@ CREATE TABLE IF NOT EXISTS product_image
     product_id INT
 );
 
+truncate table products;
+
 ALTER TABLE products
 MODIFY COLUMN main_image VARCHAR(255) NOT NULL;

@@ -71,6 +71,22 @@ CREATE TABLE IF NOT EXISTS products
     weight FLOAT DEFAULT 0,
     category_id INT,
     brand_id INT,
-    main_image VARCHAR(64) NULL,
+    main_image VARCHAR(255) NOT NULL,
     CONSTRAINT chk_products_enabled CHECK (enabled IN (0, 1))
+);
+
+CREATE TABLE IF NOT EXISTS product_details
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    value      VARCHAR(255) NOT NULL,
+    product_id INT,
+    CONSTRAINT FK_product_detail_product FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE IF NOT EXISTS product_images
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    product_id INT
 );
