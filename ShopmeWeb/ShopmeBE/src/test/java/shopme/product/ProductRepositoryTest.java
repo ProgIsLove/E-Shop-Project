@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
@@ -57,7 +56,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
 
         expectedProduct.setPrice(678);
         expectedProduct.setCost(600);
-        expectedProduct.setMainImage(null);
+        expectedProduct.setMainImage("default.png");
     }
 
     @Test
@@ -77,7 +76,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
         product.setPrice(456);
         product.setCreatedTime(new Date());
         product.setModifiedTime(new Date());
-        product.setMainImage(null);
+        product.setMainImage("default.png");
 
         Product saveProduct = productRepository.save(product);
 
@@ -137,7 +136,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void testSaveProductWithImages() {
-        Integer productId = 1;
+        Integer productId = 2;
         Product product = productRepository.findById(productId).get();
 
         product.setMainImage("main image-1.jpg");
@@ -152,7 +151,7 @@ public class ProductRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void testSaveProductWithDetails() {
-        Integer productId = 1;
+        Integer productId = 2;
         Product product = productRepository.findById(productId).get();
 
         product.addDetail("Device memory", "128gb");

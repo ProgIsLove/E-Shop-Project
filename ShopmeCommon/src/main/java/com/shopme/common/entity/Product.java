@@ -44,7 +44,7 @@ public class Product {
     private float height;
     private float weight;
 
-    @Column(length = 64, name = "main_image", nullable = false)
+    @Column(name = "main_image", nullable = false)
     private String mainImage;
 
     @ManyToOne
