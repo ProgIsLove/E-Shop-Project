@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" charset="UTF-8" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+    <script type="text/javascript" th:src="@{/js/logout.js}"></script>
+    <script src="https://kit.fontawesome.com/a0661b4ae5.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div th:fragment="content" id="divProductDetails">
+    <div class="row col-sm-8 mb-3 mt-3" id="divDetail0">
+        <label for="detailNames" class="col-sm-1 col-form-label">Name:</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="detailNames" maxlength="255" id="detailNames">
+        </div>
+        <label for="detailValues" class="col-sm-1 col-form-label">Value:</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="detailValues" maxlength="255" id="detailValues">
+        </div>
+    </div>
+</div>
+</body>
+</html>
