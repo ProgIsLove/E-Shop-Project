@@ -58,10 +58,13 @@ public class ProductController {
     @PostMapping("/products/save")
     public String saveProduct(Product product, RedirectAttributes redirectAttributes,
                               @RequestParam("fileImage") MultipartFile mainImageMultipart,
-                              @RequestParam("extraImage") MultipartFile[] extraImageMultiparts) throws IOException {
+                              @RequestParam("extraImage") MultipartFile[] extraImageMultiparts,
+                              @RequestParam(name = "detailNames", required = false) String[] detailNames,
+                              @RequestParam(name = "detailValues", required = false) String[] detailValues) throws IOException {
 
         setMainImageName(mainImageMultipart, product);
         setExtraImageNames(extraImageMultiparts, product);
+        setProductDetails(detailNames, detailValues, product);
 
         Product savedProduct = productService.save(product);
 
@@ -135,5 +138,19 @@ public class ProductController {
                 product.addExtraImage(fileName);
             }
         }
+    }
+
+    private void setProductDetails(String[] detailNames, String[] detailValues, Product product) {
+        if (detailNames == null || detailNames.length == 0) return;
+
+        for (int count = 0; count < detailNames.length; count++) {
+            String name = detailNames[count];
+            String value = detailValues[count];
+
+            if (StringUtils.hasText(name) && StringUtils.hasText(value)) {
+                product.addDetail(name, value);
+            }
+        }
+
     }
 }
