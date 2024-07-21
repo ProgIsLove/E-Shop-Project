@@ -45,7 +45,13 @@
             <div class="tab-pane" id="images" role="tabpanel">
                 <div th:replace="~{products/fragments/product_images_fragment :: content}"></div>
             </div>
-            <div class="tab-pane" id="details" role="tabpanel">Details</div>
+            <div class="tab-pane" id="details" role="tabpanel">
+                <div th:replace="~{products/fragments/product_details_fragment :: content}"></div>
+                <div>
+                    <input type="button" class="btn btn-secondary" value="Add More Detail"
+                      onclick="addNextDetailSection()"/>
+                </div>
+            </div>
             <div class="tab-pane p-3" id="shipping" role="tabpanel">
                 <div th:replace="~{products/fragments/product_shipping_fragment :: content}"></div>
             </div>
@@ -61,9 +67,12 @@
 
 
     </div>
-<script th:src="@{/js/image-upload.js}"></script>
+<script th:src="@{/js/image_upload.js}"></script>
 <script th:src="@{/js/common_list.js}"></script>
-<script th:src="@{/js/product-form.js}"></script>
+<script th:src="@{/js/product_form_overview.js}"></script>
+<script th:src="@{/js/product_form_images.js}"></script>
+<script th:src="@{/js/product_form_details.js}"></script>
+
 <script type="text/javascript">
     const MAX_FILE_SIZE = 502400;
     const MODULE_URL = "[[@{/products}]]";
