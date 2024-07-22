@@ -124,6 +124,28 @@ public class ProductController {
         return "redirect:/products";
     }
 
+    @GetMapping("/products/edit/{id}")
+    public String editProduct(@PathVariable("id") Integer id,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            Product product = productService.productById(id);
+            List<Brand> brands = brandService.findAllBrandsWithIdAndName();
+            Integer numberOfExistingExtraImages = product.getImages().size();
+
+            model.addAttribute("product", product);
+            model.addAttribute("brands", brands);
+            model.addAttribute("pageTitle", String.format("Edit Product (ID: %d)", id));
+            model.addAttribute("numberOfExistingExtraImages", numberOfExistingExtraImages);
+
+
+            return "products/product_form";
+        } catch (ProductNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/products";
+        }
+    }
+
     private void setMainImageName(MultipartFile mainImageMultipart, Product product) {
         if (!mainImageMultipart.isEmpty()) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(mainImageMultipart.getOriginalFilename()));
@@ -151,6 +173,5 @@ public class ProductController {
                 product.addDetail(name, value);
             }
         }
-
     }
 }

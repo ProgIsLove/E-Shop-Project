@@ -1,3 +1,13 @@
+$(document).ready(function () {
+    $("a[id='linkRemoveDetail']").each(function () {
+        let id = $(this).closest("[id^='divDetail']").attr('id');
+        console.log(id);
+        $(this).click(function () {
+            removeDetailSectionById(id);
+        });
+    });
+});
+
 function addNextDetailSection() {
     let allDivDetails = $("[id^='divDetail']");
     let divDetailsCount = allDivDetails.length;

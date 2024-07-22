@@ -67,4 +67,10 @@ public class ProductService {
 
         productRepository.deleteById(id);
     }
+
+    public Product productById(Integer id) throws ProductNotFoundException {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(
+                        String.format("Could not find any product with ID %d", id)));
+    }
 }

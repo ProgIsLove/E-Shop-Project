@@ -7,6 +7,12 @@ $(document).ready(function () {
             checkImageSize(this, index);
         })
     });
+
+    $("a[id='linkRemoveExtraImage']").each(function (index) {
+        $(this).click(function () {
+            removeExtraImage(index)
+        });
+    });
 });
 
 function showExtraImageThumbnail(fileInput, index) {

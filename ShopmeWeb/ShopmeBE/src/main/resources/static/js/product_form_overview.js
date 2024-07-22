@@ -13,8 +13,19 @@ $(document).ready(function () {
         getCategories();
     });
     //categories to show the categories of the first brand
-    getCategories();
+    getCategoriesForNewForm();
 });
+
+function getCategoriesForNewForm() {
+    let categoryIdField = $('#categoryId');
+    let editMode = false;
+
+    if (categoryIdField.length) {
+        editMode = true;
+    }
+
+    if (!editMode) return getCategories();
+}
 
 function getCategories() {
     const brandId = DROP_DOWN_BRANDS.val();
