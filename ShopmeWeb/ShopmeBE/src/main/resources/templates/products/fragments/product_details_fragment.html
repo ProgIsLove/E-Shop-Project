@@ -14,7 +14,24 @@
 <body>
 
 <div th:fragment="content" id="divProductDetails">
-    <div class="row col-sm-8 mb-3 mt-3" id="divDetail0">
+    <th:block th:each="detail, status : ${product.details}">
+        <div class="row col-sm-8 mb-3 mt-3" th:id="'divDetail' + ${status.index}">
+            <label for="detailNames" class="col-sm-1 col-form-label">Name:</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="detailNames" maxlength="255" id="detailNames"
+                            th:value="${detail.name}">
+            </div>
+            <label for="detailValues" class="col-sm-1 col-form-label">Value:</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="detailValues" maxlength="255" id="detailValues"
+                        th:value="${detail.value}">
+            </div>
+            <a id="linkRemoveDetail" class="btn fa fa-times-circle fa-2x icon-dark col-sm-1"
+               title="Remove this detail"></a>
+        </div>
+    </th:block>
+
+    <div class="row col-sm-8 mb-3 mt-3" th:id="'divDetail' + ${#lists.size(product.details)}">
         <label for="detailNames" class="col-sm-1 col-form-label">Name:</label>
         <div class="col-sm-3">
             <input type="text" class="form-control" name="detailNames" maxlength="255" id="detailNames">
