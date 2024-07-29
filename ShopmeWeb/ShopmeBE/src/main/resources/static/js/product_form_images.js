@@ -1,16 +1,16 @@
 var imageStack = [];
 
 $(document).ready(function () {
-
     $("input[name='extraImage']").each(function (index) {
         $(this).change(function () {
             checkImageSize(this, index);
-        })
+        });
     });
 
-    $("a[id='linkRemoveExtraImage']").each(function (index) {
+    $("a[id='linkRemoveExtraImage']").each(function () {
+        let id = $(this).closest("[id^='divExtraImage']").attr('id');
         $(this).click(function () {
-            removeExtraImage(index)
+            removeExtraImage(id);
         });
     });
 });
@@ -66,8 +66,8 @@ function addNextExtraImageSection(index) {
     imageStack.push(index);
 }
 
-function removeExtraImage(index) {
-    $(`#divExtraImage` + index).remove();
+function removeExtraImage(id) {
+    $(`#` + id).remove();
 }
 
 function checkImageSize(fileInput, index) {

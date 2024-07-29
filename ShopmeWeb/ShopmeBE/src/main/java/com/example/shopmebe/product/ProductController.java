@@ -192,7 +192,7 @@ public class ProductController {
         for (MultipartFile extraImage : extraImageMultiparts) {
             if (!extraImage.isEmpty()) {
                 String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
-                if (product.isImageNamePresent(fileName)) {
+                if (!product.isImageNamePresent(fileName)) {
                     product.addExtraImage(fileName);
                 }
             }
