@@ -1,16 +1,16 @@
-var extraImagesCount = 0;
+var imageStack = [];
 
 $(document).ready(function () {
-
     $("input[name='extraImage']").each(function (index) {
         $(this).change(function () {
             checkImageSize(this, index);
-        })
+        });
     });
 
-    $("a[id='linkRemoveExtraImage']").each(function (index) {
+    $("a[id='linkRemoveExtraImage']").each(function () {
+        let id = $(this).closest("[id^='divExtraImage']").attr('id');
         $(this).click(function () {
-            removeExtraImage(index)
+            removeExtraImage(id);
         });
     });
 });
@@ -32,8 +32,7 @@ function showExtraImageThumbnail(fileInput, index) {
 
     reader.readAsDataURL(file);
 
-    console.log(`Index ${index} and counter ${extraImagesCount}`)
-    if (index > extraImagesCount - 1) {
+    if (index >= imageStack.length) {
         addNextExtraImageSection(index + 1);
     }
 }
@@ -64,12 +63,11 @@ function addNextExtraImageSection(index) {
     $(`#divProductImages`).append(htmlExtraImage);
     $(`#extraImageHeader` + (index - 1)).append(htmlLinkRemove);
 
-    extraImagesCount++;
-    console.log(extraImagesCount);
+    imageStack.push(index);
 }
 
-function removeExtraImage(index) {
-    $(`#divExtraImage` + index).remove();
+function removeExtraImage(id) {
+    $(`#` + id).remove();
 }
 
 function checkImageSize(fileInput, index) {

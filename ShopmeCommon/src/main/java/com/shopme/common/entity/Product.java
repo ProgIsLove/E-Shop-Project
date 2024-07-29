@@ -55,10 +55,10 @@ public class Product {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductImage> images = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductDetail> details = new ArrayList<>();
 
     @Override
@@ -86,5 +86,13 @@ public class Product {
 
     public void addDetail(Integer id, String name, String value) {
         this.details.add(new ProductDetail(id, name, value, this));
+    }
+
+    public boolean isImageNamePresent(String imageName) {
+        for (ProductImage image : images) {
+            if (image.getName().equals(imageName)) return true;
+        }
+
+        return false;
     }
 }

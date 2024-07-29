@@ -62,13 +62,13 @@ public class CategoryRepositoryTest extends AbstractIntegrationTest {
     void testDuplicateEntriesInSet() {
         Set<Category> categories = new HashSet<>();
 
-        Category expectedParent = new Category("Notebook");
-        expectedParent.setId(2);
+        Category expectedParent = new Category(2, "Notebook", "notebook");
+//        expectedParent.setId(2);
         expectedParent.setEnabled(true);
 
-        Category subCategory = new Category("Notebook");
-        subCategory.setId(3);
-        subCategory.setEnabled(true);
+        Category subCategory = new Category(3, "Notebook", "abc");
+//        subCategory.setId(3);
+        subCategory.setEnabled(false);
 
         categories.add(expectedParent);
         categories.add(subCategory);
