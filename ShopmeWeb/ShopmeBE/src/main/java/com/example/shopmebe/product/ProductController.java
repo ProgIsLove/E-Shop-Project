@@ -5,6 +5,7 @@ import com.example.shopmebe.exception.ProductNotFoundException;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Product;
+import com.shopme.common.entity.ProductImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +18,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Controller
 @Slf4j
@@ -51,6 +58,7 @@ public class ProductController {
         model.addAttribute("brands", brands);
         model.addAttribute("product", product);
         model.addAttribute("pageTitle", "Crete New Product");
+        model.addAttribute("numberOfExistingExtraImages", 0);
 
         return "products/product_form";
     }
@@ -59,20 +67,48 @@ public class ProductController {
     public String saveProduct(Product product, RedirectAttributes redirectAttributes,
                               @RequestParam("fileImage") MultipartFile mainImageMultipart,
                               @RequestParam("extraImage") MultipartFile[] extraImageMultiparts,
+                              @RequestParam(name = "detailIDs", required = false) String[] detailIDs,
                               @RequestParam(name = "detailNames", required = false) String[] detailNames,
-                              @RequestParam(name = "detailValues", required = false) String[] detailValues) throws IOException {
+                              @RequestParam(name = "detailValues", required = false) String[] detailValues,
+                              @RequestParam(name = "imageIDs", required = false) String[] imageIDs,
+                              @RequestParam(name = "imageNames", required = false) String[] imageNames) throws IOException {
 
         setMainImageName(mainImageMultipart, product);
-        setExtraImageNames(extraImageMultiparts, product);
-        setProductDetails(detailNames, detailValues, product);
+        setExistingExtraImageNames(imageIDs, imageNames, product);
+        setNewExtraImageNames(extraImageMultiparts, product);
+        setProductDetails(detailIDs, detailNames, detailValues, product);
 
         Product savedProduct = productService.save(product);
 
         savedUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 
+        deleteExtraImagesWereRemoveOnForm(product);
+
         redirectAttributes.addFlashAttribute("message", "The product has been saved successfully");
 
         return "redirect:/products";
+    }
+
+    private void deleteExtraImagesWereRemoveOnForm(Product product) {
+        String extraImageDir = "../product-images/" + product.getId() + "/extras";
+        Path dirpath = Paths.get(extraImageDir);
+
+        try(Stream<Path> pathList = Files.list(dirpath)) {
+            pathList.forEach(file -> {
+                String fileName = file.toFile().getName();
+
+                if (!product.isImageNamePresent(fileName)) {
+                    try {
+                        Files.delete(file);
+                        log.info("Deleted extra image {}", fileName);
+                    } catch (IOException e) {
+                        log.error("Could not delete extra image: {}", fileName);
+                    }
+                }
+            });
+        } catch (IOException ex) {
+            log.error("Could not list directory: {}", dirpath);
+        }
     }
 
     private void savedUploadedImages(MultipartFile mainImageMultipart, MultipartFile[] extraImageMultiparts, Product savedProduct) throws IOException {
@@ -87,7 +123,6 @@ public class ProductController {
             if (!extraImage.isEmpty()) {
                 String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
                 FileUploadUtil.saveFile(uploadDir, fileName, extraImage);
-
             }
         }
     }
@@ -153,23 +188,43 @@ public class ProductController {
         }
     }
 
-    private void setExtraImageNames(MultipartFile[] extraImageMultiparts, Product product) {
+    private void setNewExtraImageNames(MultipartFile[] extraImageMultiparts, Product product) {
         for (MultipartFile extraImage : extraImageMultiparts) {
             if (!extraImage.isEmpty()) {
                 String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
-                product.addExtraImage(fileName);
+                if (product.isImageNamePresent(fileName)) {
+                    product.addExtraImage(fileName);
+                }
             }
         }
     }
 
-    private void setProductDetails(String[] detailNames, String[] detailValues, Product product) {
+    private void setExistingExtraImageNames(String[] imageIDs, String[] imageNames, Product product) {
+        if (imageIDs == null || imageIDs.length == 0) return;
+
+        Set<ProductImage> images = new HashSet<>();
+
+        for (int count = 0; count < imageIDs.length; count++) {
+            Integer id = Integer.parseInt(imageIDs[count]);
+            String name = imageNames[count];
+
+            images.add(new ProductImage(id, name, product));
+        }
+
+        product.setImages(images);
+    }
+
+    private void setProductDetails(String[] detailIDs, String[] detailNames, String[] detailValues, Product product) {
         if (detailNames == null || detailNames.length == 0) return;
 
         for (int count = 0; count < detailNames.length; count++) {
             String name = detailNames[count];
             String value = detailValues[count];
+            Integer id = Integer.parseInt(detailIDs[count]);
 
-            if (StringUtils.hasText(name) && StringUtils.hasText(value)) {
+            if (id != 0) {
+                product.addDetail(id, name, value);
+            } else if (StringUtils.hasText(name) && StringUtils.hasText(value)) {
                 product.addDetail(name, value);
             }
         }

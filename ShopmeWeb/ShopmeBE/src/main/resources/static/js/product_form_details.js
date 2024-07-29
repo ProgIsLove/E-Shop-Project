@@ -1,7 +1,6 @@
 $(document).ready(function () {
     $("a[id='linkRemoveDetail']").each(function () {
         let id = $(this).closest("[id^='divDetail']").attr('id');
-        console.log(id);
         $(this).click(function () {
             removeDetailSectionById(id);
         });
@@ -12,7 +11,9 @@ function addNextDetailSection() {
     let allDivDetails = $("[id^='divDetail']");
     let divDetailsCount = allDivDetails.length;
 
-    let htmlDetailSection = `<div class="row col-sm-8 mb-3 mt-3" id="divDetail${divDetailsCount}">
+    let htmlDetailSection = `
+     <div class="row col-sm-8 mb-3 mt-3" id="divDetail${divDetailsCount}">
+        <input type="hidden" name="detailIDs" value="0" />
         <label for="detailNames" class="col-sm-1 col-form-label">Name:</label>
         <div class="col-sm-3">
             <input type="text" class="form-control" name="detailNames" maxlength="255" id="detailNames">

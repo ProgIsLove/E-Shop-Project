@@ -25,6 +25,11 @@ public class ProductImage {
     }
 
     public ProductImage(String name, Product product) {
+        this(null, name, product);
+    }
+
+    public ProductImage(Integer id, String name, Product product) {
+        this.id = id;
         this.name = name;
         this.product = product;
     }

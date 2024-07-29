@@ -1,4 +1,4 @@
-var extraImagesCount = 0;
+var imageStack = [];
 
 $(document).ready(function () {
 
@@ -32,8 +32,7 @@ function showExtraImageThumbnail(fileInput, index) {
 
     reader.readAsDataURL(file);
 
-    console.log(`Index ${index} and counter ${extraImagesCount}`)
-    if (index > extraImagesCount - 1) {
+    if (index >= imageStack.length) {
         addNextExtraImageSection(index + 1);
     }
 }
@@ -64,8 +63,7 @@ function addNextExtraImageSection(index) {
     $(`#divProductImages`).append(htmlExtraImage);
     $(`#extraImageHeader` + (index - 1)).append(htmlLinkRemove);
 
-    extraImagesCount++;
-    console.log(extraImagesCount);
+    imageStack.push(index);
 }
 
 function removeExtraImage(index) {

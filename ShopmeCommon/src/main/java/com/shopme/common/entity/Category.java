@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -112,6 +113,6 @@ public class Category {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hashCode(name);
     }
 }
