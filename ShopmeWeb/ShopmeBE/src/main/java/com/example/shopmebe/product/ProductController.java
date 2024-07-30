@@ -181,6 +181,21 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/products/detail/{id}")
+    public String viewProductDetails(@PathVariable("id") Integer id,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            Product product = productService.productById(id);
+            model.addAttribute("product", product);
+
+            return "products/product_detail_modal";
+        } catch (ProductNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/products";
+        }
+    }
+
     private void setMainImageName(MultipartFile mainImageMultipart, Product product) {
         if (!mainImageMultipart.isEmpty()) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(mainImageMultipart.getOriginalFilename()));
