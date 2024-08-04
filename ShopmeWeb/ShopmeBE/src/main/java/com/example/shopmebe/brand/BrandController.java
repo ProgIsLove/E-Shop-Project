@@ -76,7 +76,7 @@ public class BrandController {
     }
 
     @GetMapping("/brands/new")
-    public String newCategory(Model model) {
+    public String newBrand(Model model) {
         List<Category> listCategories = categoryService.listCategoriesUsedInForm();
         model.addAttribute("brand", new Brand());
         model.addAttribute("categories", listCategories);
@@ -85,9 +85,9 @@ public class BrandController {
     }
 
     @PostMapping("/brands/save")
-    public String saveCategory(Brand brand,
-                               @RequestParam("fileImage") MultipartFile multipartFile,
-                               RedirectAttributes redirectAttributes) throws IOException {
+    public String saveBrand(Brand brand,
+                            @RequestParam("fileImage") MultipartFile multipartFile,
+                            RedirectAttributes redirectAttributes) throws IOException {
         if (!multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
             brand.setLogo(fileName);
@@ -104,10 +104,10 @@ public class BrandController {
         return "redirect:/brands";
     }
 
-    @GetMapping("brands/edit/{id}")
-    public String editCategory(@PathVariable(name = "id") Integer id,
-                               Model model,
-                               RedirectAttributes redirectAttributes) {
+    @GetMapping("/brands/edit/{id}")
+    public String editBrand(@PathVariable(name = "id") Integer id,
+                            Model model,
+                            RedirectAttributes redirectAttributes) {
 
         try {
             Brand brand = brandService.getBrandById(id);
@@ -126,8 +126,8 @@ public class BrandController {
     }
 
     @GetMapping("/brands/delete/{id}")
-    public String deleteCategory(@PathVariable(name = "id") Integer id,
-                                 RedirectAttributes redirectAttributes) {
+    public String deleteBrand(@PathVariable(name = "id") Integer id,
+                              RedirectAttributes redirectAttributes) {
         try {
             brandService.delete(id);
             String categoryDir = "../brand-images" + id;

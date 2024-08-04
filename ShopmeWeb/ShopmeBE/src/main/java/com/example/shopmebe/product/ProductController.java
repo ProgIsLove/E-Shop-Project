@@ -7,6 +7,7 @@ import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Product;
 import com.shopme.common.entity.ProductImage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -40,10 +41,43 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String products(Model model) {
-        List<Product> products = productService.listAll();
+    public String productsFirstPage(Model model) {
+        return listByPage(1, model, "name", "asc", null);
+    }
 
+    @GetMapping("/products/page/{pageNum}")
+    public String listByPage(@PathVariable("pageNum") int pageNum,
+                             Model model,
+                             @RequestParam("sortField") String sortField,
+                             @RequestParam("sortDir") String sortDir,
+                             @RequestParam(name = "keyword", required = false) String keyword
+    ) {
+
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
+
+        Page<Product> page = productService.listByPage(pageNum, sortField, sortDir, keyword);
+        List<Product> products = page.getContent();
+
+        long startCount = (long) (pageNum - 1) * ProductService.PRODUCTS_PER_PAGE + 1;
+        long endCount = startCount + ProductService.PRODUCTS_PER_PAGE - 1;
+        if (endCount > page.getTotalElements()) {
+            endCount = page.getTotalElements();
+        }
+
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("products", products);
+        model.addAttribute("reverseSortDir", reverseSortDir);
 
         return "products/products";
     }
