@@ -171,3 +171,11 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-danger" data-dismiss="modal" id="modalDialogClose">Close</button>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#modalDialogClose, #modalDialogCross').on('click', function () {
+            $('#detailModal').hide();
+        })
+    })
+</script>

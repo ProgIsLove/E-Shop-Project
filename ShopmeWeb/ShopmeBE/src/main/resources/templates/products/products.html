@@ -28,11 +28,11 @@
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
             <tr>
-                <th>ID</th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'id', 'ID', 'None')}"></th>
                 <th>Main Image</th>
-                <th>Product Name</th>
-                <th>Brand</th>
-                <th>Category</th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'name', 'Product Name', 'None')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'brand', 'Brand', 'None')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'category', 'Category', 'None')}"></th>
                 <th>Enabled</th>
                 <th></th>
             </tr>
@@ -46,7 +46,7 @@
                 <td>
                     <a class="link-detail"
                        th:href="@{'/products/detail/' + ${product.id}}"
-                       title="View details of this product">[[${product.name}]]</a>
+                       th:title="${product.name}">[[${product.shortName}]]</a>
                 </td>
                 <td>[[${product.brand.name}]]</td>
                 <td>[[${product.category.name}]]</td>
@@ -80,6 +80,8 @@
         </div>
     </div>
 
+
+    <div th:replace="~{fragments/common_fragments :: pagination('/products', 'products')}"></div>
 
     <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
 

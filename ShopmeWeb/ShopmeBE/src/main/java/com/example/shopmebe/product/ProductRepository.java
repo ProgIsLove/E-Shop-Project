@@ -1,6 +1,8 @@
 package com.example.shopmebe.product;
 
 import com.shopme.common.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,4 +20,11 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, I
     void updateEnabledStatus(@Param("productId") Integer id, @Param("enabled") boolean enabled);
 
     Long countById(Integer id);
+
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %?1% "
+            + "OR p.shortDescription LIKE %?1% "
+            + "OR p.fullDescription LIKE %?1% "
+            + "OR p.brand.name LIKE %?1% "
+            + "OR p.category.name LIKE %?1%")
+    Page<Product> findAll(@Param("name") String name, Pageable pageable);
 }
