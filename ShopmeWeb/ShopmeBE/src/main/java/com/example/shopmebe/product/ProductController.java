@@ -1,13 +1,16 @@
 package com.example.shopmebe.product;
 
 import com.example.shopmebe.brand.BrandService;
+import com.example.shopmebe.category.CategoryService;
 import com.example.shopmebe.exception.ProductNotFoundException;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Brand;
+import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
 import com.shopme.common.entity.ProductImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,31 +37,36 @@ public class ProductController {
 
     private final ProductService productService;
     private final BrandService brandService;
+    private final CategoryService categoryService;
 
-    public ProductController(ProductService productService, BrandService brandService) {
+    public ProductController(ProductService productService, BrandService brandService, CategoryService categoryService) {
         this.productService = productService;
         this.brandService = brandService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/products")
     public String productsFirstPage(Model model) {
-        return listByPage(1, model, "name", "asc", null);
+        return listByPage(1, model, "name", "asc", null, null);
     }
 
     @GetMapping("/products/page/{pageNum}")
     public String listByPage(@PathVariable("pageNum") int pageNum,
                              Model model,
-                             @RequestParam("sortField") String sortField,
+                             @RequestParam(name = "sortField", required = false) String sortField,
                              @RequestParam("sortDir") String sortDir,
-                             @RequestParam(name = "keyword", required = false) String keyword
+                             @RequestParam(name = "keyword", required = false) String keyword,
+                             @RequestParam(name = "categoryId", required = false) Integer categoryId
     ) {
 
         if (sortDir == null || sortDir.isEmpty()) {
             sortDir = "asc";
         }
 
-        Page<Product> page = productService.listByPage(pageNum, sortField, sortDir, keyword);
+        Page<Product> page = productService.listByPage(pageNum, sortField, sortDir, keyword, categoryId);
         List<Product> products = page.getContent();
+
+        List<Category> categories = categoryService.listCategoriesUsedInForm();
 
         long startCount = (long) (pageNum - 1) * ProductService.PRODUCTS_PER_PAGE + 1;
         long endCount = startCount + ProductService.PRODUCTS_PER_PAGE - 1;
@@ -67,6 +75,8 @@ public class ProductController {
         }
 
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
+        if (categoryId != null) model.addAttribute("categoryId", categoryId);
 
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
@@ -78,6 +88,7 @@ public class ProductController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("products", products);
         model.addAttribute("reverseSortDir", reverseSortDir);
+        model.addAttribute("categories", categories);
 
         return "products/products";
     }
