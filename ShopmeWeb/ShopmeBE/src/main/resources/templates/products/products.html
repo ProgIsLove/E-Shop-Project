@@ -21,8 +21,45 @@
         <a th:href="@{/products/export/csv}" class="fas fa-file-csv fa-2x icon-dark me-2"></a>
     </div>
 
-    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/products/page/1')}"></div>
+<!--    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/products/page/1')}"></div>-->
 
+    <div>
+        <form th:action="@{/products/page/1}" class="row row-cols-lg-auto g-3 align-items-center mb-3" id="searchform">
+            <div class="col-12">
+                <input type="hidden" name="sortField" th:value="${sortField}"/>
+                <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+
+                <label class="visually-hidden" for="categories">Categories:</label>
+                <select id="categories" class="form-select" name="categoryId">
+                    <option value="0">All Categories</option>
+                    <th:block th:each="cat : ${categories}">
+                        <option th:value="${cat.id}" th:selected="(${categoryId} == ${cat.id})">[[${cat.name}]]</option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <input type="search" id="filter" name="keyword" th:value="${keyword}" class="form-control"
+                       placeholder="Search" required/>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="col-12">
+                <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
+
+            <div th:if="${message != null}" class="alert alert-success text-center">
+                [[${message}]]
+            </div>
+        </form>
+    </div>
 
     <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -112,6 +149,10 @@
                 $('#detailModal').hide();
             })
         });
+
+        $('#categories').on("change", function (e) {
+            $('#searchform').submit();
+        })
     })
 </script>
 </body>
