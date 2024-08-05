@@ -55,6 +55,7 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
+    @Transactional
     public Product save(Product product) {
         if (product.getId() == null) {
             product.setCreatedTime(new Date());
