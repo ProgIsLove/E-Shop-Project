@@ -73,6 +73,16 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public void saveProductPrice(Product productInForm) throws ProductNotFoundException {
+        Product product = productRepository.findById(productInForm.getId()).orElseThrow(() ->
+                new ProductNotFoundException(String.format("Could not find any product with ID %d", productInForm.getId())));
+        product.setCost(productInForm.getCost());
+        product.setPrice(productInForm.getPrice());
+        product.setDiscountPercent(productInForm.getDiscountPercent());
+
+        productRepository.save(product);
+    }
+
     public void checkUnique(CheckUniqueNameRequest checkUniqueNameRequest) throws ConflictException {
         boolean isCreatingNew = (checkUniqueNameRequest.id() == null || checkUniqueNameRequest.id() == 0);
 

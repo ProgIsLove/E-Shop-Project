@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" charset="UTF-8" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/style/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+    <script type="text/javascript" th:src="@{/js/logout.js}"></script>
+    <script src="https://kit.fontawesome.com/a0661b4ae5.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div th:fragment="content" th:remove="tag">
+    <div class="row" id="divProductImages">
+        <div class="col border m-3 p-2">
+            <div><label>Main Image: [[${product.mainImage}]]</label></div>
+            <div class="m-2">
+                <img id="thumbnail" alt="Main image preview" class="img-fluid"
+                th:src="@{${product.mainImagePath}}"/>
+            </div>
+        </div>
+        <th:block th:each="productImage, status : ${product.images}">
+            <div class="col border m-3 p-2" th:id="'divExtraImage' + ${status.index}">
+                <div>
+                    <label>Extra Image #[[${status.index + 1}]]: [[${productImage.name}]]</label>
+                </div>
+                <div class="m-2">
+                    <img th:alt="'Extra image #' + ${status.index + 1} + 'preview'" class="img-fluid"
+                         th:src="@{${productImage.imagePath}}"/>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>
