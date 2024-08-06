@@ -61,6 +61,16 @@ public class WebSecurityConfig {
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/users/**").hasAuthority("Admin")
                 .requestMatchers("categories/**, brands/**").hasAnyAuthority("Admin", "Editor")
+
+                .requestMatchers("/products/new", "/products/delete/**")
+                .hasAnyAuthority("Admin", "Editor")
+
+                .requestMatchers("/products/edit/**", "/products/save", "/products/check_unique")
+                .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+
+                .requestMatchers("/products", "/products/", "/products/detail/**", "/products/detail/**")
+                .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+
                 .requestMatchers("products/**").hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
                 .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated()

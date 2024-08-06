@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class ShopmeUserDetails implements UserDetails {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
     private User user;
 
     @Override
@@ -78,5 +81,9 @@ public class ShopmeUserDetails implements UserDetails {
 
     public void setLastName(String lastName) {
         this.user.setLastName(lastName);
+    }
+
+    public boolean hasRole(String roleName) {
+        return user.hasRole(roleName);
     }
 }
