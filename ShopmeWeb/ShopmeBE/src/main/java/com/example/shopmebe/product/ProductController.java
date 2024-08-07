@@ -8,14 +8,11 @@ import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
-import com.shopme.common.entity.ProductImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Stream;
 
 @Controller
 @Slf4j
@@ -129,58 +119,20 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        setMainImageName(mainImageMultipart, product);
-        setExistingExtraImageNames(imageIDs, imageNames, product);
-        setNewExtraImageNames(extraImageMultiparts, product);
-        setProductDetails(detailIDs, detailNames, detailValues, product);
+        ProductSaveHelper.setMainImageName(mainImageMultipart, product);
+        ProductSaveHelper.setExistingExtraImageNames(imageIDs, imageNames, product);
+        ProductSaveHelper.setNewExtraImageNames(extraImageMultiparts, product);
+        ProductSaveHelper.setProductDetails(detailIDs, detailNames, detailValues, product);
 
         Product savedProduct = productService.save(product);
 
-        savedUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
+        ProductSaveHelper.savedUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 
-        deleteExtraImagesWereRemoveOnForm(product);
+        ProductSaveHelper.deleteExtraImagesWereRemoveOnForm(product);
 
         redirectAttributes.addFlashAttribute("message", "The product has been saved successfully");
 
         return "redirect:/products";
-    }
-
-    private void deleteExtraImagesWereRemoveOnForm(Product product) {
-        String extraImageDir = "../product-images/" + product.getId() + "/extras";
-        Path dirpath = Paths.get(extraImageDir);
-
-        try(Stream<Path> pathList = Files.list(dirpath)) {
-            pathList.forEach(file -> {
-                String fileName = file.toFile().getName();
-
-                if (!product.isImageNamePresent(fileName)) {
-                    try {
-                        Files.delete(file);
-                        log.info("Deleted extra image {}", fileName);
-                    } catch (IOException e) {
-                        log.error("Could not delete extra image: {}", fileName);
-                    }
-                }
-            });
-        } catch (IOException ex) {
-            log.error("Could not list directory: {}", dirpath);
-        }
-    }
-
-    private void savedUploadedImages(MultipartFile mainImageMultipart, MultipartFile[] extraImageMultiparts, Product savedProduct) throws IOException {
-        if (!mainImageMultipart.isEmpty()) {
-            String fileName = StringUtils.cleanPath(Objects.requireNonNull(mainImageMultipart.getOriginalFilename()));
-            String uploadDir = "../product-images/" + savedProduct.getId();
-            FileUploadUtil.cleanDirectory(uploadDir);
-            FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);
-        }
-        for (MultipartFile extraImage : extraImageMultiparts) {
-            String uploadDir = "../product-images/" + savedProduct.getId() + "/extras";
-            if (!extraImage.isEmpty()) {
-                String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
-                FileUploadUtil.saveFile(uploadDir, fileName, extraImage);
-            }
-        }
     }
 
     @GetMapping("/products/{id}/enabled/{status}")
@@ -249,55 +201,6 @@ public class ProductController {
         } catch (ProductNotFoundException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/products";
-        }
-    }
-
-    private void setMainImageName(MultipartFile mainImageMultipart, Product product) {
-        if (!mainImageMultipart.isEmpty()) {
-            String fileName = StringUtils.cleanPath(Objects.requireNonNull(mainImageMultipart.getOriginalFilename()));
-            product.setMainImage(fileName);
-        }
-    }
-
-    private void setNewExtraImageNames(MultipartFile[] extraImageMultiparts, Product product) {
-        for (MultipartFile extraImage : extraImageMultiparts) {
-            if (!extraImage.isEmpty()) {
-                String fileName = StringUtils.cleanPath(Objects.requireNonNull(extraImage.getOriginalFilename()));
-                if (!product.isImageNamePresent(fileName)) {
-                    product.addExtraImage(fileName);
-                }
-            }
-        }
-    }
-
-    private void setExistingExtraImageNames(String[] imageIDs, String[] imageNames, Product product) {
-        if (imageIDs == null || imageIDs.length == 0) return;
-
-        Set<ProductImage> images = new HashSet<>();
-
-        for (int count = 0; count < imageIDs.length; count++) {
-            Integer id = Integer.parseInt(imageIDs[count]);
-            String name = imageNames[count];
-
-            images.add(new ProductImage(id, name, product));
-        }
-
-        product.setImages(images);
-    }
-
-    private void setProductDetails(String[] detailIDs, String[] detailNames, String[] detailValues, Product product) {
-        if (detailNames == null || detailNames.length == 0) return;
-
-        for (int count = 0; count < detailNames.length; count++) {
-            String name = detailNames[count];
-            String value = detailValues[count];
-            Integer id = Integer.parseInt(detailIDs[count]);
-
-            if (id != 0) {
-                product.addDetail(id, name, value);
-            } else if (StringUtils.hasText(name) && StringUtils.hasText(value)) {
-                product.addDetail(name, value);
-            }
         }
     }
 }
