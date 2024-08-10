@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="page_head(title, remove)" th:remove="${remove}">
+    <meta http-equiv="Content-Type" charset="UTF-8" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+
+    <title>[[${title}]]</title>
+</head>
+<body>
+
+<div th:fragment="footer" class="text-center m-3">
+    <p>Shopme - Copyright &copy; Shopme Ltd.</p>
+</div>
+
+</body>
+</html>
