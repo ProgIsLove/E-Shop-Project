@@ -1,5 +1,6 @@
 package com.example.shopmefe.category;
 
+import com.example.shopmefe.exception.CategoryNotFoundException;
 import com.shopme.common.entity.Category;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,25 @@ public class CategoryService {
         });
 
         return listNoChildrenCategories;
+    }
+
+    public Category getCategory(String alias) {
+        return categoryRepository.findEnabledCategoryByAlias(alias).orElseThrow(() ->
+                new CategoryNotFoundException(String.format("Category with alias %s not found.", alias)) );
+    }
+
+    public List<Category> getCategoryParents(Category child) {
+        ArrayList<Category> parents = new ArrayList<>();
+
+        Category parent = child.getParent();
+
+        while (parent != null) {
+            parents.add(0, parent);
+            parent = parent.getParent();
+        }
+
+        parents.add(child);
+
+        return parents;
     }
 }

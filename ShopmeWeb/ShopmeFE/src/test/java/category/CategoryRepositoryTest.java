@@ -14,6 +14,7 @@ import testcontainers.AbstractIntegrationTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -29,5 +30,21 @@ public class CategoryRepositoryTest extends AbstractIntegrationTest {
         List<Category> allEnabled = categoryRepository.findAllEnabled();
 
         assertThat(allEnabled).isNotEmpty();
+    }
+
+    @Test
+    public void testFindCategoryByAliasNotFound() {
+        String alias = "aliasNotExist";
+        Optional<Category> enabledCategoryByAlias = categoryRepository.findEnabledCategoryByAlias(alias);
+
+        assertThat(enabledCategoryByAlias).isNull();
+    }
+
+    @Test
+    public void testFindCategoryByAlias() {
+        String alias = "Electronics";
+        Optional<Category> enabledCategoryByAlias = categoryRepository.findEnabledCategoryByAlias(alias);
+
+        assertThat(enabledCategoryByAlias).isNotNull();
     }
 }
