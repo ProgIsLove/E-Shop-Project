@@ -3,6 +3,8 @@ package com.shopme.common.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.*;
 
@@ -25,8 +27,11 @@ public class Product {
     @Column(length = 4096, nullable = false, name = "full_description")
     private String fullDescription;
 
+    @CreationTimestamp
     @Column(name = "created_time")
     private Date createdTime;
+
+    @UpdateTimestamp
     @Column(name = "updated_time")
     private Date modifiedTime;
 
@@ -102,5 +107,14 @@ public class Product {
             return name.substring(0, 70).concat("..");
         }
         return name;
+    }
+
+    @Transient
+    public float getDiscountPrice() {
+        if (discountPercent > 0) {
+            final float discountMultiplier = (100 - discountPercent) / 100.0f;
+            return price * discountMultiplier;
+        }
+        return price;
     }
 }
