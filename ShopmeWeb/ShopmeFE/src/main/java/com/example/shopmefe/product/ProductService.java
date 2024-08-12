@@ -1,9 +1,12 @@
 package com.example.shopmefe.product;
 
+import com.example.shopmefe.exception.ProductNotFoundException;
 import com.shopme.common.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -22,4 +25,8 @@ public class ProductService {
         return productRepository.listByCategory(categoryId, categoryIdMatch, pageRequest);
     }
 
+    public Product getProduct(String alias) throws ProductNotFoundException {
+        return productRepository.findByAlias(alias).orElseThrow(() ->
+                new ProductNotFoundException("Could not find any product with alias %s".formatted(alias)));
+    }
 }
