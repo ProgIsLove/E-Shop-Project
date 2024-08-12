@@ -32,7 +32,7 @@ public class CategoryService {
         return listNoChildrenCategories;
     }
 
-    public Category getCategory(String alias) {
+    public Category getCategory(String alias) throws CategoryNotFoundException {
         return categoryRepository.findEnabledCategoryByAlias(alias).orElseThrow(() ->
                 new CategoryNotFoundException(String.format("Category with alias %s not found.", alias)) );
     }

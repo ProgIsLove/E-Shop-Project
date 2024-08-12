@@ -1,6 +1,8 @@
 package com.example.shopmefe.product;
 
 import com.example.shopmefe.category.CategoryService;
+import com.example.shopmefe.exception.CategoryNotFoundException;
+import com.example.shopmefe.exception.ProductNotFoundException;
 import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
 import org.springframework.data.domain.Page;
@@ -24,14 +26,14 @@ public class ProductController {
 
     @GetMapping("/c/{category_alias}")
     public String viewCategoryFirstPage(@PathVariable("category_alias") String alias,
-                                     Model model) {
+                                     Model model) throws CategoryNotFoundException {
         return viewCategoryByPage(alias, 1, model);
     }
 
     @GetMapping("/c/{category_alias}/page/{pageNum}")
     public String viewCategoryByPage(@PathVariable("category_alias") String alias,
                                @PathVariable("pageNum") int pageNum,
-                               Model model) {
+                               Model model) throws CategoryNotFoundException {
         Category category = categoryService.getCategory(alias);
 
         List<Category> categoryParents = categoryService.getCategoryParents(category);
@@ -55,6 +57,18 @@ public class ProductController {
         model.addAttribute("products", products);
         model.addAttribute("category", category);
 
-        return "category/products_by_category";
+        return "product/products_by_category";
+    }
+
+    @GetMapping("/p/{product_alias}")
+    public String viewProductDetail(@PathVariable("product_alias") String alias, Model model) throws ProductNotFoundException {
+        Product product = productService.getProduct(alias);
+        List<Category> categoryParents = categoryService.getCategoryParents(product.getCategory());
+
+        model.addAttribute("categoryParents", categoryParents);
+        model.addAttribute("product", product);
+        model.addAttribute("pageTitle", product.getShortName());
+
+        return "product/product_detail";
     }
 }

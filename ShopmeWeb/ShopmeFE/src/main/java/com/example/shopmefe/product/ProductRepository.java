@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 
 public interface ProductRepository extends PagingAndSortingRepository<Product, Integer> {
 
@@ -16,4 +18,7 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, I
     Page<Product> listByCategory(@Param("categoryId") Integer categoryId,
                                  @Param("categoryIDMatch") String categoryIDMatch,
                                  Pageable pageable);
+
+
+    Optional<Product> findByAlias(String alias);
 }
