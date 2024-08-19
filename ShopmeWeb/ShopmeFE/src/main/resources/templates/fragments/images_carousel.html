@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content" class="modal text-center" id="carouselModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div id="carouselExampleIndicators" class="carousel slide bg-dark" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+
+                    <th:block th:each="extraImage, status : ${product.images}">
+                    <li data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${status.count}"></li>
+                    </th:block>
+
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img alt="product-image" th:src="@{${product.mainImagePath}}" class="img-fluid">
+                    </div>
+                    <th:block th:each="extraImage : ${product.images}">
+                        <div class="carousel-item">
+                            <img alt="product-image" th:src="@{${extraImage.imagePath}}" class="img-fluid">
+                        </div>
+                    </th:block>
+
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

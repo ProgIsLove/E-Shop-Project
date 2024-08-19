@@ -14,7 +14,18 @@
     <div class="row">
         <div class="clo-sm">
             <div>
-                <img alt="product-image" th:src="@{${product.mainImagePath}}" class="img-fluid">
+                <img id="mainImage" alt="product-image" th:src="@{${product.mainImagePath}}" class="img-fluid" index="0">
+            </div>
+            <div class="row row-cols-auto">
+                <div class="m-2 border border-secondary p-1">
+                    <img alt="product-image" class="image-thumbnail" th:src="@{${product.mainImagePath}}" height="50px" index="0"/>
+                </div>
+                <th:block th:each="extraImage, status : ${product.images}">
+                    <div class="m-2 border border-secondary p-1">
+                        <img alt="product-image" class="image-thumbnail" th:src="@{${extraImage.imagePath}}" height="50px"
+                         th:index="${status.count}"/>
+                    </div>
+                </th:block>
             </div>
         </div>
         <div class="col-sm">
@@ -77,8 +88,25 @@
         </div>
     </div>
 
-
+    <div th:replace="~{fragments/images_carousel :: content}" style="height: 100%; width: 100%"></div>
     <div th:replace="~{fragments/navigation_fragments :: footer_menu}"></div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let mainImage = $("#mainImage");
+        $(".image-thumbnail").mouseover(function () {
+            let currentImageSource = $(this).attr("src");
+            let currentImageIndex = $(this).attr("index");
+
+            mainImage.attr("src", currentImageSource);
+            mainImage.attr("index", currentImageIndex);
+        });
+        mainImage.on("click", function () {
+            $("#carouselModal").show();
+            let imageIndex = parseInt(mainImage.attr("index"));
+            $("#carouselExampleIndicators").carousel(imageIndex);
+        });
+    });
+</script>
 </body>
 </html>
