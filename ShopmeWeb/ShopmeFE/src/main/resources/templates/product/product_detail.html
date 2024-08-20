@@ -91,22 +91,7 @@
     <div th:replace="~{fragments/images_carousel :: content}" style="height: 100%; width: 100%"></div>
     <div th:replace="~{fragments/navigation_fragments :: footer_menu}"></div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        let mainImage = $("#mainImage");
-        $(".image-thumbnail").mouseover(function () {
-            let currentImageSource = $(this).attr("src");
-            let currentImageIndex = $(this).attr("index");
 
-            mainImage.attr("src", currentImageSource);
-            mainImage.attr("index", currentImageIndex);
-        });
-        mainImage.on("click", function () {
-            $("#carouselModal").show();
-            let imageIndex = parseInt(mainImage.attr("index"));
-            $("#carouselExampleIndicators").carousel(imageIndex);
-        });
-    });
-</script>
+<script th:src="@{/js/navbar-toggle.js}"></script>
 </body>
 </html>

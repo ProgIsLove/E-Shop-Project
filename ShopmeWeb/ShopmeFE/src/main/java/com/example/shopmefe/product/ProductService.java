@@ -11,6 +11,7 @@ import java.util.Optional;
 @Service
 public class ProductService {
     public static final int PRODUCTS_PER_PAGE = 10;
+    public static final int SEARCH_RESULTS_PER_PAGE = 10;
 
     private final ProductRepository productRepository;
 
@@ -28,5 +29,10 @@ public class ProductService {
     public Product getProduct(String alias) throws ProductNotFoundException {
         return productRepository.findByAlias(alias).orElseThrow(() ->
                 new ProductNotFoundException("Could not find any product with alias %s".formatted(alias)));
+    }
+
+    public Page<Product> search(String keyword, int pageNum) {
+        PageRequest pageable = PageRequest.of(pageNum - 1, SEARCH_RESULTS_PER_PAGE);
+        return productRepository.search(keyword, pageable);
     }
 }

@@ -19,6 +19,10 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, I
                                  @Param("categoryIDMatch") String categoryIDMatch,
                                  Pageable pageable);
 
-
     Optional<Product> findByAlias(String alias);
+
+    @Query(value = "SELECT * FROM products WHERE enabled = true AND "
+            + "MATCH(name, short_description, full_description) AGAINST (:keyword)",
+          nativeQuery = true)
+    Page<Product> search(@Param("keyword")String keyword, Pageable pageable);
 }
