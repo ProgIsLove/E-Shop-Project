@@ -16,6 +16,23 @@
     <p>Shopme - Copyright &copy; Shopme Ltd.</p>
 </div>
 
+<div th:fragment="product_info" class="col-sm-2">
+    <div>
+        <a th:href="@{'/p/' + ${product.alias}}">
+            <img alt="product-image" th:src="@{${product.mainImagePath}}" style="width: 100px"/>
+            <br/>
+            <b>[[${product.name}]]</b>
+        </a>
+    </div>
+    <div th:if="${product.discountPercent <= 0}">
+        <span>[[${product.price}]]</span>
+    </div>
+    <div th:if="${product.discountPercent > 0}">
+        <span style="font-size: larger; color: darkred">[[${product.discountPrice}]]</span>
+        <del><span>[[${product.price}]]</span></del>
+    </div>
+</div>
+
 <a th:fragment="page_link(moduleURL, pageNum, label)"
    class="page-link"
    th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}

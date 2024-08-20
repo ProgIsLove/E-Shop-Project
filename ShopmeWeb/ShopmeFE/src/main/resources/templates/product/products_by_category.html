@@ -7,7 +7,7 @@
 
 <div class="container-fluid">
     <div th:replace="~{fragments/navigation_fragments :: header_menu}"></div>
-
+    <div th:replace="~{fragments/navigation_fragments :: nav_search}"></div>
     <div th:replace="~{fragments/common_fragments :: content}"></div>
 
     <div class="row text-center">
@@ -25,22 +25,7 @@
     <div class="row">&nbsp;</div>
     <div class="row">
         <th:block th:each="product : ${products}">
-        <div class="col">
-            <div>
-                <a th:href="@{'/p/' + ${product.alias}}">
-                    <img alt="product-image" th:src="@{${product.mainImagePath}}" style="width: 100px"/>
-                    <br/>
-                    <b>[[${product.name}]]</b>
-                </a>
-            </div>
-            <div th:if="${product.discountPercent <= 0}">
-                <span>[[${product.price}]]</span>
-            </div>
-            <div th:if="${product.discountPercent > 0}">
-                <span style="font-size: larger; color: darkred">[[${product.discountPrice}]]</span>
-                <del><span>[[${product.price}]]</span></del>
-            </div>
-        </div>
+            <div th:replace="~{fragments/common_fragments :: product_info}"></div>
         </th:block>
     </div>
 
@@ -48,5 +33,7 @@
 
     <div th:replace="~{fragments/navigation_fragments :: footer_menu}"></div>
 </div>
+
+<script th:src="@{/js/navbar-toggle.js}"></script>
 </body>
 </html>
