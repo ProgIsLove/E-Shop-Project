@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS categories(
     alias     VARCHAR(64)  NOT NULL UNIQUE,
     image     VARCHAR(128) NOT NULL,
     enabled   BOOLEAN      NOT NULL,
-    all_parent_ids VARCHAR(256) null,
     parent_id INT,
+    all_parent_ids VARCHAR(256) null,
     FOREIGN KEY (parent_id) REFERENCES categories (id),
     CONSTRAINT fk_category_parent FOREIGN KEY (parent_id) REFERENCES categories (id),
     CONSTRAINT chk_categories_enabled CHECK (enabled IN (0, 1)),
@@ -90,4 +90,11 @@ CREATE TABLE IF NOT EXISTS product_images
     id         INT AUTO_INCREMENT PRIMARY KEY,
     name       VARCHAR(255) NOT NULL,
     product_id INT
+);
+
+CREATE TABLE IF NOT EXISTS settings
+(
+    `key` VARCHAR (128) NOT NULL PRIMARY KEY,
+    value    VARCHAR(1024) NOT NULL,
+    category VARCHAR(45)   NOT NULL
 );
