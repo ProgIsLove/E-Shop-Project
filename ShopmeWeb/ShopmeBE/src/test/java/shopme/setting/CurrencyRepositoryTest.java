@@ -6,6 +6,7 @@ import com.example.shopmebe.setting.SettingRepository;
 import com.shopme.common.entity.Currency;
 import com.shopme.common.entity.Setting;
 import com.shopme.common.entity.SettingsCategory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -30,18 +31,27 @@ public class CurrencyRepositoryTest extends AbstractIntegrationTest {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-
-    @Test
-    public void testCreateCurrencies() {
-        List<Currency> listCurrencies = Arrays.asList(
+    @BeforeEach
+    void setup() {
+        List<Currency> currencies = Arrays.asList(
                 new Currency("United States Dollar", "$", "USD"),
                 new Currency("British Pound", "£", "GPB")
         );
 
-        currencyRepository.saveAll(listCurrencies);
+        currencyRepository.saveAll(currencies);
+    }
 
+    @Test
+    public void testCreateCurrencies() {
         Iterable<Currency> iterable = currencyRepository.findAll();
 
         assertThat(iterable).size().isEqualTo(2);
+    }
+
+    @Test
+    public void testListAllOrderByNameAsc() {
+        List<Currency> currencies = currencyRepository.findAllByOrderByNameAsc();
+
+        assertThat(currencies.size()).isGreaterThan(0);
     }
 }

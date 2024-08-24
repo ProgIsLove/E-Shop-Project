@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "settings")
 @Getter
@@ -24,9 +26,26 @@ public class Setting {
     public Setting() {
     }
 
+    public Setting(String key) {
+        this.key = key;
+    }
+
     public Setting(String key, String value, SettingsCategory category) {
         this.key = key;
         this.value = value;
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Setting setting = (Setting) o;
+        return Objects.equals(key, setting.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(key);
     }
 }
