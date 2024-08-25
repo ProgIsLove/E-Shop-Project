@@ -91,3 +91,18 @@ CREATE TABLE IF NOT EXISTS product_images
     name       VARCHAR(255) NOT NULL,
     product_id INT
 );
+
+CREATE TABLE IF NOT EXISTS settings
+(
+    `key` VARCHAR (128) NOT NULL PRIMARY KEY,
+    value    VARCHAR(1024) NOT NULL,
+    category VARCHAR(45)   NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS currency
+(
+    id     INT AUTO_INCREMENT PRIMARY KEY,
+    name   VARCHAR(64) NOT NULL,
+    symbol VARCHAR(3)  NOT NULL,
+    code   VARCHAR(4)  NOT NULL
+);

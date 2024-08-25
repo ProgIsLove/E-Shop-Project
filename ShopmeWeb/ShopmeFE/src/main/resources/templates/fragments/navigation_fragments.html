@@ -5,7 +5,7 @@
 <div th:fragment="header_menu">
     <nav class="navbar navbar-expand-xl bg-dark navbar-dark">
         <a class="navbar-brand" th:href="@{/}">
-            <img th:src="@{/images/ShopmeAdminSmall.png}" alt="shopme logo"/>
+            <img th:src="@{${SITE_LOGO}}" alt="shopme logo"/>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" id="toggleButton"
                 aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
         </nav>
     </div>
     <div th:fragment="footer" class="text-center m-3">
-        <p>Shopme - Copyright &copy; Shopme Ltd.</p>
+        <p>[[${COPYRIGHT}]]</p>
     </div>
 </div>
 </body>
