@@ -1,9 +1,7 @@
 package product;
 
 import com.example.shopmefe.ShopmeFeApplication;
-import com.example.shopmefe.category.CategoryRepository;
 import com.example.shopmefe.product.ProductRepository;
-import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import testcontainers.AbstractIntegrationTest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
