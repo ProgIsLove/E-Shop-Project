@@ -106,3 +106,19 @@ CREATE TABLE IF NOT EXISTS currency
     symbol VARCHAR(3)  NOT NULL,
     code   VARCHAR(4)  NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS countries
+(
+    id   INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(45) NOT NULL,
+    code VARCHAR(5)  NOT NULL UNIQUE
+);
+
+
+CREATE TABLE IF NOT EXISTS states
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(45) NOT NULL,
+    country_id INT,
+    FOREIGN KEY (country_id) REFERENCES countries (id)
+);
