@@ -1,5 +1,6 @@
 package com.shopme.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class Country {
     private String code;
 
     @OneToMany(mappedBy = "country")
+    @JsonManagedReference
     private Set<State> state;
 
     public Country() {

@@ -1,4 +1,4 @@
-package shopme.setting;
+package shopme.setting.country;
 
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.setting.country.CountryRepository;
