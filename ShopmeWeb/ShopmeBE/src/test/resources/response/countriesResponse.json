@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "China",
+    "code": "CN",
+    "state": null
+  },
+  {
+    "id": 2,
+    "name": "Sweden",
+    "code": "SWE",
+    "state": null
+  },
+  {
+    "id": 3,
+    "name": "France",
+    "code": "FRA",
+    "state": null
+  }
+]
