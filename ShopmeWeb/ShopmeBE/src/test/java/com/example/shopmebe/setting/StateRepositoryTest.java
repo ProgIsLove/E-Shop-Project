@@ -1,8 +1,8 @@
-package shopme.setting;
+package com.example.shopmebe.setting;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.setting.country.CountryRepository;
 import com.example.shopmebe.setting.state.StateRepository;
+import com.example.shopmebe.testcontainers.AbstractIntegrationTest;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.State;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.List;
 

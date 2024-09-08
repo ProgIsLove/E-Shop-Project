@@ -1,9 +1,7 @@
-package shopme.user;
+package com.example.shopmebe.user;
 
 import com.example.shopmebe.exception.ConflictException;
 import com.example.shopmebe.exception.UserNotFoundException;
-import com.example.shopmebe.user.UserRepository;
-import com.example.shopmebe.user.UserService;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import com.shopme.common.request.CheckUniqueEmailRequest;

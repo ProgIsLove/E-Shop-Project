@@ -1,7 +1,5 @@
-package shopme.category;
+package com.example.shopmebe.category;
 
-import com.example.shopmebe.category.CategoryRepository;
-import com.example.shopmebe.category.CategoryService;
 import com.example.shopmebe.exception.ConflictException;
 import com.shopme.common.entity.Category;
 import com.shopme.common.request.CheckUniqueNameWithAliasRequest;

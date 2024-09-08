@@ -1,10 +1,8 @@
-package shopme.brand;
+package com.example.shopmebe.brand;
 
-import com.example.shopmebe.brand.BrandRepository;
-import com.example.shopmebe.brand.BrandService;
 import com.example.shopmebe.exception.ConflictException;
-import com.shopme.common.request.CheckUniqueNameRequest;
 import com.shopme.common.entity.Brand;
+import com.shopme.common.request.CheckUniqueNameRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,7 +1,7 @@
-package shopme.product;
+package com.example.shopmebe.product;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.product.ProductRepository;
+import com.example.shopmebe.testcontainers.AbstractIntegrationTest;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.Date;
 import java.util.Optional;

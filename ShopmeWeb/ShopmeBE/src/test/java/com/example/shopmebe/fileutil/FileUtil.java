@@ -1,4 +1,4 @@
-package shopme.fileutil;
+package com.example.shopmebe.fileutil;
 
 import org.springframework.core.io.ClassPathResource;
 

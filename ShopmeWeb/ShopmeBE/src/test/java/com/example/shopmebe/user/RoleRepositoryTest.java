@@ -1,4 +1,4 @@
-package shopme.user;
+package com.example.shopmebe.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmebe.user.role.RoleRepository;

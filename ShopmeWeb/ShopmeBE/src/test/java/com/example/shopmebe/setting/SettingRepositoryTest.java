@@ -1,7 +1,7 @@
-package shopme.setting;
+package com.example.shopmebe.setting;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.setting.SettingRepository;
+import com.example.shopmebe.testcontainers.AbstractIntegrationTest;
 import com.shopme.common.entity.Setting;
 import com.shopme.common.entity.SettingsCategory;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.List;
 

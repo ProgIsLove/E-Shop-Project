@@ -1,7 +1,7 @@
-package shopme.user;
+package com.example.shopmebe.user;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.user.UserRepository;
+import com.example.shopmebe.testcontainers.AbstractIntegrationTest;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,9 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import shopme.testcontainers.AbstractIntegrationTest;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
