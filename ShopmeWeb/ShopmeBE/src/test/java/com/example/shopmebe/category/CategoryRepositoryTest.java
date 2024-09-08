@@ -1,7 +1,7 @@
-package shopme.category;
+package com.example.shopmebe.category;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.category.CategoryRepository;
+import com.example.shopmebe.testcontainers.AbstractIntegrationTest;
 import com.shopme.common.entity.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import shopme.testcontainers.AbstractIntegrationTest;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -17,7 +16,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

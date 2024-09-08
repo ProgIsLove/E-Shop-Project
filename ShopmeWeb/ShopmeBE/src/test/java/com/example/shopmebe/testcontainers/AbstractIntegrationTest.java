@@ -1,4 +1,4 @@
-package shopme.testcontainers;
+package com.example.shopmebe.testcontainers;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

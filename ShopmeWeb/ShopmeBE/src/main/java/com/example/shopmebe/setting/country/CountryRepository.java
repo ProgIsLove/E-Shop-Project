@@ -7,5 +7,11 @@ import java.util.List;
 
 public interface CountryRepository extends CrudRepository<Country, Integer> {
 
+    Long countById(Integer id);
+
     List<Country> findAllByOrderByNameAsc();
+
+    boolean existsByName(String name);
+
+
 }

@@ -37,4 +37,17 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(CountryNotFoundException.class)
+    public ResponseEntity<ApiError> handleCountryNotFoundException(CountryNotFoundException e) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(
+                        ApiError.builder()
+                                .title(NOT_FOUND.name())
+                                .code(HttpStatus.NOT_FOUND.value())
+                                .details(e.getMessage())
+                                .build()
+                );
+    }
 }

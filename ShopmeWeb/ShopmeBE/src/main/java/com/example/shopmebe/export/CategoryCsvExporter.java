@@ -1,7 +1,6 @@
 package com.example.shopmebe.export;
 
 import com.shopme.common.entity.Category;
-import com.shopme.common.entity.User;
 import jakarta.servlet.http.HttpServletResponse;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
