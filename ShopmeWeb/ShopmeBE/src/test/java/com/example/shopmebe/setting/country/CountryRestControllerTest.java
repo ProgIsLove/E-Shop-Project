@@ -1,6 +1,5 @@
 package com.example.shopmebe.setting.country;
 
-import com.example.shopmebe.exception.ApiError;
 import com.example.shopmebe.exception.CountryNotFoundException;
 import com.example.shopmebe.fileutil.FileUtil;
 import com.example.shopmebe.fileutil.MapperUtil;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -121,13 +119,26 @@ public class CountryRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound()).andReturn();
 
-//        String responseBody = mvcResult.getResponse().getContentAsString();
+        String responseBody = mvcResult.getResponse().getContentAsString();
 
         verify(countryServiceMock, times(1)).updateCountry(any(Country.class), any(Integer.class));
 
-//        String expectedResponse = FileUtil.readFromJSONFileToString("json/country/countryErrorResponse.json");
-//        ApiError jsonResponse = MapperUtil.deserializeErrorMsg(expectedResponse);
+        String expectedResponse = FileUtil.readFromJSONFileToString("json/country/countryErrorResponse.json");
 
-//        JSONAssert.assertEquals(jsonResponse, responseBody, false);
+        JSONAssert.assertEquals(expectedResponse, responseBody, false);
+    }
+
+    @Test
+    @WithMockUser(username = "nam@codejava.net", password = "nam2020", roles = "ADMIN")
+    public void testDeleteCountryNotFound() throws Exception {
+        String url = "/v1/countries/1";
+
+        doNothing().when(countryServiceMock).delete(1);
+
+        mockMvc.perform(delete(url)
+                        .with(csrf()))
+                .andExpect(status().isNoContent());
+
+        verify(countryServiceMock, times(1)).delete(1);
     }
 }

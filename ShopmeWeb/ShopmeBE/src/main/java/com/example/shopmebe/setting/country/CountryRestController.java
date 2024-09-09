@@ -6,7 +6,6 @@ import com.shopme.common.entity.Country;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class CountryRestController {
         return ResponseEntity.ok(countryUpdated);
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCountry(@PathVariable Integer id) throws CountryNotFoundException {
         countryService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
