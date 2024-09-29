@@ -55,11 +55,21 @@
         </div>
     </div>
 
+    <div class="toast justify-content-center d-flex" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="3000">
+        <div role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <span id="toastMessage"></span>
+            </div>
+        </div>
+    </div>
+
     <div th:replace="~{fragments/common_fragments :: footer}"></div>
 
 <script type="text/javascript">
     MAX_FILE_SIZE = 102400; //100KB
     contextPath = "[[@{/v1}]]";
+    var csrfHeaderName = "[[${_csrf.headerName}]]";
+    var csrfValue = "[[${_csrf.token}]]";
 </script>
 <script th:src="@{/js/image_upload.js}"></script>
 <script th:src="@{/js/countries_setting.js}"></script>
