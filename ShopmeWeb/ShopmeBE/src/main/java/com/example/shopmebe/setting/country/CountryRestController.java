@@ -2,7 +2,7 @@ package com.example.shopmebe.setting.country;
 
 import com.example.shopmebe.exception.ConflictException;
 import com.example.shopmebe.exception.CountryNotFoundException;
-import com.shopme.common.entity.Country;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,25 +21,26 @@ public class CountryRestController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Country>> country() {
+    public ResponseEntity<List<CountryResponse>> country() {
         return ResponseEntity.ok(countryService.getAllCountries());
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> newCountry(@RequestBody Country country) throws ConflictException {
-        countryService.addCountry(country);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<CountryResponse> newCountry(@RequestBody @Valid CountryRequest country) throws ConflictException {
+        CountryResponse newCountry = countryService.addCountry(country);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newCountry);
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Country> updateCountry(@PathVariable Integer id, @RequestBody Country country) throws CountryNotFoundException {
-        Country countryUpdated = countryService.updateCountry(country, id);
+    public ResponseEntity<CountryResponse> updateCountry(@PathVariable Integer id, @RequestBody @Valid CountryRequest country) throws CountryNotFoundException {
+
+        CountryResponse countryUpdated = countryService.updateCountry(country, id);
         return ResponseEntity.ok(countryUpdated);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCountry(@PathVariable Integer id) throws CountryNotFoundException {
         countryService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 }

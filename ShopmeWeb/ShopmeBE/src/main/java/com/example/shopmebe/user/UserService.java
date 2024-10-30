@@ -127,7 +127,7 @@ public class UserService {
 
     public void delete(Integer id) throws UserNotFoundException {
         Long countById = userRepository.countById(id);
-        if (countById == null || countById == 0) {
+        if (countById == 0) {
             throw new UserNotFoundException(String.format("Could not find any user with ID %d", id));
         }
         userRepository.deleteById(id);

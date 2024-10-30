@@ -2,19 +2,16 @@
   {
     "id": 1,
     "name": "China",
-    "code": "CN",
-    "state": null
+    "code": "CN"
   },
   {
     "id": 2,
     "name": "Sweden",
-    "code": "SWE",
-    "state": null
+    "code": "SWE"
   },
   {
     "id": 3,
     "name": "France",
-    "code": "FRA",
-    "state": null
+    "code": "FRA"
   }
 ]

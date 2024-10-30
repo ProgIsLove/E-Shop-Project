@@ -199,7 +199,7 @@ public class CategoryService {
     @Transactional
     public void delete(Integer id) throws CategoryNotFoundException {
         Long countById = categoryRepository.countById(id);
-        if (countById == null ||  countById == 0) {
+        if (countById == 0) {
             throw new CategoryNotFoundException(String.format("Could not find any category with ID %d", id));
         }
 
