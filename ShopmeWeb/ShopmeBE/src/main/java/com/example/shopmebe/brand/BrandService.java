@@ -43,7 +43,7 @@ public class BrandService {
     @Transactional
     public void delete(Integer id) throws BrandNotFoundException {
         Long countById = brandRepository.countById(id);
-        if (countById == null ||  countById == 0) {
+        if (countById == 0) {
             throw new BrandNotFoundException(String.format("Could not find any category with ID %d", id));
         }
 

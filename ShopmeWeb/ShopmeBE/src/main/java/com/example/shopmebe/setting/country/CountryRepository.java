@@ -11,7 +11,5 @@ public interface CountryRepository extends CrudRepository<Country, Integer> {
 
     List<Country> findAllByOrderByNameAsc();
 
-    boolean existsByName(String name);
-
-
+    boolean existsByNameOrCode(String name, String code);
 }

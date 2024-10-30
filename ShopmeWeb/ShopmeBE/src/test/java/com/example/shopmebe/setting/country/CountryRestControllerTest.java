@@ -35,14 +35,14 @@ public class CountryRestControllerTest {
     @MockBean
     private CountryService countryServiceMock;
 
-    List<Country> countries;
+    List<CountryResponse> countries;
 
     @BeforeEach
     void setup() {
         countries = List.of(
-                new Country(1, "China", "CN"),
-                new Country(2, "Sweden", "SWE"),
-                new Country(3, "France", "FRA")
+                new CountryResponse(1, "China", "CN"),
+                new CountryResponse(2, "Sweden", "SWE"),
+                new CountryResponse(3, "France", "FRA")
         );
     }
 
@@ -70,7 +70,7 @@ public class CountryRestControllerTest {
 
         String countryJson = FileUtil.readFromJSONFileToString("json/country/countryRequest.json");
 
-        doNothing().when(countryServiceMock).addCountry(any(Country.class));
+        when(countryServiceMock.addCountry(any(CountryRequest.class))).thenReturn(new CountryResponse(1, "Test", "Tet"));
 
         ResultActions resultActions = mockMvc.perform(post(url).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -88,7 +88,7 @@ public class CountryRestControllerTest {
         String countryJson = FileUtil.readFromJSONFileToString("json/country/countryRequest.json");
         Country country = MapperUtil.deserializeCountry(countryJson);
 
-        when(countryServiceMock.updateCountry(any(Country.class), any(Integer.class))).thenReturn(country);
+        when(countryServiceMock.updateCountry(any(CountryRequest.class), any(Integer.class))).thenReturn(new CountryResponse(1, "China", "CN"));
 
         ResultActions resultActions = mockMvc.perform(put(url).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -98,7 +98,7 @@ public class CountryRestControllerTest {
                 .andExpect(jsonPath("$.name").value(country.getName()))
                 .andExpect(jsonPath("$.code").value(country.getCode()));
 
-        verify(countryServiceMock, times(1)).updateCountry(any(Country.class), eq(1));
+        verify(countryServiceMock, times(1)).updateCountry(any(CountryRequest.class), eq(1));
 
         assertThat(resultActions.andReturn().getResponse().getStatus()).isEqualTo(200);
     }
@@ -110,7 +110,7 @@ public class CountryRestControllerTest {
 
         String countryJson = FileUtil.readFromJSONFileToString("json/country/countryRequest.json");
 
-        when(countryServiceMock.updateCountry(any(Country.class), any(Integer.class)))
+        when(countryServiceMock.updateCountry(any(CountryRequest.class), any(Integer.class)))
                 .thenThrow(new CountryNotFoundException("Country not found"));
 
         MvcResult mvcResult = mockMvc.perform(put(url)
@@ -121,7 +121,7 @@ public class CountryRestControllerTest {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
 
-        verify(countryServiceMock, times(1)).updateCountry(any(Country.class), any(Integer.class));
+        verify(countryServiceMock, times(1)).updateCountry(any(CountryRequest.class), any(Integer.class));
 
         String expectedResponse = FileUtil.readFromJSONFileToString("json/country/countryErrorResponse.json");
 

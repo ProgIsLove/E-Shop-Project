@@ -101,7 +101,7 @@ public class ProductService {
     @Transactional
     public void delete(Integer id) throws ProductNotFoundException {
         Long countById = productRepository.countById(id);
-        if (countById == null ||  countById == 0) {
+        if (countById == 0) {
             throw new ProductNotFoundException(String.format("Could not find any product with ID %d", id));
         }
 

@@ -13,38 +13,45 @@ import java.util.Optional;
 public class CountryService {
 
     private final CountryRepository countryRepository;
+    private final CountryMapper countryMapper;
 
-    public CountryService(CountryRepository countryRepository) {
+    public CountryService(CountryRepository countryRepository, CountryMapper countryMapper) {
         this.countryRepository = countryRepository;
+        this.countryMapper = countryMapper;
     }
 
-    public Country getCountryById(Integer id) throws CountryNotFoundException {
+    private Country getCountryById(Integer id) throws CountryNotFoundException {
         return countryRepository.findById(id)
                 .orElseThrow(() -> new CountryNotFoundException("Country not found"));
     }
 
-    public List<Country> getAllCountries() {
-        return countryRepository.findAllByOrderByNameAsc();
+    public List<CountryResponse> getAllCountries() {
+        return countryMapper.convertToDTO(countryRepository.findAllByOrderByNameAsc());
     }
 
-    public void addCountry(Country country) throws ConflictException {
-        Optional.of(country).filter(c -> !countryRepository.existsByName(country.getName()))
+    public CountryResponse addCountry(CountryRequest countryRequest) throws ConflictException {
+        Country country = countryMapper.convertToEntity(countryRequest);
+        return Optional.of(country)
+                .filter(c -> !countryRepository.existsByNameOrCode(country.getName().trim(),
+                        country.getCode().toUpperCase()))
                 .map(countryRepository::save)
-                .orElseThrow(() -> new ConflictException(country.getName() + " already exists"));
+                .map(countryMapper::convertEntityToResponse)
+                .orElseThrow(() -> new ConflictException("Country name or code already exists"));
     }
 
-    public Country updateCountry(Country country, Integer id) throws CountryNotFoundException {
+    public CountryResponse updateCountry(CountryRequest country, Integer id) throws CountryNotFoundException {
         return Optional.ofNullable(this.getCountryById(id)).map(oldCountry -> {
-            oldCountry.setName(country.getName());
-            oldCountry.setCode(country.getCode());
-            return countryRepository.save(oldCountry);
+            oldCountry.setName(country.name().trim());
+            oldCountry.setCode(country.code().toUpperCase());
+            Country updateCountry = countryRepository.save(oldCountry);
+            return countryMapper.convertEntityToResponse(updateCountry);
         }).orElseThrow(() -> new CountryNotFoundException("Country not found"));
     }
 
     @Transactional
     public void delete(Integer id) throws CountryNotFoundException{
         Long countById = countryRepository.countById(id);
-        if (countById == null || countById == 0) {
+        if (countById == 0) {
             throw new CountryNotFoundException("Country not found");
         }
 
