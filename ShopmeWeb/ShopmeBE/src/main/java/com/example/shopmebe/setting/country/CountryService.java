@@ -39,6 +39,7 @@ public class CountryService {
                 .orElseThrow(() -> new ConflictException("Country name or code already exists"));
     }
 
+    @Transactional
     public CountryResponse updateCountry(CountryRequest country, Integer id) throws CountryNotFoundException {
         return Optional.ofNullable(this.getCountryById(id)).map(oldCountry -> {
             oldCountry.setName(country.name().trim());
@@ -49,7 +50,7 @@ public class CountryService {
     }
 
     @Transactional
-    public void delete(Integer id) throws CountryNotFoundException{
+    public void delete(Integer id) throws CountryNotFoundException {
         Long countById = countryRepository.countById(id);
         if (countById == 0) {
             throw new CountryNotFoundException("Country not found");

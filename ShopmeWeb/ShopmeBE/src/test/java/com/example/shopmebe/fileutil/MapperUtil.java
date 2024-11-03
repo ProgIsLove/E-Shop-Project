@@ -9,7 +9,7 @@ public class MapperUtil {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static String deserializeCountries(String json) throws JsonProcessingException {
+    public static String deserializeJSON(String json) throws JsonProcessingException {
         var countries = objectMapper.readValue(json, new TypeReference<>() {});
         return objectMapper.writeValueAsString(countries);
     }

@@ -53,7 +53,7 @@ public class CountryRestControllerTest {
         when(countryServiceMock.getAllCountries()).thenReturn(countries);
 
         String countriesJson = FileUtil.readFromJSONFileToString("json/country/countriesResponse.json");
-        String jsonResponse = MapperUtil.deserializeCountries(countriesJson);
+        String jsonResponse = MapperUtil.deserializeJSON(countriesJson);
 
         ResultActions resultActions = mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
