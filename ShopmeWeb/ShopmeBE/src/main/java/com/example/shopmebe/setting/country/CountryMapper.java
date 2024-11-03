@@ -6,13 +6,13 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "countryMapper")
 public interface CountryMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "code", source = "code")
-    List<CountryResponse> convertToDTO(List<Country> country);
+    List<CountryResponse> convertToDTO(List<Country> countries);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "name")
