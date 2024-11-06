@@ -10,5 +10,5 @@ public interface StateRepository extends CrudRepository<State, Integer> {
 
     Long countById(Integer id);
 
-    List<State> findByIdOrderByNameAsc(Integer countryId);
+    List<State> findByCountryIdOrderByNameAsc(Integer countryId);
 }

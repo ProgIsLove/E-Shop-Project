@@ -32,7 +32,8 @@ public class CountryRestController {
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CountryResponse> updateCountry(@PathVariable Integer id, @RequestBody @Valid CountryRequest country) throws CountryNotFoundException {
+    public ResponseEntity<CountryResponse> updateCountry(@PathVariable Integer id,
+                                                         @RequestBody @Valid CountryRequest country) throws CountryNotFoundException {
 
         CountryResponse countryUpdated = countryService.updateCountry(country, id);
         return ResponseEntity.ok(countryUpdated);

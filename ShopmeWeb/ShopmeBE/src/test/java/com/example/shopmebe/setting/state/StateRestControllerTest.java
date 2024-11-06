@@ -44,9 +44,10 @@ public class StateRestControllerTest {
 
     @BeforeEach
     void setup() {
+
         states = List.of(
-                new StateResponse(1, "Paris"),
-                new StateResponse(2, "Marseille"));
+                new StateResponse(1, "Paris", new CountryDTO(1, "France")),
+                new StateResponse(2, "Marseille", new CountryDTO(1, "France")));
     }
 
     @Test
@@ -75,7 +76,7 @@ public class StateRestControllerTest {
 
         String statesJson = FileUtil.readFromJSONFileToString("json/state/stateRequest.json");
 
-        when(stateServiceMock.addState(any(StateRequest.class))).thenReturn(new StateResponse(1, "Paris"));
+        when(stateServiceMock.addState(any(StateRequest.class))).thenReturn(new StateResponse(1, "Paris", new CountryDTO(1, "France")));
 
         ResultActions resultActions = mockMvc.perform(post(url).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

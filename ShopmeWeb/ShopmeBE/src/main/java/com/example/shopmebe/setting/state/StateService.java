@@ -14,16 +14,19 @@ public class StateService {
 
     private final StateRepository stateRepository;
     private final StateMapper stateMapper;
-    private final CountryRepository countryRepository;
 
-    public StateService(StateRepository stateRepository, StateMapper stateMapper, CountryRepository countryRepository) {
+    public StateService(StateRepository stateRepository, StateMapper stateMapper) {
         this.stateRepository = stateRepository;
         this.stateMapper = stateMapper;
-        this.countryRepository = countryRepository;
+    }
+
+    private State getStateById(Integer stateId) throws StateNotFoundException {
+        return stateRepository.findById(stateId)
+                .orElseThrow(() -> new StateNotFoundException("State not found"));
     }
 
     public List<StateResponse> getStateByCountry(Integer countryId) {
-        return stateMapper.convertToDTO(stateRepository.findByIdOrderByNameAsc(countryId));
+        return stateMapper.convertToDTO(stateRepository.findByCountryIdOrderByNameAsc(countryId));
     }
 
     public StateResponse addState(StateRequest stateRequest) {
@@ -33,12 +36,21 @@ public class StateService {
     }
 
     @Transactional
+    public StateResponse updateState(StateRequest stateRequest, Integer stateId) throws StateNotFoundException {
+        return Optional.ofNullable(this.getStateById(stateId)).map(oldState -> {
+            oldState.setName(stateRequest.name().trim());
+            State updateState = stateRepository.save(oldState);
+            return stateMapper.convertEntityToResponse(updateState);
+        }).orElseThrow(() -> new StateNotFoundException("State not found"));
+    }
+
+    @Transactional
     public void delete(Integer id) throws StateNotFoundException {
-        Long countById = countryRepository.countById(id);
+        Long countById = stateRepository.countById(id);
         if (countById == 0) {
             throw new StateNotFoundException("State not found");
         }
 
-        countryRepository.deleteById(id);
+        stateRepository.deleteById(id);
     }
 }
