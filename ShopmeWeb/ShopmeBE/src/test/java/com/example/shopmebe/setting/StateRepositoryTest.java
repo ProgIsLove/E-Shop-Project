@@ -44,7 +44,7 @@ public class StateRepositoryTest extends AbstractIntegrationTest {
     public void testListStatesByCountry() {
         Integer countryId = 1;
 
-        List<State> states = stateRepository.findByIdOrderByNameAsc(countryId);
+        List<State> states = stateRepository.findByCountryIdOrderByNameAsc(countryId);
 
         assertThat(states.size()).isGreaterThan(0);
         assertThat(states.stream().map(State::getName))

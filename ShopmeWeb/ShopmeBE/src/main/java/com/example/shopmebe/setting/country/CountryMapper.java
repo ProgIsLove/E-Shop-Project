@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "countryMapper")
+@Mapper(componentModel = "spring")
 public interface CountryMapper {
 
     @Mapping(target = "id", source = "id")

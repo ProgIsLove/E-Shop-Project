@@ -25,15 +25,23 @@ public class StateRestController {
         return ResponseEntity.ok(stateService.getStateByCountry(countryId));
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StateResponse> saveState(@RequestBody @Valid StateRequest state) {
         StateResponse stateResponse = stateService.addState(state);
         return ResponseEntity.status(HttpStatus.CREATED).body(stateResponse);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteState(@PathVariable Integer id) throws StateNotFoundException {
-        stateService.delete(id);
+    @PutMapping(value = "/{stateId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StateResponse> updateState(@PathVariable("stateId") Integer stateId,
+                                        @RequestBody @Valid StateRequest state) throws StateNotFoundException {
+
+        StateResponse stateUpdated = stateService.updateState(state, stateId);
+        return ResponseEntity.ok(stateUpdated);
+    }
+
+    @DeleteMapping(value = "/{stateId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteState(@PathVariable("stateId") Integer stateId) throws StateNotFoundException {
+        stateService.delete(stateId);
         return ResponseEntity.noContent().build();
     }
 

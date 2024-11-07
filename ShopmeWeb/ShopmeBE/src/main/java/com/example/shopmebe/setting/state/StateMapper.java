@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "stateMapper")
+@Mapper(componentModel = "spring")
 public interface StateMapper {
 
     @Mapping(target = "id", source = "id")
@@ -15,9 +15,13 @@ public interface StateMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "name")
+    @Mapping(target = "country.id", source = "countryDTO.id")
+    @Mapping(target = "country.name", source = "countryDTO.countryName")
     State convertToEntity(StateRequest stateRequest);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
+    @Mapping(target = "countryDTO.id", source = "country.id")
+    @Mapping(target = "countryDTO.countryName", source = "country.name")
     StateResponse convertEntityToResponse(State state);
 }

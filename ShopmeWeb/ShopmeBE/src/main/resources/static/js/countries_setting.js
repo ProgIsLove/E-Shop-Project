@@ -104,7 +104,7 @@ function updateCountry(dropDownCountry,
     let countryName = fieldCountryName.val().trim()
     let countryCode = fieldCountryCode.val().replaceAll(/\s/g,'').toUpperCase()
 
-    let jsonDate = {id: countryId, name: countryName, code: countryCode};
+    let jsonData = {id: countryId, name: countryName, code: countryCode};
 
     $.ajax({
         type: 'PUT',
@@ -112,7 +112,7 @@ function updateCountry(dropDownCountry,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeaderName, csrfValue);
         },
-        data: JSON.stringify(jsonDate),
+        data: JSON.stringify(jsonData),
         contentType: 'application/json',
     }).done(function (response) {
         let $dropDownCountries = $("#dropDownCountries option:selected");
@@ -127,7 +127,6 @@ function updateCountry(dropDownCountry,
             fieldCountryName,
             fieldCountryCode);
     }).fail(function (xhr) {
-        console.log(xhr);
         const statusHandlers = {
             409: () => {
                 let response = xhr.responseJSON;
@@ -156,7 +155,6 @@ function changeFormStateToSelectedCountry(dropDownCountry,
                                           fieldCountryName,
                                           fieldCountryCode) {
     buttonAddCountry.prop("value", "New");
-    buttonUpdateCountry.prop("disabled", false);
     buttonUpdateCountry.prop("disabled", false);
     buttonDeleteCountry.prop("disabled", false);
 
@@ -198,7 +196,7 @@ function addCountry(dropDownCountry,
 
     buttonAddCountry.disabled = countryName === "" && countryCode === "";
 
-    let jsonDate = {name: countryName, code: countryCode};
+    let jsonData = {name: countryName, code: countryCode};
 
     $.ajax({
         type: 'POST',
@@ -206,7 +204,7 @@ function addCountry(dropDownCountry,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeaderName, csrfValue);
         },
-        data: JSON.stringify(jsonDate),
+        data: JSON.stringify(jsonData),
         contentType: 'application/json',
     }).done(function (response) {
         let countryId = response.id;
