@@ -29,7 +29,7 @@ $(document).ready(function () {
                 fieldCountryCode,
                 buttonAddCountry);
         } else {
-            changeFormStateToNew(buttonAddCountry,
+            changeFormStateToNewCountry(buttonAddCountry,
                 buttonUpdateCountry,
                 buttonDeleteCountry,
                 labelCountryName,
@@ -79,7 +79,7 @@ function deleteCountry(dropDownCountry,
         }
     }).done(function () {
         $("#dropDownCountries option[value='" + optionValue + "']").remove();
-        changeFormStateToNew(buttonAddCountry,
+        changeFormStateToNewCountry(buttonAddCountry,
             buttonUpdateCountry,
             buttonDeleteCountry,
             labelCountryName,
@@ -120,7 +120,7 @@ function updateCountry(dropDownCountry,
         $dropDownCountries.text(response.name);
         showToastMessage("The country has been updated");
 
-        changeFormStateToNew(buttonAddCountry,
+        changeFormStateToNewCountry(buttonAddCountry,
             buttonUpdateCountry,
             buttonDeleteCountry,
             labelCountryName,
@@ -169,12 +169,12 @@ function changeFormStateToSelectedCountry(dropDownCountry,
     fieldCountryCode.val(countryCode);
 }
 
-function changeFormStateToNew(buttonAddCountry,
-                              buttonUpdateCountry,
-                              buttonDeleteCountry,
-                              labelCountryName,
-                              fieldCountryName,
-                              fieldCountryCode) {
+function changeFormStateToNewCountry(buttonAddCountry,
+                                     buttonUpdateCountry,
+                                     buttonDeleteCountry,
+                                     labelCountryName,
+                                     fieldCountryName,
+                                     fieldCountryCode) {
     buttonAddCountry.val("Add");
     labelCountryName.text("Country Name:");
 
