@@ -30,7 +30,6 @@ function customizeTabs() {
             // Select the tab link that matches the hash
             let tabTriggerEl = document.querySelector(`.nav-tabs button[data-bs-target="#${hash}"]`);
             if (tabTriggerEl) {
-                console.log("trigger")
                 // Create or retrieve the Bootstrap tab instance and show the tab
                 let tab = bootstrap.Tab.getOrCreateInstance(tabTriggerEl);
                 tab.show();
