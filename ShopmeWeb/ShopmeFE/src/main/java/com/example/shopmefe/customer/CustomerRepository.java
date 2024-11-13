@@ -1,5 +1,4 @@
-package com.example.shopmebe.customer;
-
+package com.example.shopmefe.customer;
 
 import com.shopme.common.entity.Customer;
 import org.springframework.data.jpa.repository.Modifying;

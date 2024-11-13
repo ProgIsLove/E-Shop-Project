@@ -1,7 +1,8 @@
-package com.example.shopmebe.customer;
+package customer;
 
 import com.example.shopmebe.ShopmeBeApplication;
-import com.example.shopmebe.testcontainers.AbstractIntegrationTest;
+import com.example.shopmefe.ShopmeFeApplication;
+import com.example.shopmefe.customer.CustomerRepository;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import testcontainers.AbstractIntegrationTest;
 
 import java.util.Date;
 import java.util.Optional;
@@ -21,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = ShopmeBeApplication.class)
+@ContextConfiguration(classes = ShopmeFeApplication.class)
 public class CustomerRepositoryTest extends AbstractIntegrationTest {
 
     @Autowired
