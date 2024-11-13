@@ -27,6 +27,10 @@ public class Country {
     @JsonManagedReference
     private Set<State> state;
 
+    @OneToMany(mappedBy = "country")
+    @JsonManagedReference
+    private Set<Customer> customers;
+
     public Country() {
     }
 

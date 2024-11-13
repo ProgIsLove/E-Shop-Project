@@ -18,7 +18,7 @@ public class State {
     @Column(nullable = false, length = 45)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     @JsonBackReference
     private Country country;
