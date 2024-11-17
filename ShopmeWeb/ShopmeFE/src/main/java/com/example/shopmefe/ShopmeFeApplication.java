@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan({"com.shopme.common.entity"})
-@EnableJpaRepositories(basePackages = "com.example.shopmebe.setting.country")
 public class ShopmeFeApplication {
 
     public static void main(String[] args) {

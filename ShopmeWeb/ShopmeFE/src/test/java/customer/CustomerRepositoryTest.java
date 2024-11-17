@@ -1,6 +1,5 @@
 package customer;
 
-import com.example.shopmebe.ShopmeBeApplication;
 import com.example.shopmefe.ShopmeFeApplication;
 import com.example.shopmefe.customer.CustomerRepository;
 import com.shopme.common.entity.Country;
@@ -47,7 +46,7 @@ public class CustomerRepositoryTest extends AbstractIntegrationTest {
         customer.setLastName("Lucky");
         customer.setPassword("passw");
         customer.setEmail("tom.s.lucky@gmail.com");
-        customer.setPhoneNumber("312-462-756");
+//        customer.setPhoneNumber("312-462-756");
         customer.setAddressLine1("1972 West Drive");
         customer.setCity("Sacramento");
         customer.setState("California");

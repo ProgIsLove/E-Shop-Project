@@ -1,10 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common_fragments :: page_head(${pageTitle}, 'none')}">
+
 </head>
 <body>
+
+<div class="container-fluid">
+    <div th:replace="~{fragments/navigation_fragments :: header_menu}"></div>
+
+    <div class="text-center">
+        <h2>Customer Registration</h2>
+    </div>
+
+    <form th:action="@{/create_customer}" method="post" th:object="${customer}"
+          style="max-width: 600px; margin: 0 auto;">
+        <div class="border border-secondary rounded p-3">
+            <div class="row mb-3">
+                <label for="firstName" class="col-sm-4 col-form-label">First Name:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="firstName" class="form-control"
+                           placeholder="First name" aria-label="First name" th:field="*{firstName}" required="required"
+                           maxlength="45" minlength="2">
+                </div>
+
+                <label for="lastName" class="col-sm-4 col-form-label">Last Name:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="lastName" class="form-control"
+                           placeholder="Last Name" aria-label="Last name" th:field="*{lastName}" required="required"
+                           maxlength="45" minlength="2">
+                </div>
+
+                <label for="email" class="col-sm-4 col-form-label">E-mail:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="email" id="email" class="form-control"
+                           placeholder="E-mail" aria-label="E-mail" th:field="*{email}" required="required"
+                           maxlength="45" minlength="2">
+                </div>
+
+                <label for="password" class="col-sm-4 col-form-label">Password:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="password" id="password" class="form-control"
+                           placeholder="Password" aria-label="Create a password" th:field="*{password}"
+                           required="required"
+                           maxlength="64" minlength="8">
+                </div>
+
+                <label for="confirmPassword" class="col-sm-4 col-form-label">Confirm Password:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="password" id="confirmPassword" class="form-control"
+                           placeholder="Confirm password" aria-label="Confirm password" required="required"
+                           maxlength="64" minlength="8"
+                           oninput="checkPasswordMatch(this)">
+                </div>
+
+                <label for="phoneNumber" class="col-sm-4 col-form-label">Phone Number:</label>
+                <div class="col-sm-3 mb-1 mt-1">
+                    <input type="text" id="phoneNumberPrefix" class="form-control"
+                           placeholder="Prefix" aria-label="Phone Number" th:field="*{phoneNumber.prefix}"
+                           maxlength="5">
+                </div>
+                <div class="col-sm-5 mb-1 mt-1">
+                    <input type="text" id="phoneNumber" class="form-control"
+                           placeholder="Phone Number" aria-label="Phone Number" th:field="*{phoneNumber.phone}"
+                           required="required"
+                           maxlength="15" minlength="8">
+                </div>
+
+                <label for="addressLine1" class="col-sm-4 col-form-label">Address Line 1:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="addressLine1" class="form-control"
+                           placeholder="Address 1" aria-label="Address 1" th:field="*{addressLine1}" required="required"
+                           maxlength="64" minlength="8">
+                </div>
+
+                <label for="addressLine2" class="col-sm-4 col-form-label">Address Line 2:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="addressLine2" class="form-control"
+                           placeholder="Address 2" aria-label="Address 2" th:field="*{addressLine2}" required="required"
+                           maxlength="64" minlength="8">
+                </div>
+
+                <label for="city" class="col-sm-4 col-form-label">City:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="city" class="form-control"
+                           placeholder="City" aria-label="City" th:field="*{city}" required="required"
+                           maxlength="64" minlength="8">
+                </div>
+
+                <label for="country" class="col-sm-4 col-form-label">Country:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <div>
+                        <select id="country" class="form-control" th:field="*{country}">
+                            <th:block th:each="country : ${listCountries}">
+                                <option th:value="${country.id}">[[${country.name}]]</option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="stateProvince" class="col-sm-4 col-form-label">State/Province:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="stateProvince" class="form-control"
+                           placeholder="State or Province" aria-label="State or Province" th:field="*{state}"
+                           maxlength="45" minlength="3">
+                </div>
+
+                <label for="postalCode" class="col-sm-4 col-form-label">Postal Code:</label>
+                <div class="col-sm-8 mb-1 mt-1">
+                    <input type="text" id="postalCode" class="form-control"
+                           placeholder="Postal Code" aria-label="Postal Code" th:field="*{postalCode}" required="required"
+                           maxlength="10" minlength="2">
+                </div>
+            </div>
+
+            <div class="text-center mb-2">
+                <input type="submit" value="Create Account" class="btn btn-primary"/>
+            </div>
+        </div>
+
+    </form>
+
+    <div th:replace="~{fragments/navigation_fragments :: footer_menu}"></div>
+</div>
+<script type="text/javascript">
+    function checkPasswordMatch(confirmPassword) {
+        if (confirmPassword.value !== $("#password").val()) {
+            confirmPassword.setCustomValidity("Passwords do not match");
+        } else {
+            confirmPassword.setCustomValidity("");
+        }
+    }
+</script>
 
 </body>
 </html>

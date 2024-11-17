@@ -21,7 +21,7 @@ public class CountryRestController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CountryResponse>> country() {
+    public ResponseEntity<List<CountryResponse>> countries() {
         return ResponseEntity.ok(countryService.getAllCountries());
     }
 
