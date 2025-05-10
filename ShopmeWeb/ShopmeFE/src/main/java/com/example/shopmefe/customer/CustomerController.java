@@ -25,7 +25,7 @@ public class CustomerController {
     public String showRegisterForm(Model model) {
 
         List<CountryResponse> countries = countryAPI.countries().block();
-
+        
         model.addAttribute("pageTitle", "Customer Register");
         model.addAttribute("listCountries", countries);
         model.addAttribute("customer", new Customer());

@@ -61,6 +61,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/static/js/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/countries/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/states/**").permitAll()
                 .requestMatchers("/users/**", "/settings/**", "/v1/states/**", "/v1/countries/**").hasAuthority("Admin")
                 .requestMatchers("categories/**, brands/**").hasAnyAuthority("Admin", "Editor")
 

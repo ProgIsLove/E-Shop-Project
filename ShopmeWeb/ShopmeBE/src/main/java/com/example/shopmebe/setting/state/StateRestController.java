@@ -20,8 +20,8 @@ public class StateRestController {
         this.stateService = stateService;
     }
 
-    @GetMapping(value = "/country/{countryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StateResponse>> listStateByCountry(@PathVariable("countryId") Integer countryId) {
+    @GetMapping(value = "/{countryId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StateResponse>> listStatesByCountry(@PathVariable("countryId") Integer countryId) {
         return ResponseEntity.ok(stateService.getStateByCountry(countryId));
     }
 

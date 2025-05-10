@@ -207,7 +207,7 @@ function selectNewlyAddedState(stateId, stateName, fieldStateName, dropDownState
 function loadStatesForCountry(dropDownStates) {
     let selectedCountry = $("#dropDownCountriesForStates option:selected");
     let countryId = selectedCountry.val();
-    const URL = `${contextPath}/states/country/${countryId}`;
+    const URL = `${contextPath}/states/${countryId}`;
 
 
     $.get(URL, function (responseJSON) {
