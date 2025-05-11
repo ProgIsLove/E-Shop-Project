@@ -1,11 +1,9 @@
 package com.example.shopmebe.product;
 
-import com.example.shopmebe.exception.CategoryNotFoundException;
-import com.example.shopmebe.exception.ProductNotFoundException;
-import com.shopme.common.entity.Brand;
-import com.shopme.common.request.CheckUniqueNameRequest;
 import com.example.shopmebe.exception.ConflictException;
+import com.example.shopmebe.exception.ProductNotFoundException;
 import com.shopme.common.entity.Product;
+import com.shopme.common.request.CheckUniqueNameRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -12,7 +12,7 @@
         <h2>Customer Registration</h2>
     </div>
 
-    <form th:action="@{/create_customer}" method="post" th:object="${customer}"
+    <form th:action="@{/customer}" method="post" th:object="${customer}"
           style="max-width: 600px; margin: 0 auto;">
         <div class="border border-secondary rounded p-3">
             <div class="row mb-3">
@@ -70,21 +70,21 @@
                 <div class="col-sm-8 mb-1 mt-1">
                     <input type="text" id="addressLine1" class="form-control"
                            placeholder="Address 1" aria-label="Address 1" th:field="*{addressLine1}" required="required"
-                           maxlength="64" minlength="8">
+                           maxlength="64">
                 </div>
 
                 <label for="addressLine2" class="col-sm-4 col-form-label">Address Line 2:</label>
                 <div class="col-sm-8 mb-1 mt-1">
                     <input type="text" id="addressLine2" class="form-control"
-                           placeholder="Address 2" aria-label="Address 2" th:field="*{addressLine2}" required="required"
-                           maxlength="64" minlength="8">
+                           placeholder="Address 2" aria-label="Address 2" th:field="*{addressLine2}"
+                           maxlength="64">
                 </div>
 
                 <label for="city" class="col-sm-4 col-form-label">City:</label>
                 <div class="col-sm-8 mb-1 mt-1">
                     <input type="text" id="city" class="form-control"
                            placeholder="City" aria-label="City" th:field="*{city}" required="required"
-                           maxlength="64" minlength="8">
+                           maxlength="64">
                 </div>
 
                 <label for="country" class="col-sm-4 col-form-label">Country:</label>
@@ -121,6 +121,7 @@
 
     </form>
 
+    <div th:replace="~{fragments/common_fragments :: modal_dialog}"></div>
     <div th:replace="~{fragments/navigation_fragments :: footer_menu}"></div>
 </div>
 <script type="text/javascript">
@@ -138,12 +139,10 @@
     function loadStatesForCountry(statesByCountry) {
         let selectedCountry = $("#country option:selected");
         let countryId = selectedCountry.val();
-        let url = `${contextPath}/bcstates/${countryId}`;
-        console.log(url);
-        $.get(url, function (responseJSON) {
-            statesByCountry.empty();
+        const URL = `${contextPath}/bcstates/${countryId}`;
 
-            console.log(responseJSON);
+        $.get(URL, function (responseJSON) {
+            statesByCountry.empty();
 
             $.each(responseJSON, function (index, state) {
                 $("<option>").val(state.name).text(state.name).appendTo(statesByCountry);
@@ -157,6 +156,67 @@
         } else {
             confirmPassword.setCustomValidity("");
         }
+    }
+
+    function checkEmailUnique(form) {
+        const URL = `${contextPath}/customers/check-email`;
+        let requestData = {
+            email: $("#email").val().trim()
+        }
+
+        let csrfToken = $("input[name='_csrf']").val();
+
+        $.post({
+            url: URL,
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function (response, textStatus, jqXH) {
+                console.log(response.status);
+                console.log(jqXH)
+                if (jqXH.status === 200) {
+                    form.submit();
+                } else {
+                    showErrorModal(`Unexpected response from server`);
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 409) {
+                    let response = JSON.parse(xhr.responseText);
+                    showWarningModal(response.error);
+                } else {
+                    showErrorModal(`Could not connect to the server`);
+                }
+            }
+        });
+
+        return false;
+    }
+
+    function showModalDialog(title, message) {
+        $('#modalTitle').text(title);
+        $('#modalBody').text(message);
+        $('#modalDialog').show();
+        $('#modalDialogClose, #modalDialogCross').on('click', function () {
+            $('#modalDialog').hide();
+        })
+    }
+
+    $(document).ready(function () {
+        $('form').on('submit', function () {
+            return checkEmailUnique(this);
+        });
+    });
+
+    function showErrorModal(message) {
+        showModalDialog("Error", message);
+    }
+
+    function showWarningModal(message) {
+        showModalDialog("Warning", message)
     }
 </script>
 
