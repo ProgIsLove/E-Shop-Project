@@ -17,9 +17,6 @@
         <java.version>17</java.version>
     </properties>
 
-    <dependencies>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

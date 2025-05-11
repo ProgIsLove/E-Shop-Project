@@ -54,7 +54,7 @@ public class StateRestControllerTest {
     @WithMockUser(username = "nam", password = "something", roles = "Admin")
     public void testListByStates() throws Exception {
         int countryId = 2;
-        String url = "/v1/states/country/" + countryId;
+        String url = "/v1/states/" + countryId;
         when(stateServiceMock.getStateByCountry(countryId)).thenReturn(states);
 
         String statesJson = FileUtil.readFromJSONFileToString("json/state/statesResponse.json");

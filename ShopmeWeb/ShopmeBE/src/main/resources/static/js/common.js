@@ -39,8 +39,11 @@ function customizeTabs() {
 
     // Initial activation based on URL hash when the page loads
     const url = document.location.toString();
-    if (url.includes('#')) {
-        const hash = url.split('#')[1];
+    const baseUrl = new URL(url).pathname; // Get the base path without the hash
+    const hash = url.includes('#') ? url.split('#')[1] : null;
+
+    // Activate a tab only if we're on the settings page and a hash exists
+    if (baseUrl.includes('/settings') && hash) {
         activateTabFromHash(hash);
     }
 
@@ -48,16 +51,28 @@ function customizeTabs() {
     document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"]').forEach(tabLink => {
         tabLink.addEventListener('shown.bs.tab', function (e) {
             // Update the hash in the URL without reloading the page
-            history.replaceState(null, null, e.target.hash);
+            const newHash = e.target.dataset.bsTarget.substring(1); // Remove the "#" prefix
+            history.replaceState(null, null, `${baseUrl}#${newHash}`);
         });
     });
 
-    document.querySelectorAll('.dropdown-item').forEach(dropdownItem => {
+    // Handle dropdown-item click to navigate tabs
+    document.querySelectorAll('.dropdown-item.settings').forEach(dropdownItem => {
         dropdownItem.addEventListener('click', function (e) {
             e.preventDefault(); // Prevent default link behavior to avoid page reload
-            const hash = this.getAttribute('href').split('#')[1];
-            activateTabFromHash(hash);
-            history.replaceState(null, null, `#${hash}`);
+            const href = this.getAttribute('href');
+            const [path, hashPart] = href.split('#');
+            const targetPath = new URL(path, document.location.origin).pathname;
+            const targetHash = hashPart ? hashPart : null;
+
+            // Navigate to settings only if we're on the same base path
+            if (baseUrl.includes('/settings') && targetHash) {
+                activateTabFromHash(targetHash);
+                history.replaceState(null, null, `${targetPath}#${targetHash}`);
+            } else {
+                // Navigate to the correct base path (e.g., /brands or /settings)
+                document.location.href = href;
+            }
         });
     });
 }

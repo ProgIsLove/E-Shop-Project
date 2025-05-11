@@ -29,8 +29,12 @@ public class Customer {
     @Column(name = "last_name", length = 45, nullable = false)
     private String lastName;
 
-    @Column(name = "phone_number", length = 15, nullable = false)
-    private String phoneNumber;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "prefix", column = @Column(name = "phone_number_prefix", length = 5)),
+            @AttributeOverride( name = "phone", column = @Column(name = "phone_number_core", length = 15, nullable = false))
+    })
+    private PhoneNumber phoneNumber;
 
     @Column(name = "address_line_1", length = 64, nullable = false)
     private String addressLine1;
@@ -41,7 +45,7 @@ public class Customer {
     @Column(length = 45, nullable = false)
     private String city;
 
-    @Column(length = 45, nullable = false)
+    @Column(length = 45)
     private String state;
 
     @ManyToOne(fetch = FetchType.LAZY)

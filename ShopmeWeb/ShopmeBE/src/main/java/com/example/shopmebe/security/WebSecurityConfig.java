@@ -3,6 +3,7 @@ package com.example.shopmebe.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
@@ -59,6 +60,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/static/js/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/countries/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/states/**").permitAll()
                 .requestMatchers("/users/**", "/settings/**", "/v1/states/**", "/v1/countries/**").hasAuthority("Admin")
                 .requestMatchers("categories/**, brands/**").hasAnyAuthority("Admin", "Editor")
 
