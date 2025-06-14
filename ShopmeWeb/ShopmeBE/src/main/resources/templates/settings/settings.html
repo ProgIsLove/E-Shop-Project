@@ -50,10 +50,10 @@
                 <div th:replace="~{fragments/settings/states :: content}"></div>
             </div>
             <div class="tab-pane" id="mailServer" role="tabpanel">
-                <h2>Mail Server</h2>
+                <div th:replace="~{fragments/settings/mail_server :: content}"></div>
             </div>
             <div class="tab-pane p-3" id="mailTemplates" role="tabpanel">
-                <h2>Mail Templates</h2>
+                <div th:replace="~{fragments/settings/mail_templates/mail_templates :: content}"></div>
             </div>
             <div class="tab-pane p-3" id="payment" role="tabpanel">
                 <h2>Payment</h2>
@@ -71,12 +71,17 @@
     </div>
 
     <div th:replace="~{fragments/common_fragments :: footer}"></div>
+</div>
 
 <script type="text/javascript">
     MAX_FILE_SIZE = 102400; //100KB
     contextPath = "[[@{/v1}]]";
     let csrfHeaderName = "[[${_csrf.headerName}]]";
     let csrfValue = "[[${_csrf.token}]]";
+
+    $(document).ready(function () {
+        $("#customerVerificationContent").richText()
+    })
 </script>
 <script th:src="@{/js/image_upload.js}"></script>
 <script th:src="@{/js/countries_setting.js}"></script>
