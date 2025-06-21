@@ -3,6 +3,7 @@ package com.example.shopmefe.customer;
 
 import com.example.shopmefe.exception.ConflictException;
 import com.shopme.common.entity.Customer;
+import net.bytebuddy.utility.RandomString;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class CustomerService {
         customer.setEnabled(false);
         customer.setCreatedTime(new Date());
 
+        String randomCode = RandomString.make(10);
+        customer.setVerificationCode(randomCode);
 
         customerRepository.save(customer);
     }

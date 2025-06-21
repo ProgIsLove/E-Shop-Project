@@ -3,6 +3,7 @@ package com.shopme.common.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -84,5 +85,10 @@ public class Customer {
                 ", enabled=" + enabled +
                 ", verificationCode='" + verificationCode + '\'' +
                 '}';
+    }
+
+    public String getFullName() {
+        // joins non-null arguments with a single space, trimming extras
+        return StringUtils.joinWith(" ", firstName, lastName).trim();
     }
 }
