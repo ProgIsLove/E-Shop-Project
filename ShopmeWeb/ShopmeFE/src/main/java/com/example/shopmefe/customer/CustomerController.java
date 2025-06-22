@@ -66,7 +66,7 @@ public class CustomerController {
 
         String toAddress = customer.getEmail();
         String subject = emailSetting.getCustomerVerifySubject();
-        String content = emailSetting.getCustomerVerifySubject();
+        String content = emailSetting.getCustomerVerifyContent();
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message);
@@ -76,8 +76,6 @@ public class CustomerController {
         messageHelper.setSubject(subject);
 
         content = content.replace("[[name]]", customer.getFullName());
-
-//        String verifyUrl = MailUtil.getSiteUrl(request) + "/verify?code=" + customer.getVerificationCode();
 
         String verifyUrl = ServletUriComponentsBuilder
                 .fromRequestUri(request)

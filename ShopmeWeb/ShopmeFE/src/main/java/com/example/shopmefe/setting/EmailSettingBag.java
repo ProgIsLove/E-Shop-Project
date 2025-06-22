@@ -29,11 +29,11 @@ public class EmailSettingBag extends SettingBag {
     }
 
     public String getSmtpAuth() {
-        return super.getValue("SMPT_AUTH");
+        return super.getValue("SMTP_AUTH");
     }
 
     public String getSmtpSecured() {
-        return super.getValue("SMPT_SECURED");
+        return super.getValue("SMTP_SECURED");
     }
 
     public String getFromAddress() {
