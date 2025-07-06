@@ -53,6 +53,8 @@ $(document).ready(function () {
 });
 
 function addState(fieldStateName, dropDownStates) {
+    if (!validateFormState()) return;
+
     const URL = `${contextPath}/states`;
     let stateName = fieldStateName.val().trim();
 
@@ -95,6 +97,8 @@ function addState(fieldStateName, dropDownStates) {
 }
 
 function updateState(fieldStateName, dropDownStates) {
+    if (!validateFormState()) return;
+
     let stateId = dropDownStates.val();
     const URL = `${contextPath}/states/${stateId}`;
     let stateName = fieldStateName.val().trim();
@@ -194,6 +198,15 @@ function changeFormStateToNew(buttonUpdateState,
     buttonDeleteState.prop("disabled", true);
 
     fieldStateName.val("").focus();
+}
+
+function validateFormState() {
+    const FORM_COUNTRY = document.getElementById("formState");
+    if (!FORM_COUNTRY.checkValidity()) {
+        FORM_COUNTRY.reportValidity();
+        return false;
+    }
+    return true;
 }
 
 function selectNewlyAddedState(stateId, stateName, fieldStateName, dropDownStates) {
