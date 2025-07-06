@@ -98,6 +98,8 @@ function updateCountry(dropDownCountry,
                        labelCountryName,
                        fieldCountryName,
                        fieldCountryCode) {
+    if (!validateFormCountry()) return;
+
     let countryId = dropDownCountry.val().split("-")[0];
     const URL = `${contextPath}/countries/${countryId}`;
 
@@ -185,10 +187,22 @@ function changeFormStateToNewCountry(buttonAddCountry,
     fieldCountryName.val("").focus();
 }
 
+function validateFormCountry() {
+    const FORM_COUNTRY = document.getElementById("formCountry");
+    if (!FORM_COUNTRY.checkValidity()) {
+        FORM_COUNTRY.reportValidity();
+        return false;
+    }
+    return true;
+}
+
 function addCountry(dropDownCountry,
                     fieldCountryName,
                     fieldCountryCode,
                     buttonAddCountry) {
+
+    if (!validateFormCountry()) return;
+
     const URL = `${contextPath}/countries`;
 
     let countryName = fieldCountryName.val().trim();
