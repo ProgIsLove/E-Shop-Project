@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,7 +18,8 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
     @Query("SELECT c FROM Customer c WHERE c.verificationCode = :code")
     Optional<Customer> findByVerificationCode(@Param("code") String code);
 
-    @Query("UPDATE Customer c SET c.enabled = :enabled WHERE c.id = :customerId")
+    @Query("UPDATE Customer c SET c.enabled = true, c.verificationCode = null WHERE c.id = :customerId")
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    void updateEnabledStatus(@Param("customerId") Integer customerId, @Param("enabled") boolean enabled);
+    @Transactional
+    void updateEnabledStatus(@Param("customerId") Integer customerId);
 }

@@ -45,4 +45,15 @@ public class CustomerService {
         String encodedPassword = passwordEncoder.encode(customer.getPassword());
         customer.setPassword(encodedPassword);
     }
+
+    public boolean verify(String verificationCode) {
+        return customerRepository
+                .findByVerificationCode(verificationCode)
+                .filter(customer -> !customer.isEnabled())
+                .map(customer -> {
+                    customerRepository.updateEnabledStatus(customer.getId());
+                    return true;
+                })
+                .orElse(false);
+    }
 }

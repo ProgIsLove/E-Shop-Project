@@ -28,7 +28,6 @@ public class MailUtil {
 
         mailSender.setJavaMailProperties(mailProperties);
 
-
         return mailSender;
     }
 }
