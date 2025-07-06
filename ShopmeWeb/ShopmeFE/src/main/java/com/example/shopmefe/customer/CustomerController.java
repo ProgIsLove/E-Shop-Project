@@ -10,6 +10,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -60,6 +61,13 @@ public class CustomerController {
         return "register/register_success";
     }
 
+    @GetMapping("/verify")
+    public String verifyAccount(@Param("code") String code, Model model) {
+        boolean verify = customerService.verify(code);
+
+        return "/register/" + (verify ? "register_verify" : "register_fail");
+    }
+
     private void sendVerificationEmail(HttpServletRequest request, Customer customer) throws MessagingException, UnsupportedEncodingException {
         EmailSettingBag emailSetting = settingService.getEmailSetting();
         JavaMailSenderImpl mailSender = MailUtil.prepareMailSender(emailSetting);
@@ -79,7 +87,7 @@ public class CustomerController {
 
         String verifyUrl = ServletUriComponentsBuilder
                 .fromRequestUri(request)
-                .replacePath("/verify")
+                .replacePath(request.getContextPath() + "/verify")
                 .replaceQuery(null)
                 .queryParam("code", customer.getVerificationCode())
                 .build()
@@ -94,6 +102,5 @@ public class CustomerController {
 
         log.info("To address: {}", toAddress);
         log.info("To verifyUrl: {}", verifyUrl);
-
     }
 }

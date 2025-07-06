@@ -121,7 +121,7 @@ public class CustomerRepositoryTest extends AbstractIntegrationTest {
     @Test
     public void testEnabledCustomer() {
         Integer customerId = savedCustomer.getId();
-        customerRepository.updateEnabledStatus(customerId, true);
+        customerRepository.updateEnabledStatus(customerId);
 
         Optional<Customer> customerById = customerRepository.findById(customerId);
 
