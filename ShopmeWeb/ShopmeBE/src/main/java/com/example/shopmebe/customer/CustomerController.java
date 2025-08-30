@@ -1,5 +1,7 @@
 package com.example.shopmebe.customer;
 
+import com.example.shopmebe.exception.CustomerNotFoundException;
+import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -7,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -51,5 +55,62 @@ public class CustomerController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
         return "customers/customers";
+    }
+
+    @GetMapping("/customers/{customerId}/enabled/{status}")
+    public String updateCustomerEnabledStatus(@PathVariable("customerId") Integer customerId,
+                                              @PathVariable("status") boolean enabled,
+                                              RedirectAttributes redirectAttributes) {
+
+        customerService.updateCustomerEnabledStatus(customerId, enabled);
+        String status = enabled ? "enabled" : "disabled";
+        String message = "The customer with id " + customerId + " has been enabled" + status;
+        redirectAttributes.addFlashAttribute("message", message);
+
+        return "redirect:/customers/";
+    }
+
+    @GetMapping("/customers/detail/{customerId}")
+    public String viewCustomer(@PathVariable("customerId") Integer customerId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Customer customer = customerService.findById(customerId);
+            model.addAttribute("customer", customer);
+
+            return "customers/customer_detail_modal";
+        } catch (CustomerNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+            return "redirect:/customers/";
+        }
+    }
+
+    @GetMapping("/customers/delete/{customerId}")
+    public String deleteCustomer(@PathVariable("customerId") Integer customerId, RedirectAttributes redirectAttributes) throws CustomerNotFoundException {
+        customerService.delete(customerId);
+        redirectAttributes.addFlashAttribute("message", "Customer with id " + customerId + " has been successfully deleted");
+        return "redirect:/customers/";
+    }
+
+    @GetMapping("/customers/edit/{customerId}")
+    public String editCustomer(@PathVariable("customerId") Integer customerId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Customer customer = customerService.findById(customerId);
+            List<Country> countries = customerService.listAllCountries();
+
+            model.addAttribute("listCountries", countries);
+            model.addAttribute("customer", customer);
+
+            return "customers/customer_modal";
+
+        } catch (CustomerNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+            return "redirect:/customers/";
+        }
+    }
+
+    @PostMapping("/customers/save")
+    public String saveCustomer(Customer customer, Model model, RedirectAttributes redirectAttributes) throws CustomerNotFoundException {
+        customerService.save(customer);
+        redirectAttributes.addFlashAttribute("message", "Customer with id " + customer.getId() + " has been successfully saved");
+        return "redirect:/customers/";
     }
 }
