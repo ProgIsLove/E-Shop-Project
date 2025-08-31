@@ -98,8 +98,9 @@ public class CustomerController {
 
             model.addAttribute("listCountries", countries);
             model.addAttribute("customer", customer);
+            model.addAttribute("pageTitle", String.format("Edit Customer (ID: %d)", customerId));
 
-            return "customers/customer_modal";
+            return "customers/customer_form";
 
         } catch (CustomerNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
@@ -108,7 +109,7 @@ public class CustomerController {
     }
 
     @PostMapping("/customers/save")
-    public String saveCustomer(Customer customer, Model model, RedirectAttributes redirectAttributes) throws CustomerNotFoundException {
+    public String saveCustomer(Customer customer, RedirectAttributes redirectAttributes) throws CustomerNotFoundException {
         customerService.save(customer);
         redirectAttributes.addFlashAttribute("message", "Customer with id " + customer.getId() + " has been successfully saved");
         return "redirect:/customers/";
