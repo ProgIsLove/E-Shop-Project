@@ -125,7 +125,7 @@
     <div th:replace="~{fragments/navigation_fragments :: footer_menu}"></div>
 </div>
 <script type="text/javascript">
-    const contextPath = "[[@{/v1}]]";
+    const CONTEXT_PATH = "[[@{/v1}]]";
 
     $(document).ready(function () {
         const dropDownCountry = $("#country");
@@ -139,7 +139,7 @@
     function loadStatesForCountry(statesByCountry) {
         let selectedCountry = $("#country option:selected");
         let countryId = selectedCountry.val();
-        const URL = `${contextPath}/bcstates/${countryId}`;
+        const URL = `${CONTEXT_PATH}/bcstates/${countryId}`;
 
         $.get(URL, function (responseJSON) {
             statesByCountry.empty();
@@ -159,7 +159,7 @@
     }
 
     function checkEmailUnique(form) {
-        const URL = `${contextPath}/customers/check-email`;
+        const URL = `${CONTEXT_PATH}/customers/check-email`;
         let requestData = {
             email: $("#email").val().trim()
         }

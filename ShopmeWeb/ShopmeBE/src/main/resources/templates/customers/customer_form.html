@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="~{fragments/common_fragments :: page_head(${pageTitle}, 'none')}"></head>
+<body>
+
+<div class="container-fluid">
+    <div th:replace="~{fragments/navigation_fragments :: menu}"></div>
+    <div>
+        <h2>Manage Customers | [[${pageTitle}]]</h2>
+    </div>
+
+    <form th:action="@{/customers/save}" method="post" th:object="${customer}"
+          style="max-width: 600px; margin: 0 auto;">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="border border-secondary rounded p-3">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">First Name</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{firstName}" required minlength="2"
+                           maxlength="45"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Last Name</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{lastName}" required minlength="2"
+                           maxlength="45"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Email:</label>
+                <div class="col-sm-8">
+                    <input type="email" class="form-control" th:field="*{email}" required minlength="8"
+                           maxlength="128"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Password</label>
+                <div class="col-sm-8">
+                    <input th:if="${user.id == null}" type="password" class="form-control" th:field="*{password}"
+                           required minlength="8"/>
+                    <input th:if="${user.id != null}" type="password" class="form-control" th:field="*{password}"
+                           minlength="8"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Phone Number:</label>
+                <div>
+                    <input type="text" class="form-control" th:field="*{phoneNumber}" required minlength="9"
+                           maxlength="12"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Line 1:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{addressLine1}" required maxlength="64"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Line 2:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{addressLine2}" maxlength="64"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">City:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{city}" required minlength="3" maxlength="64"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Country:</label>
+                <div class="col-sm-8">
+                    <select th:field="*{country}" class="form-control">
+                        <option th:each="country : ${listCountries}" th:value="${country.id}">[[${country.name}]]
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">State/Province:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{state}" required minlength="3" maxlength="64"/>
+                    <datalist id="states">
+
+                    </datalist>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Postal Code:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{postalCode}" required minlength="3"
+                           maxlength="6">
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary m-3"/>
+                <input id="btnCancel" type="button" value="Cancel" class="btn btn-secondary"/>
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/modal_fragments :: modal_dialog}"></div>
+    <div th:replace="~{fragments/common_fragments :: footer}"></div>
+</div>
+
+<script type="text/javascript">
+    const MODULE_URL = "[[@{/customers}]]";
+    const CONTEXT_PATH = "[[@{/v1}]]";
+
+    $(document).ready(function () {
+        const dropDownCountry = $("#country");
+        const statesByCountry = $("#states");
+
+        dropDownCountry.on("change", function () {
+            loadStatesForCountry(statesByCountry);
+        });
+    })
+
+    function loadStatesForCountry(statesByCountry) {
+        let selectedCountry = $("#country option:selected");
+        let countryId = selectedCountry.val();
+        const URL = `${CONTEXT_PATH}/bcstates/${countryId}`;
+
+        $.get(URL, function (responseJSON) {
+            statesByCountry.empty();
+
+            $.each(responseJSON, function (index, state) {
+                $("<option>").val(state.name).text(state.name).appendTo(statesByCountry);
+            });
+        });
+    }
+
+    function checkEmailUnique(form) {
+        const URL = `${CONTEXT_PATH}/customers/check-email`;
+        let requestData = {
+            id: $("#id").val(),
+            email: $("#email").val().trim(),
+        }
+
+        let csrfToken = $("input[name='_csrf']").val();
+
+        $.post({
+            url: URL,
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function (response) {
+                switch (response.status) {
+                    case "OK":
+                        form.submit();
+                        break;
+                    default:
+                        showErrorModal(`Unknown response from server`);
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 409) {
+                    let response = JSON.parse(xhr.responseText);
+                    showWarningModal(response.details);
+                } else {
+                    showErrorModal(`Could not connect to the server`);
+                }
+            }
+        });
+
+        return false;
+    }
+
+    $(document).ready(function () {
+        $('form').on('submit', function () {
+            return checkEmailUnique(this);
+        });
+    });
+
+</script>
+</body>
+</html>
