@@ -67,7 +67,7 @@ public class CustomerController {
         String message = "The customer with id " + customerId + " has been enabled" + status;
         redirectAttributes.addFlashAttribute("message", message);
 
-        return "redirect:/customers/";
+        return "redirect:/customers";
     }
 
     @GetMapping("/customers/detail/{customerId}")
