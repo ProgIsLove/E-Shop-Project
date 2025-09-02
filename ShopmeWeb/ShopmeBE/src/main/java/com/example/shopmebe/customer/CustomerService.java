@@ -4,7 +4,7 @@ import com.example.shopmebe.exception.CustomerNotFoundException;
 import com.example.shopmebe.setting.country.CountryRepository;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Log4j
+@Slf4j
 public class CustomerService {
     public static final int CUSTOMERS_PER_PAGE = 10;
 
