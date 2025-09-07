@@ -17,7 +17,7 @@
     </ul>
 
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active p-3" id="general" role="tabpanel" aria-labelledby="general-tab">
+        <div class="tab-pane show active p-3" id="general" role="tabpanel">
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Customer ID:</label>
                 <div class="col-sm-8">
@@ -39,7 +39,7 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Phone Number:</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" th:value="${customer.phoneNumber}" readonly/>
+                    <input type="text" class="form-control" th:value="${customer.phoneNumber.getPhone()}" readonly/>
                 </div>
             </div>
 
@@ -56,50 +56,48 @@
                     <span th:text="${#dates.format(customer.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
                 </div>
             </div>
-
-            <div class="tab-pane fade show p-3" id="address" role="tabpanel" aria-labelledby="address-tab">
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Address Line 1:</label>
-                    <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" th:value="${customer.addressLine1}"/>
-                    </div>
+        </div>
+        <div class="tab-pane show p-3" id="address" role="tabpanel" aria-labelledby="address-tab">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Line 1:</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" th:value="${customer.addressLine1}"/>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Address Line 2:</label>
-                    <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" th:value="${customer.addressLine1}"/>
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address Line 2:</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" th:value="${customer.addressLine2}"/>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">City:</label>
-                    <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" th:value="${customer.city}"/>
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">City:</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" th:value="${customer.city}"/>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">State/Province:</label>
-                    <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" th:value="${customer.state}"/>
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">State/Province:</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" th:value="${customer.state}"/>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Country:</label>
-                    <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" th:value="${customer.country}"/>
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Country:</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" th:value="${customer.country.name}"/>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Postal code:</label>
-                    <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" th:value="${customer.postalCode}"/>
-                    </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Postal code:</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" th:value="${customer.postalCode}"/>
                 </div>
-
             </div>
         </div>
     </div>
