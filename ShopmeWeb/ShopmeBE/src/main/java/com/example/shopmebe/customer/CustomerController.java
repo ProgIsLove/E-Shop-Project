@@ -79,7 +79,7 @@ public class CustomerController {
             return "customers/customer_detail_modal";
         } catch (CustomerNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
-            return "redirect:/customers/";
+            return "redirect:/customers";
         }
     }
 
@@ -87,7 +87,7 @@ public class CustomerController {
     public String deleteCustomer(@PathVariable("customerId") Integer customerId, RedirectAttributes redirectAttributes) throws CustomerNotFoundException {
         customerService.delete(customerId);
         redirectAttributes.addFlashAttribute("message", "Customer with id " + customerId + " has been successfully deleted");
-        return "redirect:/customers/";
+        return "redirect:/customers";
     }
 
     @GetMapping("/customers/edit/{customerId}")
@@ -104,7 +104,7 @@ public class CustomerController {
 
         } catch (CustomerNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
-            return "redirect:/customers/";
+            return "redirect:/customers";
         }
     }
 
@@ -112,6 +112,6 @@ public class CustomerController {
     public String saveCustomer(Customer customer, RedirectAttributes redirectAttributes) throws CustomerNotFoundException {
         customerService.save(customer);
         redirectAttributes.addFlashAttribute("message", "Customer with id " + customer.getId() + " has been successfully saved");
-        return "redirect:/customers/";
+        return "redirect:/customers";
     }
 }
