@@ -65,13 +65,19 @@ public class CustomerService {
     }
 
     public void save(Customer customerInForm) throws CustomerNotFoundException {
+        Customer customer = this.findById(customerInForm.getId());
+
         if (!customerInForm.getPassword().isEmpty()) {
             String encodedPassword = passwordEncoder.encode(customerInForm.getPassword());
             customerInForm.setPassword(encodedPassword);
         } else {
-            Customer customer = this.findById(customerInForm.getId());
             customerInForm.setPassword(customer.getPassword());
         }
+
+        customerInForm.setEnabled(customer.isEnabled());
+        customerInForm.setCreatedTime(customer.getCreatedTime());
+        customerInForm.setVerificationCode(customer.getVerificationCode());
+
         customerRepository.save(customerInForm);
     }
 

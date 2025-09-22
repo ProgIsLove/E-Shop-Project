@@ -32,7 +32,7 @@
         <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark me-2"></a>
     </div>
 
-    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/categories/page/1')}"></div>
+    <div th:replace="~{fragments/common_fragments :: search_form_and_message}"></div>
 
     <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -40,7 +40,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Category Image</th>
-                    <th th:replace="~{fragments/common_fragments :: column_link('/categories', 'name', 'Category Name', 'none')}"></th>
+                    <th th:replace="~{fragments/common_fragments :: column_link('name', 'Category Name', 'none')}"></th>
                     <th class="hideable-column">Alias</th>
                     <th>Enabled</th>
                     <th></th>
@@ -87,11 +87,11 @@
 
     <div th:if="${keyword != null}" class="text-center">
         <span>Search result does not show categories in hierarchical form</span>
-        <div th:replace="~{fragments/common_fragments :: pagination('/categories', 'categories')}"></div>
+        <div th:replace="~{fragments/common_fragments :: pagination('categories')}"></div>
     </div>
 
     <th:block th:unless="${keyword != null}">
-    <div th:replace="~{fragments/common_fragments :: pagination('/categories', 'top-level categories')}"></div>
+        <div th:replace="~{fragments/common_fragments :: pagination('top-level categories')}"></div>
     </th:block>
     <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
     <div th:replace="~{fragments/common_fragments :: footer}"></div>

@@ -23,21 +23,22 @@
         <a th:href="@{/users/export/pdf}"><i class="fa-solid fa-file-pdf fa-2x icon-dark me-2"></i></a>
     </div>
 
-    <div th:replace="~{fragments/common_fragments :: search_form_and_message('/users/page/1')}"></div>
+    <div th:replace="~{fragments/common_fragments :: search_form_and_message}"></div>
 
     <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
             <tr>
                 <th class="hideable-column">
-                    <th th:replace="~{fragments/common_fragments :: column_link('/users', 'id', 'User ID', 'tag')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('id', 'User ID', 'tag')}"></th>
                 <th>Photos</th>
                 <th class="hideable-column">
-                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'email', 'E-mail', 'tag')}" class="hideable-column"></th>
-                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'firstName', 'First Name', 'none')}"></th>
-                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'lastName', 'Last Name', 'none')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('email', 'E-mail', 'tag')}"
+                    class="hideable-column"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('firstName', 'First Name', 'none')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('lastName', 'Last Name', 'none')}"></th>
                 <th>Roles</th>
-                <th th:replace="~{fragments/common_fragments :: column_link('/users', 'enabled', 'Enabled', 'none')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('enabled', 'Enabled', 'none')}"></th>
                 <th></th>
             </tr>
             </thead>
@@ -84,8 +85,7 @@
     </div>
 
 
-
-    <div th:replace="~{fragments/common_fragments :: pagination('/users', 'users')}"></div>
+    <div th:replace="~{fragments/common_fragments :: pagination('users')}"></div>
     <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
     <div th:replace="~{fragments/common_fragments :: footer}"></div>
 

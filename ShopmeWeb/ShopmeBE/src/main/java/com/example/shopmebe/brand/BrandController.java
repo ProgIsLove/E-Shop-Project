@@ -1,8 +1,8 @@
 package com.example.shopmebe.brand;
 
 
-import com.example.shopmebe.exception.BrandNotFoundException;
 import com.example.shopmebe.category.CategoryService;
+import com.example.shopmebe.exception.BrandNotFoundException;
 import com.example.shopmebe.utils.FileUploadUtil;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
@@ -71,6 +71,7 @@ public class BrandController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("brands", brands);
         model.addAttribute("reverseSortDir", reverseSortDir);
+        model.addAttribute("moduleURL", "/brands");
 
         return "brands/brands";
     }

@@ -14,7 +14,7 @@
     <title>[[${title}]]</title>
 </head>
 <body>
-<th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+<th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
     <a th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir}
                        + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}"
        class="text-white">
@@ -33,7 +33,7 @@
    th:if="${isEnabled} == false"
    title="Enable this user"><i class="fas fa-circle fa-2x icon-dark"></i></a>
 
-<a th:fragment="page_link(moduleURL, pageNum, label)"
+<a th:fragment="page_link(pageNum, label)"
    class="page-link"
    th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}
                     + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">[[${label}]]</a>
@@ -69,7 +69,7 @@
     </th:block>
 </div>
 
-<div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
+<div th:fragment="pagination(entityName)" th:remove="tag">
     <div class="text-center m-1" th:if="${totalItems > 0}">
     <span>Showing [[${entityName}]] # [[${startCount}]] to
         [[${endCount}]] of [[${totalItems}]]</span>
@@ -82,16 +82,16 @@
         <nav>
             <ul class="pagination justify-content-center flex-wrap">
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, 1, 'First')}"></a>
+                    <a th:replace="~{fragments/common_fragments :: page_link(1, 'First')}"></a>
                 </li>
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${currentPage - 1}, 'Previous')}"></a>
+                    <a th:replace="~{fragments/common_fragments :: page_link(${currentPage - 1}, 'Previous')}"></a>
                 </li>
 
                 <th:block th:if="${totalPages <= 10}">
                     <li th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                        <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${i}, ${i})}"></a>
+                        <a th:replace="~{fragments/common_fragments :: page_link(${i}, ${i})}"></a>
                     </li>
                 </th:block>
 
@@ -99,43 +99,43 @@
                     <th:block th:if="${currentPage < 5 || currentPage >= totalPages - 4}">
                         <li th:each="i : ${#numbers.sequence(1, 5)}"
                             th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${i}, ${i})}"></a>
+                            <a th:replace="~{fragments/common_fragments :: page_link(${i}, ${i})}"></a>
                         </li>
 
-                        <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${totalPages/2}, ${'...'})}"
+                        <a th:replace="~{fragments/common_fragments :: page_link(${totalPages/2}, ${'...'})}"
                            class="page-link">...</a>
 
                         <li th:each="i : ${#numbers.sequence(totalPages - 4, totalPages)}"
                             th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${i}, ${i})}"></a>
+                            <a th:replace="~{fragments/common_fragments :: page_link(${i}, ${i})}"></a>
                         </li>
                     </th:block>
                     <th:block th:if="${currentPage >= 5 && currentPage < totalPages - 4}">
-                        <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${currentPage - 5}, ${'...'})}">...</a>
+                        <a th:replace="~{fragments/common_fragments :: page_link(${currentPage - 5}, ${'...'})}">...</a>
 
                         <li th:each="i : ${#numbers.sequence(currentPage - 4, currentPage + 5)}"
                             th:class="${currentPage != i ? 'page-item': 'page-item active'}">
-                            <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${i}, ${i})}"></a>
+                            <a th:replace="~{fragments/common_fragments :: page_link(${i}, ${i})}"></a>
                         </li>
 
-                        <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${currentPage + 5}, ${'...'})}"
+                        <a th:replace="~{fragments/common_fragments :: page_link(${currentPage + 5}, ${'...'})}"
                            class="page-link">...</a>
                     </th:block>
                 </th:block>
 
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${currentPage + 1}, 'Next')}"></a>
+                    <a th:replace="~{fragments/common_fragments :: page_link(${currentPage + 1}, 'Next')}"></a>
                 </li>
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="~{fragments/common_fragments :: page_link(${moduleURL}, ${totalPages}, 'Last')}"></a>
+                    <a th:replace="~{fragments/common_fragments :: page_link(${totalPages}, 'Last')}"></a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
 
-<div th:fragment="search_form_and_message(moduleURL)">
-    <form th:action="@{${moduleURL}}" class="row g-3 mb-2">
+<div th:fragment="search_form_and_message()">
+    <form th:action="@{${moduleURL} + '/page/1'}" class="row g-3 mb-2">
         <input type="hidden" name="sortField" th:value="${sortField}"/>
         <input type="hidden" name="sortDir" th:value="${sortDir}"/>
         <div class="col-auto">

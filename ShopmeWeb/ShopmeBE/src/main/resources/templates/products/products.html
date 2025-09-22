@@ -66,11 +66,11 @@
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
             <tr>
-                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'id', 'ID', 'None')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('id', 'ID', 'None')}"></th>
                 <th>Main Image</th>
-                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'name', 'Product Name', 'None')}"></th>
-                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'brand', 'Brand', 'None')}"></th>
-                <th th:replace="~{fragments/common_fragments :: column_link('/products', 'category', 'Category', 'None')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('name', 'Product Name', 'None')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('brand', 'Brand', 'None')}"></th>
+                <th th:replace="~{fragments/common_fragments :: column_link('category', 'Category', 'None')}"></th>
                 <th>Enabled</th>
                 <th></th>
             </tr>
@@ -126,7 +126,7 @@
     </div>
 
 
-    <div th:replace="~{fragments/common_fragments :: pagination('/products', 'products')}"></div>
+    <div th:replace="~{fragments/common_fragments :: pagination('products')}"></div>
 
     <div th:replace="~{fragments/modal_fragments :: confirm_modal}"></div>
 
